@@ -146,14 +146,14 @@ namespace BluQube.SourceGeneration
                 foreach (var genericCommandHandlerOutputDefinition in genericCommandHandlerOutputDefinitions)
                 {
                     spc.AddSource(
-                        $"{genericCommandHandlerOutputDefinition.CommandNamespace}_{genericCommandHandlerOutputDefinition.CommandName}CommandHandler.g.cs",
+                        $"{genericCommandHandlerOutputDefinition.CommandNamespace}_{genericCommandHandlerOutputDefinition.CommandName}GenericCommandHandler.g.cs",
                         SourceText.From(genericCommandHandlerOutputDefinitionProcessor.Process(genericCommandHandlerOutputDefinition), Encoding.UTF8));
                 }
 
                 foreach (var genericCommandOfTHandlerOutputDefinition in genericCommandOfTHandlerOutputDefinitions)
                 {
                     spc.AddSource(
-                        $"{genericCommandOfTHandlerOutputDefinition.CommandNamespace}_{genericCommandOfTHandlerOutputDefinition.CommandName}CommandHandler.g.cs",
+                        $"{genericCommandOfTHandlerOutputDefinition.CommandNamespace}_{genericCommandOfTHandlerOutputDefinition.CommandName}GenericCommandHandler.g.cs",
                         SourceText.From(genericCommandOfTHandlerOutputDefinitionProcessor.Process(genericCommandOfTHandlerOutputDefinition), Encoding.UTF8));
                 }
 
