@@ -1,0 +1,8 @@
+﻿{
+  Type: InvalidOperationException,
+  Message: Data is only available when the status is Succeeded,
+  StackTrace:
+at BluQube.Commands.CommandResult`1.get_Data()
+at BluQube.Tests.Commands.CommandResultWithResultTests.Data.<>c__DisplayClass0_0.<ThrowsInvalidOperationExceptionWhenFailed>b__0()
+at Xunit.Record.Exception(Func`1 testCode)
+}

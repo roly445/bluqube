@@ -1,0 +1,7 @@
+﻿{
+  Status: Failed,
+  ErrorData: {
+    Code: CommunicationError,
+    Message: Unknown API Failure
+  }
+}

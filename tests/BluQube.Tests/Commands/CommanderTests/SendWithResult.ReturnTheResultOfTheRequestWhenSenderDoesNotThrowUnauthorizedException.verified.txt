@@ -1,0 +1,6 @@
+﻿{
+  Status: Succeeded,
+  Data: {
+    Result: test-data
+  }
+}

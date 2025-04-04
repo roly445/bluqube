@@ -1,0 +1,4 @@
+﻿{
+  Code: some-error,
+  Message: some-error
+}

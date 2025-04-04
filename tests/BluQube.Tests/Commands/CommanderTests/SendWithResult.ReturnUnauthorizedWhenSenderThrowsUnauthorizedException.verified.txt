@@ -1,0 +1,7 @@
+﻿{
+  Status: Failed,
+  ErrorData: {
+    Code: NotAuthorized,
+    Message: NotAuthorized
+  }
+}

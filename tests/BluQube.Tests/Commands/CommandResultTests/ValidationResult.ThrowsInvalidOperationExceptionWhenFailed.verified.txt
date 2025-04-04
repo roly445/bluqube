@@ -1,0 +1,8 @@
+﻿{
+  Type: InvalidOperationException,
+  Message: ValidationResult is only available when the status is Invalid,
+  StackTrace:
+at BluQube.Commands.CommandResult.get_ValidationResult()
+at BluQube.Tests.Commands.CommandResultTests.ValidationResult.<>c__DisplayClass0_0.<ThrowsInvalidOperationExceptionWhenFailed>b__0()
+at Xunit.Record.Exception(Func`1 testCode)
+}

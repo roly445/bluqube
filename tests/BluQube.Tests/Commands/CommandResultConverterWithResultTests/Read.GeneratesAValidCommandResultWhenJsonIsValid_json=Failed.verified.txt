@@ -1,0 +1,7 @@
+﻿{
+  Status: Failed,
+  ErrorData: {
+    Code: some-error,
+    Message: some-error
+  }
+}

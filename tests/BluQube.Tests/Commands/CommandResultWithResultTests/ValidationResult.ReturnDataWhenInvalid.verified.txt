@@ -1,0 +1,9 @@
+﻿{
+  IsValid: false,
+  Failures: [
+    {
+      ErrorMessage: some-property,
+      PropertyName: some-error
+    }
+  ]
+}

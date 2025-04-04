@@ -1,0 +1,12 @@
+﻿{
+  Status: Invalid,
+  ValidationResult: {
+    IsValid: false,
+    Failures: [
+      {
+        ErrorMessage: Property,
+        PropertyName: Error
+      }
+    ]
+  }
+}

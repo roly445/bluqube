@@ -1,0 +1,7 @@
+﻿{
+  Status: Failed,
+  ErrorData: {
+    Code: CommunicationError,
+    Message: Invalid JSON response
+  }
+}

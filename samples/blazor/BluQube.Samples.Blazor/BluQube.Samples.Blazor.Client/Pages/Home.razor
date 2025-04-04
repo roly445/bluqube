@@ -1,0 +1,65 @@
+﻿@page "/"
+@using BluQube.Samples.Blazor.Client.Infrastructure.Commands
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+<PageTitle>Home</PageTitle>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">To Do List</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <EditForm id="todo-form" Model="_addToDoModel" OnSubmit="AddToDo">
+                        <div class="input-group mb-3">
+                            <InputText class="form-control"
+                                       id="todo-input"
+                                       placeholder="Add new task"
+                                       required
+                                       @bind-Value="_addToDoModel.Title"/>
+                            <button class="btn btn-primary" type="submit">
+                                Add
+                            </button>
+                        </div>
+                    </EditForm>
+                    <ul class="list-group" id="todo-list">
+                        @foreach (var item in this._toDoList)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @if (item.EditModeEnabled)
+                                {
+                                    <InputText class="form-control edit-input" @bind-Value="item.EditedTitle" />
+                                }
+                                else
+                                {
+                                    <span class="task-text">@item.Title</span>
+                                }
+                                <div class="btn-group">
+                                    
+                                    @if(item.EditModeEnabled)
+                                    {
+                                        <button class="btn btn-warning btn-sm save-btn" @onclick="() => CancelEditMode(item)">
+                                            <i class="fa-solid fa-ban"></i>
+                                        </button>
+                                        <button class="btn btn-success btn-sm save-btn" @onclick="() => SaveToDo(item)">
+                                            <i class="fa-solid fa-floppy-disk"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-danger btn-sm delete-btn" @onclick="() => DeleteToDo(item)">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm edit-btn" @onclick="() => EnableEditMode(item)">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </li>    
+                        }
+                        
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+﻿{
+  Code: NotAuthorized,
+  Message: NotAuthorized
+}
