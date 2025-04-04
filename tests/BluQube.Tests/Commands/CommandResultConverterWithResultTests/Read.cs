@@ -15,10 +15,10 @@ public class Read
     {
         // Arrange
         var options = new JsonSerializerOptions();
-        options.Converters.Add(new CommandResultConverter<StubCommandWithResultResult>());
+        options.Converters.Add(new CommandResultConverter<StubWithResultCommandResult>());
 
         // Act
-        var result = JsonSerializer.Deserialize<CommandResult<StubCommandWithResultResult>>(json, options);
+        var result = JsonSerializer.Deserialize<CommandResult<StubWithResultCommandResult>>(json, options);
 
         // Assert
         await Verify(result).UseParameters(name);

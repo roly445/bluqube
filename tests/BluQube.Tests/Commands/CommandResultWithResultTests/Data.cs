@@ -22,7 +22,7 @@ public class Data
     public async Task ReturnsDataWhenSucceeded()
     {
         // Arrange
-        var commandResult = CommandResult<ICommandResult>.Succeeded(new StubCommandWithResultResult("result"));
+        var commandResult = CommandResult<ICommandResult>.Succeeded(new StubWithResultCommandResult("result"));
 
         // Act
         var result = commandResult.Data;

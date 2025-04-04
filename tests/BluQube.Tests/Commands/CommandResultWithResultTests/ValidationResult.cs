@@ -23,7 +23,7 @@ public class ValidationResult
     public async Task ThrowsInvalidOperationExceptionWhenSucceeded()
     {
         // Arrange
-        var commandResult = CommandResult<ICommandResult>.Succeeded(new StubCommandWithResultResult("result"));
+        var commandResult = CommandResult<ICommandResult>.Succeeded(new StubWithResultCommandResult("result"));
 
         // Act
         var exception = Record.Exception(() => commandResult.ValidationResult);

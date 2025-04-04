@@ -22,7 +22,7 @@ public class ErrorData
     public async Task ThrowsInvalidOperationExceptionSucceeded()
     {
         // Arrange
-        var commandResult = CommandResult<ICommandResult>.Succeeded(new StubCommandWithResultResult("result"));
+        var commandResult = CommandResult<ICommandResult>.Succeeded(new StubWithResultCommandResult("result"));
 
         // Act
         var exception = Record.Exception(() => commandResult.ErrorData);

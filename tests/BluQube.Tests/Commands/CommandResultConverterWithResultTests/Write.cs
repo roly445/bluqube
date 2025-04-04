@@ -11,14 +11,14 @@ public class Write
     public Write()
     {
         this._options = new JsonSerializerOptions();
-        this._options.Converters.Add(new CommandResultConverter<StubCommandWithResultResult>());
+        this._options.Converters.Add(new CommandResultConverter<StubWithResultCommandResult>());
     }
 
     [Fact]
     public async Task GeneratesValidJsonWhenSucceeded()
     {
         // Arrange
-        var commandResult = CommandResult<StubCommandWithResultResult>.Succeeded(new StubCommandWithResultResult("result"));
+        var commandResult = CommandResult<StubWithResultCommandResult>.Succeeded(new StubWithResultCommandResult("result"));
 
         // Act
         var result = JsonSerializer.Serialize(commandResult, this._options);
@@ -31,7 +31,7 @@ public class Write
     public async Task GeneratesValidJsonWhenFailed()
     {
         // Arrange
-        var commandResult = CommandResult<StubCommandWithResultResult>.Failed(new ErrorData("some-error"));
+        var commandResult = CommandResult<StubWithResultCommandResult>.Failed(new ErrorData("some-error"));
 
         // Act
         var result = JsonSerializer.Serialize(commandResult, this._options);
@@ -44,7 +44,7 @@ public class Write
     public async Task GeneratesValidJsonWhenInvalid()
     {
         // Arrange
-        var commandResult = CommandResult<StubCommandWithResultResult>.Invalid(new CommandValidationResult
+        var commandResult = CommandResult<StubWithResultCommandResult>.Invalid(new CommandValidationResult
         {
             Failures = new List<CommandValidationFailure>
             {
@@ -63,7 +63,7 @@ public class Write
     public async Task GeneratesValidJsonWhenUnauthorized()
     {
         // Arrange
-        var commandResult = CommandResult<StubCommandWithResultResult>.Unauthorized();
+        var commandResult = CommandResult<StubWithResultCommandResult>.Unauthorized();
 
         // Act
         var result = JsonSerializer.Serialize(commandResult, this._options);

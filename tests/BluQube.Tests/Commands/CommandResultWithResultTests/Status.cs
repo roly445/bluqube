@@ -22,7 +22,7 @@ public class Status
     public async Task ReturnsSucceededWhenSucceeded()
     {
         // Arrange
-        var commandResult = CommandResult<ICommandResult>.Succeeded(new StubCommandWithResultResult("result"));
+        var commandResult = CommandResult<ICommandResult>.Succeeded(new StubWithResultCommandResult("result"));
 
         // Act
         var result = commandResult.Status;

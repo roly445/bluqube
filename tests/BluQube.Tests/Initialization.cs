@@ -15,7 +15,7 @@ public static class Initialization
     {
         DiffRunner.Disabled = true;
 
-        VerifierSettings.AddExtraSettings(s => s.Converters.Add(new CommandResultOfTConverter<StubCommandWithResultResult>()));
+        VerifierSettings.AddExtraSettings(s => s.Converters.Add(new CommandResultOfTConverter<StubWithResultCommandResult>()));
         VerifierSettings.AddExtraSettings(s => s.Converters.Add(new CommandResultConverter()));
         VerifierSettings.AddExtraSettings(s => s.Converters.Add(new QueryResultOfTConverter<StubQueryResult>()));
     }

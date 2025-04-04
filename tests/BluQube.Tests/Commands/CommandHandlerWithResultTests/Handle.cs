@@ -9,17 +9,17 @@ namespace BluQube.Tests.Commands.CommandHandlerWithResultTests;
 
 public class Handle
 {
-    private readonly Mock<IValidator<StubCommandWithResult>> _validatorMock;
+    private readonly Mock<IValidator<StubWithResultCommand>> _validatorMock;
     private readonly StubCommandWithResultHandler _commandWithResultHandler;
     private readonly FakeLogger<StubCommandWithResultHandler> _logger;
 
     public Handle()
     {
-        this._validatorMock = new Mock<IValidator<StubCommandWithResult>>();
+        this._validatorMock = new Mock<IValidator<StubWithResultCommand>>();
         this._logger = new FakeLogger<StubCommandWithResultHandler>();
         this._commandWithResultHandler =
             new StubCommandWithResultHandler(
-                new List<IValidator<StubCommandWithResult>>
+                new List<IValidator<StubWithResultCommand>>
                 {
                     this._validatorMock.Object,
                 },
@@ -30,7 +30,7 @@ public class Handle
     public async Task LogsInformationWhenCommandIsInvalid()
     {
         // Arrange
-        var command = new StubCommandWithResult("stub-data");
+        var command = new StubWithResultCommand("stub-data");
         var validationFailure = new ValidationFailure("property-name", "error-message");
         this._validatorMock.Setup(v => v.Validate(command))
             .Returns(new ValidationResult(new List<ValidationFailure> { validationFailure }));
@@ -46,7 +46,7 @@ public class Handle
     public async Task ReturnsCommandResultFromHandleInternalWhenCommandIsValid()
     {
         // Arrange
-        var command = new StubCommandWithResult("stub-data");
+        var command = new StubWithResultCommand("stub-data");
         this._validatorMock.Setup(v => v.Validate(command)).Returns(new ValidationResult());
 
         // Act
@@ -60,7 +60,7 @@ public class Handle
     public async Task ReturnsInvalidCommandResultWhenCommandIsInvalid()
     {
         // Arrange
-        var command = new StubCommandWithResult("stub-data");
+        var command = new StubWithResultCommand("stub-data");
         var validationFailure = new ValidationFailure("property-name", "error-message");
         this._validatorMock.Setup(v => v.Validate(command))
             .Returns(new ValidationResult(new List<ValidationFailure> { validationFailure }));

@@ -10,18 +10,18 @@ namespace BluQube.Tests.Commands.GenericCommandHandlerWithResultTests;
 public class Handle
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly FakeLogger<StubCommandWithResultGenericHandler> _fakeLogger;
-    private readonly StubCommandWithResultGenericHandler _handler;
+    private readonly FakeLogger<StubWithResultCommandGenericHandler> _fakeLogger;
+    private readonly StubWithResultCommandGenericHandler _handler;
     private readonly Mock<HttpMessageHandler> _handlerMock;
 
     public Handle()
     {
-        this._fakeLogger = new FakeLogger<StubCommandWithResultGenericHandler>();
+        this._fakeLogger = new FakeLogger<StubWithResultCommandGenericHandler>();
         this._handlerMock = new Mock<HttpMessageHandler>();
         this._httpClientFactory = this._handlerMock.CreateClientFactory();
-        this._handler = new StubCommandWithResultGenericHandler(
+        this._handler = new StubWithResultCommandGenericHandler(
             this._httpClientFactory,
-            new StubCommandWithResultResultConverter(),
+            new StubWithResultCommandResultConverter(),
             this._fakeLogger);
     }
 
@@ -29,7 +29,7 @@ public class Handle
     public async Task ReturnFailedCommandResultWhenStatusCodeIsNotSuccessful()
     {
         // Arrange
-        var command = new StubCommandWithResult("data");
+        var command = new StubWithResultCommand("data");
 
         this._handlerMock.SetupRequest(HttpMethod.Post, "https://bluqube.local/api/command/stub-with-result")
             .ReturnsResponse(HttpStatusCode.BadRequest);
@@ -53,7 +53,7 @@ public class Handle
     public async Task LogsCriticalWhenStatusCodeIsNotSuccessful()
     {
         // Arrange
-        var command = new StubCommandWithResult("data");
+        var command = new StubWithResultCommand("data");
 
         this._handlerMock.SetupRequest(HttpMethod.Post, "https://bluqube.local/api/command/stub-with-result")
             .ReturnsResponse(HttpStatusCode.BadRequest);
@@ -77,7 +77,7 @@ public class Handle
     public async Task UsesTheCorrectUrlWhenCalled()
     {
         // Arrange
-        var command = new StubCommandWithResult("data");
+        var command = new StubWithResultCommand("data");
 
         this._handlerMock.SetupRequest(HttpMethod.Post, "https://bluqube.local/api/command/stub-with-result")
             .ReturnsResponse(HttpStatusCode.BadRequest);
@@ -107,7 +107,7 @@ public class Handle
     public async Task UsesTheCorrectMethodWhenCalled()
     {
         // Arrange
-        var command = new StubCommandWithResult("data");
+        var command = new StubWithResultCommand("data");
 
         this._handlerMock.SetupRequest(HttpMethod.Post, "https://bluqube.local/api/command/stub-with-result")
             .ReturnsResponse(HttpStatusCode.BadRequest);
@@ -136,7 +136,7 @@ public class Handle
     public async Task ReturnsFailedCommandResultWhenResponseIsNotValid()
     {
         // Arrange
-        var command = new StubCommandWithResult("data");
+        var command = new StubWithResultCommand("data");
 
         this._handlerMock.SetupRequest(HttpMethod.Post, "https://bluqube.local/api/command/stub-with-result")
             .ReturnsResponse(HttpStatusCode.OK, string.Empty);
@@ -160,7 +160,7 @@ public class Handle
     public async Task ReturnsValidCommandResultWhenResponseIsValid()
     {
         // Arrange
-        var command = new StubCommandWithResult("data");
+        var command = new StubWithResultCommand("data");
 
         this._handlerMock.SetupRequest(HttpMethod.Post, "https://bluqube.local/api/command/stub-with-result")
             .ReturnsResponse(HttpStatusCode.OK, "{\"Data\": {}}");

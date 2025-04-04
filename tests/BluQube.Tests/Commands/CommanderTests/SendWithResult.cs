@@ -36,9 +36,9 @@ public class SendWithResult
     public async Task ReturnTheResultOfTheRequestWhenSenderDoesNotThrowUnauthorizedException()
     {
         // Arrange
-        var command = new Mock<ICommand<StubCommandWithResultResult>>().Object;
-        var expectedResult = CommandResult<StubCommandWithResultResult>
-            .Succeeded(new StubCommandWithResultResult("test-data"));
+        var command = new Mock<ICommand<StubWithResultCommandResult>>().Object;
+        var expectedResult = CommandResult<StubWithResultCommandResult>
+            .Succeeded(new StubWithResultCommandResult("test-data"));
         this._senderMock.Setup(s => s.Send(command, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
