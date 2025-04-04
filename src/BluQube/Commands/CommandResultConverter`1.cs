@@ -5,7 +5,7 @@ using BluQube.Constants;
 namespace BluQube.Commands;
 
 public class CommandResultConverter<TResult> : JsonConverter<CommandResult<TResult>>
-    where TResult : ICommandResult
+    where TResult : class, ICommandResult
 {
     public override CommandResult<TResult>? Read(
         ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -57,7 +57,7 @@ public class CommandResultConverter<TResult> : JsonConverter<CommandResult<TResu
         switch (status)
         {
             case CommandResultStatus.Succeeded:
-                if (data == null)
+                if (object.Equals(data, null))
                 {
                     throw new JsonException();
                 }

@@ -10,7 +10,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
     IHttpClientFactory httpClientFactory, CommandResultConverter<TResult> jsonConverter, ILogger<GenericCommandHandler<TCommand, TResult>> logger)
     : ICommandHandler<TCommand, TResult>
     where TCommand : ICommand<TResult>
-    where TResult : ICommandResult
+    where TResult : class, ICommandResult
 {
     protected abstract string Path { get; }
 

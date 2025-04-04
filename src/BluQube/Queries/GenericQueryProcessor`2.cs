@@ -9,7 +9,7 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
     IHttpClientFactory httpClientFactory, QueryResultConverter<TResult> jsonConverter, ILogger<GenericQueryProcessor<TQuery, TResult>> logger)
     : IQueryProcessor<TQuery, TResult>
     where TQuery : IQuery<TResult>
-    where TResult : IQueryResult
+    where TResult : class, IQueryResult
 {
     protected abstract string Path { get; }
 
@@ -38,7 +38,6 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
         {
             var raw = await response.Content.ReadAsStringAsync(cancellationToken);
             var data = JsonSerializer.Deserialize<QueryResult<TResult>>(raw, options);
-            //var data = await response.Content.ReadFromJsonAsync<QueryResult<TResult>>(options, cancellationToken);
             if (data != null)
             {
                 return data;
