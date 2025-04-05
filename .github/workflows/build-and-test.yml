@@ -15,6 +15,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.10
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine version
+        id: gitversion
+        run: gitversion /output json /showvariable FullSemVer
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
