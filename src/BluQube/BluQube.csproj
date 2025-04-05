@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -9,9 +9,9 @@
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="11.11.0" />
       <PackageReference Include="MaybeMonad" Version="1.0.1.1" />
-      <PackageReference Include="MediatR" Version="12.4.1" />
+      <PackageReference Include="MediatR" Version="12.5.0" />
       <PackageReference Include="MediatR.Behaviors.Authorization" Version="12.2.0" />
-      <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="10.7.0.110445">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,10 +20,6 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Api\" />
     </ItemGroup>
 
     <Import Project="..\..\shared\BluQube.Shared\BluQube.Shared.projitems" Label="Shared" />

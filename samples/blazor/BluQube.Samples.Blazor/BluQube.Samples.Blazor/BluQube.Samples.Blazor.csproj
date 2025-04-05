@@ -1,16 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BluQube.Samples.Blazor.Client\BluQube.Samples.Blazor.Client.csproj" />
     <ProjectReference Include="..\..\..\..\src\BluQube.SourceGeneration\BluQube.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3" />
   </ItemGroup>
 
 </Project>
