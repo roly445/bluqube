@@ -1,4 +1,5 @@
-﻿using BluQube.CodeGenerators.Contracts;
+﻿using System.Text;
+using BluQube.CodeGenerators.Contracts;
 
 namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors
 {
@@ -7,12 +8,17 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
     {
         public string Process(OutputDefinition data)
         {
-            return $@"using System.Text.Json.Serialization;
+            var sb = new StringBuilder();
+            sb.AppendLine($@"using System.Text.Json.Serialization;
 using BluQube.Commands;
-using Microsoft.Extensions.Logging;
-using {data.CommandNamespace};
-using {data.CommandResultNamespace};
+using Microsoft.Extensions.Logging;");
+            sb.AppendLine($@"using {data.CommandNamespace};");
+            if (data.CommandNamespace != data.CommandResultNamespace)
+            {
+                sb.AppendLine($@"using {data.CommandResultNamespace};");
+            }
 
+            sb.AppendLine($@"
 namespace {data.Namespace};
 
 internal class {data.CommandName}GenericHandler(
@@ -20,7 +26,8 @@ IHttpClientFactory httpClientFactory, CommandResultConverter<{data.CommandResult
         : GenericCommandHandler<{data.CommandName}, {data.CommandResultName}>(httpClientFactory, jsonConverter, logger)
 {{
     protected override string Path => {data.Path};
-}}";
+}}");
+            return sb.ToString();
         }
 
         internal class OutputDefinition : IOutputDefinition

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace BluQube.Tests.TestHelpers.Fakes;
+﻿namespace BluQube.Tests.TestHelpers.Fakes;
 
 public class FakeLogger<T> : ILogger<T>
 {
@@ -8,12 +6,16 @@ public class FakeLogger<T> : ILogger<T>
 
     public IReadOnlyList<(LogLevel LogLevel, string Message)> LogMessages => this._logMessages.AsReadOnly();
 
-    public IDisposable BeginScope<TState>(TState state) => null;
+    public IDisposable? BeginScope<TState>(TState state)
+        where TState : notnull
+    {
+        return null;
+    }
 
     public bool IsEnabled(LogLevel logLevel) => true;
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception, string> formatter)
     {
-        this._logMessages.Add((logLevel, formatter(state, exception)));
+        this._logMessages.Add((logLevel, formatter(state, exception!)));
     }
 }

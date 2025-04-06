@@ -5,6 +5,19 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <IncludeSymbols>false</IncludeSymbols>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(CI)' == 'true'">
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Authors>Andrew Davis</Authors>
+        <Description>Code generators for BluQube, a framework for Blazor to help with the write once, run on Sever or WASM</Description>
+        <PackageProjectUrl>$(GITHUB_SERVER_URL)/$(GITHUB_REPOSITORY)</PackageProjectUrl>
+        <RepositoryUrl>$(GITHUB_SERVER_URL)/$(GITHUB_REPOSITORY)</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>Blazor;Request;Response;Api;</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +26,10 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+        <PackageReference Include="MinVer" Version="6.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="SonarAnalyzer.CSharp" Version="10.7.0.110445">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,12 +41,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="SourceGenerators\CommandHandlerSourceGenerator.cs" />
-      <Compile Remove="SourceGenerators\ApiInitializerSourceGenerator.cs" />
-      <Compile Remove="SourceGenerators\JsonConverterSourceGenerator.cs" />
-      <Compile Remove="RequesterRegistration.cs" />
+        <!-- Package the generator in the analyzer directory of the nuget package -->
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
-
+    
     <Import Project="..\..\shared\BluQube.Shared\BluQube.Shared.projitems" Label="Shared" />
 
 </Project>

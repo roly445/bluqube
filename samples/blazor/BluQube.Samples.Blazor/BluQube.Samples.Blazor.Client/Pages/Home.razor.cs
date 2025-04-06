@@ -67,10 +67,10 @@ public partial class Home
 
     private async Task SaveToDo(ToDoListItem item)
     {
-        var result = await Commander.Send(new UpdateToDoTitleCommand(item.Id, item.EditedTitle));
+        var result = await Commander.Send(new UpdateToDoTitleCommand(item.Id, item.EditedTitle!));
         if (result.Status == CommandResultStatus.Succeeded)
         {
-            item.Title = item.EditedTitle;
+            item.Title = item.EditedTitle!;
             item.EditModeEnabled = false;
         }
     }

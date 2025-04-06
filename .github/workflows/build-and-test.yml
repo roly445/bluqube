@@ -25,7 +25,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release -p:ContinuousIntegrationBuild=true -p:TreatWarningsAsErrors=true --no-restore
 
       - name: Run tests with coverage
         run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
@@ -38,3 +38,12 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Pack
+        run: dotnet pack --configuration Release -p:ContinuousIntegrationBuild=true -p:SymbolPackageFormat=snupkg --output ./artifacts
+        
+      - name: Push to MyGet
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --source https://www.myget.org/F/bluqube/api/v3/index.json \
+            --api-key ${{ secrets.MYGET_API_KEY }}
