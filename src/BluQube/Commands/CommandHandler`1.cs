@@ -17,17 +17,24 @@ public abstract class CommandHandler<TCommand>(IEnumerable<IValidator<TCommand>>
 
         if (failures.Count == 0)
         {
-            return await this.HandleInternal(request, cancellationToken);
+            return await this.PostHandle(
+                request, await this.HandleInternal(request, cancellationToken), cancellationToken);
         }
 
         logger.LogInformation("Command validation failed");
-        return CommandResult.Invalid(new CommandValidationResult
+        return await this.PostHandle(request, CommandResult.Invalid(new CommandValidationResult
         {
             Failures = failures.Select(
                 x => new CommandValidationFailure(
                     x.ErrorMessage, x.PropertyName, x.AttemptedValue)).ToList(),
-        });
+        }), cancellationToken);
     }
 
     protected abstract Task<CommandResult> HandleInternal(TCommand request, CancellationToken cancellationToken);
+
+    protected virtual Task<CommandResult> PostHandle(TCommand request, CommandResult originalCommandResult,
+        CancellationToken cancellationToken)
+    {
+        return Task.FromResult(originalCommandResult);
+    }
 }
