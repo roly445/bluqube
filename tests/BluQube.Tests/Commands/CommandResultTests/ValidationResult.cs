@@ -8,7 +8,7 @@ public class ValidationResult
     public async Task ThrowsInvalidOperationExceptionWhenFailed()
     {
         // Arrange
-        var commandResult = CommandResult.Failed(new BluQube.Commands.ErrorData("some-error"));
+        var commandResult = CommandResult.Failed(new BluQube.Commands.BlueQubeErrorData("some-error"));
 
         // Act
         var exception = Record.Exception(() => commandResult.ValidationResult);

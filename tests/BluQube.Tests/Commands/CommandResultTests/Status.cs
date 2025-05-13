@@ -8,7 +8,7 @@ public class Status
     public async Task ReturnsFailedWhenFailed()
     {
         // Arrange
-        var commandResult = CommandResult.Failed(new BluQube.Commands.ErrorData("some-error"));
+        var commandResult = CommandResult.Failed(new BluQube.Commands.BlueQubeErrorData("some-error"));
 
         // Act
         var result = commandResult.Status;

@@ -8,7 +8,7 @@ public class CommandResult<T> : CommandResult
 {
     private readonly Maybe<T> _data;
 
-    private CommandResult(Maybe<ErrorData> errorData, Maybe<CommandValidationResult> commandValidationResult, Maybe<T> data)
+    private CommandResult(Maybe<BlueQubeErrorData> errorData, Maybe<CommandValidationResult> commandValidationResult, Maybe<T> data)
         : base(errorData, commandValidationResult)
     {
         this._data = data;
@@ -29,21 +29,21 @@ public class CommandResult<T> : CommandResult
 
     public new static CommandResult<T> Invalid(CommandValidationResult commandValidationResult)
     {
-        return new CommandResult<T>(Maybe<ErrorData>.Nothing, commandValidationResult, Maybe<T>.Nothing);
+        return new CommandResult<T>(Maybe<BlueQubeErrorData>.Nothing, commandValidationResult, Maybe<T>.Nothing);
     }
 
-    public new static CommandResult<T> Failed(ErrorData errorData)
+    public new static CommandResult<T> Failed(BlueQubeErrorData blueQubeErrorData)
     {
-        return new CommandResult<T>(errorData, Maybe<CommandValidationResult>.Nothing, Maybe<T>.Nothing);
+        return new CommandResult<T>(blueQubeErrorData, Maybe<CommandValidationResult>.Nothing, Maybe<T>.Nothing);
     }
 
     public static CommandResult<T> Succeeded(T data)
     {
-        return new CommandResult<T>(Maybe<ErrorData>.Nothing, Maybe<CommandValidationResult>.Nothing, data);
+        return new CommandResult<T>(Maybe<BlueQubeErrorData>.Nothing, Maybe<CommandValidationResult>.Nothing, data);
     }
 
     public new static CommandResult<T> Unauthorized()
     {
-        return new CommandResult<T>(new ErrorData(ErrorCodes.NotAuthorized), Maybe<CommandValidationResult>.Nothing, Maybe<T>.Nothing);
+        return new CommandResult<T>(new BlueQubeErrorData(BluQubeErrorCodes.NotAuthorized), Maybe<CommandValidationResult>.Nothing, Maybe<T>.Nothing);
     }
 }

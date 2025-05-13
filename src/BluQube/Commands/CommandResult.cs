@@ -7,10 +7,10 @@ namespace BluQube.Commands;
 [JsonConverter(typeof(CommandResultConverter))]
 public class CommandResult
 {
-    private readonly Maybe<ErrorData> _errorData;
+    private readonly Maybe<BlueQubeErrorData> _errorData;
     private readonly Maybe<CommandValidationResult> _commandValidationResult;
 
-    protected CommandResult(Maybe<ErrorData> errorData, Maybe<CommandValidationResult> commandValidationResult)
+    protected CommandResult(Maybe<BlueQubeErrorData> errorData, Maybe<CommandValidationResult> commandValidationResult)
     {
         this._errorData = errorData;
         this._commandValidationResult = commandValidationResult;
@@ -28,7 +28,7 @@ public class CommandResult
         }
     }
 
-    public ErrorData ErrorData
+    public BlueQubeErrorData ErrorData
     {
         get
         {
@@ -58,21 +58,21 @@ public class CommandResult
 
     public static CommandResult Invalid(CommandValidationResult commandValidationFailure)
     {
-        return new CommandResult(Maybe<ErrorData>.Nothing, commandValidationFailure);
+        return new CommandResult(Maybe<BlueQubeErrorData>.Nothing, commandValidationFailure);
     }
 
-    public static CommandResult Failed(ErrorData errorData)
+    public static CommandResult Failed(BlueQubeErrorData blueQubeErrorData)
     {
-        return new CommandResult(errorData, Maybe<CommandValidationResult>.Nothing);
+        return new CommandResult(blueQubeErrorData, Maybe<CommandValidationResult>.Nothing);
     }
 
     public static CommandResult Succeeded()
     {
-        return new CommandResult(Maybe<ErrorData>.Nothing, Maybe<CommandValidationResult>.Nothing);
+        return new CommandResult(Maybe<BlueQubeErrorData>.Nothing, Maybe<CommandValidationResult>.Nothing);
     }
 
     public static CommandResult Unauthorized()
     {
-        return new CommandResult(new ErrorData(ErrorCodes.NotAuthorized), Maybe<CommandValidationResult>.Nothing);
+        return new CommandResult(new BlueQubeErrorData(BluQubeErrorCodes.NotAuthorized), Maybe<CommandValidationResult>.Nothing);
     }
 }

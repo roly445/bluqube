@@ -9,7 +9,7 @@ public class ErrorData
     public async Task ReturnsDataWhenFailed()
     {
         // Arrange
-        var commandResult = CommandResult<ICommandResult>.Failed(new BluQube.Commands.ErrorData("some-error"));
+        var commandResult = CommandResult<ICommandResult>.Failed(new BluQube.Commands.BlueQubeErrorData("some-error"));
 
         // Act
         var result = commandResult.ErrorData;

@@ -14,7 +14,7 @@ public class MarkTodoAsCompletedCommandHandler(ITodoService todoService, IEnumer
         var todo = todoService.Todos.SingleOrDefault(x => x.Id == request.TodoId);
         if (todo is null)
         {
-            return Task.FromResult(CommandResult.Failed(new ErrorData(ErrorCodes.NotFound, "Todo not found")));
+            return Task.FromResult(CommandResult.Failed(new BlueQubeErrorData(ErrorCodes.NotFound, "Todo not found")));
         }
         
         todo.MarkAsCompleted();

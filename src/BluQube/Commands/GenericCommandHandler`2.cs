@@ -26,8 +26,8 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
         if (!response.IsSuccessStatusCode)
         {
             logger.LogCritical("Command failed with non status code: {StatusCode}", response.StatusCode);
-            return CommandResult<TResult>.Failed(new ErrorData(
-                ErrorCodes.CommunicationError, "Unknown API Failure"));
+            return CommandResult<TResult>.Failed(new BlueQubeErrorData(
+                BluQubeErrorCodes.CommunicationError, "Unknown API Failure"));
         }
 
         var options = new JsonSerializerOptions
@@ -45,7 +45,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
             }
 
             logger.LogError("Failed to deserialize JSON response");
-            return CommandResult<TResult>.Failed(new ErrorData(ErrorCodes.CommunicationError, "Invalid JSON response"));
+            return CommandResult<TResult>.Failed(new BlueQubeErrorData(BluQubeErrorCodes.CommunicationError, "Invalid JSON response"));
         }
         catch (Exception e)
         {
@@ -55,7 +55,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
             }
 
             logger.LogError(e, "Failed to deserialize JSON response");
-            return CommandResult<TResult>.Failed(new ErrorData(ErrorCodes.CommunicationError, "Invalid JSON response"));
+            return CommandResult<TResult>.Failed(new BlueQubeErrorData(BluQubeErrorCodes.CommunicationError, "Invalid JSON response"));
         }
     }
 }
