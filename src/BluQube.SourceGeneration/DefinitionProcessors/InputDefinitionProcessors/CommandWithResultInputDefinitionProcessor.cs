@@ -31,7 +31,9 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
                     genericNameSyntax1.Identifier.Text == "ICommand" &&
                     genericNameSyntax1.TypeArgumentList.Arguments.Count == 1)
                 {
-                    return true;
+                    return typeDeclarationSyntax
+                        .AttributeLists.SelectMany(x => x.Attributes)
+                        .Any(x => x.Name.GetFirstToken().ToString() == "BluQubeCommand");
                 }
             }
 

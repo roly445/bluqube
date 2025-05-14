@@ -30,7 +30,9 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
                     !typeDeclarationSyntax.Modifiers.Any(modifier => modifier.IsKind(SyntaxKind.AbstractKeyword)) &&
                     genericNameSyntax1.Identifier.Text == "ICommand")
                 {
-                    return true;
+                    return typeDeclarationSyntax
+                        .AttributeLists.SelectMany(x => x.Attributes)
+                        .Any(x => x.Name.GetFirstToken().ToString() == "BluQubeCommand");
                 }
             }
 
