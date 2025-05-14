@@ -14,7 +14,7 @@ public class UpdateToDoTitleCommandHandler(ITodoService todoService, IEnumerable
         var todo = todoService.Todos.SingleOrDefault(x => x.Id == request.ToDoId);
         if (todo is null)
         {
-            return Task.FromResult(CommandResult.Failed(new BlueQubeErrorData(ErrorCodes.NotFound, "Todo not found")));
+            return Task.FromResult(CommandResult.Failed(new BluQubeErrorData(ErrorCodes.NotFound, "Todo not found")));
         }
 
         todo.UpdateTitle(request.Title);

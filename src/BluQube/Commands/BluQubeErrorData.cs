@@ -3,9 +3,9 @@
 namespace BluQube.Commands;
 
 [method: JsonConstructor]
-public sealed class BlueQubeErrorData(string code, string message)
+public sealed class BluQubeErrorData(string code, string message)
 {
-    public BlueQubeErrorData(string code)
+    public BluQubeErrorData(string code)
         : this(code, code)
     {
     }

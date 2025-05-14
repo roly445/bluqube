@@ -15,8 +15,8 @@ public class CommandResultConverter<TResult> : JsonConverter<CommandResult<TResu
             throw new JsonException();
         }
 
-        CommandResultStatus status = CommandResultStatus.Succeeded;
-        BlueQubeErrorData? errorData = null;
+        var status = CommandResultStatus.Succeeded;
+        BluQubeErrorData? errorData = null;
         CommandValidationResult? validationResult = null;
         TResult? data = default;
 
@@ -41,7 +41,7 @@ public class CommandResultConverter<TResult> : JsonConverter<CommandResult<TResu
                     status = (CommandResultStatus)reader.GetInt32();
                     break;
                 case "ErrorData":
-                    errorData = JsonSerializer.Deserialize<BlueQubeErrorData>(ref reader, options);
+                    errorData = JsonSerializer.Deserialize<BluQubeErrorData>(ref reader, options);
                     break;
                 case "ValidationResult":
                     validationResult = JsonSerializer.Deserialize<CommandValidationResult>(ref reader, options);
@@ -57,7 +57,7 @@ public class CommandResultConverter<TResult> : JsonConverter<CommandResult<TResu
         switch (status)
         {
             case CommandResultStatus.Succeeded:
-                if (object.Equals(data, null))
+                if (Equals(data, null))
                 {
                     throw new JsonException();
                 }

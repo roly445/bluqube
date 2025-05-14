@@ -13,8 +13,8 @@ public class CommandResultConverter : JsonConverter<CommandResult>
             throw new JsonException();
         }
 
-        CommandResultStatus status = CommandResultStatus.Unknown;
-        BlueQubeErrorData? errorData = null;
+        var status = CommandResultStatus.Unknown;
+        BluQubeErrorData? errorData = null;
         CommandValidationResult? validationResult = null;
 
         while (reader.Read())
@@ -38,7 +38,7 @@ public class CommandResultConverter : JsonConverter<CommandResult>
                     status = (CommandResultStatus)reader.GetInt32();
                     break;
                 case "ErrorData":
-                    errorData = JsonSerializer.Deserialize<BlueQubeErrorData>(ref reader, options);
+                    errorData = JsonSerializer.Deserialize<BluQubeErrorData>(ref reader, options);
                     break;
                 case "ValidationResult":
                     validationResult = JsonSerializer.Deserialize<CommandValidationResult>(ref reader, options);

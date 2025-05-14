@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using BluQube.Constants;
 using Microsoft.Extensions.Logging;
 
@@ -26,7 +25,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
         if (!response.IsSuccessStatusCode)
         {
             logger.LogCritical("Command failed with non status code: {StatusCode}", response.StatusCode);
-            return CommandResult<TResult>.Failed(new BlueQubeErrorData(
+            return CommandResult<TResult>.Failed(new BluQubeErrorData(
                 BluQubeErrorCodes.CommunicationError, "Unknown API Failure"));
         }
 
@@ -45,7 +44,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
             }
 
             logger.LogError("Failed to deserialize JSON response");
-            return CommandResult<TResult>.Failed(new BlueQubeErrorData(BluQubeErrorCodes.CommunicationError, "Invalid JSON response"));
+            return CommandResult<TResult>.Failed(new BluQubeErrorData(BluQubeErrorCodes.CommunicationError, "Invalid JSON response"));
         }
         catch (Exception e)
         {
@@ -55,7 +54,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
             }
 
             logger.LogError(e, "Failed to deserialize JSON response");
-            return CommandResult<TResult>.Failed(new BlueQubeErrorData(BluQubeErrorCodes.CommunicationError, "Invalid JSON response"));
+            return CommandResult<TResult>.Failed(new BluQubeErrorData(BluQubeErrorCodes.CommunicationError, "Invalid JSON response"));
         }
     }
 }

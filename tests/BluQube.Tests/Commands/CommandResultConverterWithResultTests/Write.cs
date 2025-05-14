@@ -31,7 +31,7 @@ public class Write
     public async Task GeneratesValidJsonWhenFailed()
     {
         // Arrange
-        var commandResult = CommandResult<StubWithResultCommandResult>.Failed(new BlueQubeErrorData("some-error"));
+        var commandResult = CommandResult<StubWithResultCommandResult>.Failed(new BluQubeErrorData("some-error"));
 
         // Act
         var result = JsonSerializer.Serialize(commandResult, this._options);

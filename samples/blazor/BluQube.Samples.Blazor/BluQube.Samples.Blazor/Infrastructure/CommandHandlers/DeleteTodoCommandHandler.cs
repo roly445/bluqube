@@ -12,6 +12,6 @@ public class DeleteTodoCommandHandler(ITodoService todoService, IEnumerable<IVal
     protected override Task<CommandResult> HandleInternal(DeleteTodoCommand request, CancellationToken cancellationToken)
     {
         var result = todoService.DeleteTodo(request.TodoId);
-        return Task.FromResult(result ? CommandResult.Succeeded() : CommandResult.Failed(new BlueQubeErrorData(ErrorCodes.DeleteFailed, "Failed to delete Todo.")));
+        return Task.FromResult(result ? CommandResult.Succeeded() : CommandResult.Failed(new BluQubeErrorData(ErrorCodes.DeleteFailed, "Failed to delete Todo.")));
     }
 }

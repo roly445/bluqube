@@ -9,7 +9,7 @@ public class Data
     public async Task ThrowsInvalidOperationExceptionWhenFailed()
     {
         // Arrange
-        var commandResult = CommandResult<ICommandResult>.Failed(new BluQube.Commands.BlueQubeErrorData("some-error"));
+        var commandResult = CommandResult<ICommandResult>.Failed(new BluQubeErrorData("some-error"));
 
         // Act
         var exception = Record.Exception(() => commandResult.Data);
