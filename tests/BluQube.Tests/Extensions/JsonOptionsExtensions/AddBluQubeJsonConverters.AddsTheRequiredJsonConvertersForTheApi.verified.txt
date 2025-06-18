@@ -1,0 +1,10 @@
+﻿[
+  {
+    HandleNull: false,
+    Type: QueryResult<StubQueryResult>
+  },
+  {
+    HandleNull: false,
+    Type: CommandResult<StubWithResultCommandResult>
+  }
+]
