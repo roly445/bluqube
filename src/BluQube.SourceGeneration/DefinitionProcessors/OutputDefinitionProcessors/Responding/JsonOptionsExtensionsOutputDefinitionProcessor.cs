@@ -24,9 +24,9 @@ internal static class JsonOptionsExtensions
 {{
      internal static JsonOptions AddBluQubeJsonConverters(this JsonOptions jsonOptions)
      {{");
-            foreach (var jsonConverterToProcess in data.JsonConvertersToProcess)
+            foreach (var jsonConverterToProcess in data.JsonConvertersToProcess.Select(x => x.ConverterName).Distinct())
             {
-                sb.AppendLine($"            jsonOptions.SerializerOptions.Converters.Add(new {jsonConverterToProcess.ConverterName}());");
+                sb.AppendLine($"            jsonOptions.SerializerOptions.Converters.Add(new {jsonConverterToProcess}());");
             }
 
             sb.AppendLine(@"            return jsonOptions;

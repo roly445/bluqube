@@ -1,5 +1,5 @@
 ﻿using BluQube.Queries;
-using BluQube.Tests.TestHelpers.Stubs;
+using BluQube.Tests.RequesterHelpers.Stubs;
 
 namespace BluQube.Tests.Queries.QueryResultTests;
 

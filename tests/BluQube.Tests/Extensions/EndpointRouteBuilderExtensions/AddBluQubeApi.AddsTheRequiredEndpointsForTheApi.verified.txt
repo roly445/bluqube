@@ -1,0 +1,243 @@
+﻿[
+  {
+    RoutePattern: {
+      InboundPrecedence: 1.0,
+      OutboundPrecedence: 5.0,
+      RawText: query,
+      PathSegments: [
+        {
+          IsSimple: true,
+          Parts: [
+            {
+              Content: query,
+              IsLiteral: true,
+              IsParameter: false,
+              IsSeparator: false
+            }
+          ]
+        }
+      ]
+    },
+    DisplayName: HTTP: POST query,
+    Metadata: [
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, StubQuery query),
+      {
+        AcceptCorsPreflight: false,
+        HttpMethods: [
+          POST
+        ]
+      },
+      {
+        Name: querier,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, StubQuery query),
+        IsOptional: true
+      },
+      {
+        ContentTypes: [
+          application/json
+        ],
+        RequestType: StubQuery,
+        IsOptional: true
+      },
+      {
+        Name: query,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, StubQuery query),
+        IsOptional: true
+      },
+      {
+        Type: IResult,
+        StatusCode: 200,
+        ContentTypes: [
+          application/json
+        ]
+      },
+      {
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_0>d,
+        TypeId: AsyncStateMachineAttribute
+      },
+      {
+        TypeId: DebuggerStepThroughAttribute
+      },
+      {
+        Route: query
+      }
+    ],
+    RequestDelegate: {
+      Type: RequestDelegate,
+      Target: RequestDelegateFactory.<>c__DisplayClass80_0,
+      Method: System.Threading.Tasks.Task Create(Microsoft.AspNetCore.Http.HttpContext)
+    }
+  },
+  {
+    RoutePattern: {
+      InboundPrecedence: 1.1,
+      OutboundPrecedence: 5.5,
+      RawText: command/stub,
+      PathSegments: [
+        {
+          IsSimple: true,
+          Parts: [
+            {
+              Content: command,
+              IsLiteral: true,
+              IsParameter: false,
+              IsSeparator: false
+            }
+          ]
+        },
+        {
+          IsSimple: true,
+          Parts: [
+            {
+              Content: stub,
+              IsLiteral: true,
+              IsParameter: false,
+              IsSeparator: false
+            }
+          ]
+        }
+      ]
+    },
+    DisplayName: HTTP: POST command/stub,
+    Metadata: [
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(ICommander commander, StubCommand command),
+      {
+        AcceptCorsPreflight: false,
+        HttpMethods: [
+          POST
+        ]
+      },
+      {
+        Name: commander,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'commander' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(ICommander commander, StubCommand command),
+        IsOptional: true
+      },
+      {
+        ContentTypes: [
+          application/json
+        ],
+        RequestType: StubCommand,
+        IsOptional: true
+      },
+      {
+        Name: command,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(ICommander commander, StubCommand command),
+        IsOptional: true
+      },
+      {
+        Type: IResult,
+        StatusCode: 200,
+        ContentTypes: [
+          application/json
+        ]
+      },
+      {
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_1>d,
+        TypeId: AsyncStateMachineAttribute
+      },
+      {
+        TypeId: DebuggerStepThroughAttribute
+      },
+      {
+        Route: command/stub
+      }
+    ],
+    RequestDelegate: {
+      Type: RequestDelegate,
+      Target: RequestDelegateFactory.<>c__DisplayClass80_0,
+      Method: System.Threading.Tasks.Task Create(Microsoft.AspNetCore.Http.HttpContext)
+    }
+  },
+  {
+    RoutePattern: {
+      InboundPrecedence: 1.1,
+      OutboundPrecedence: 5.5,
+      RawText: command/stub-with-result,
+      PathSegments: [
+        {
+          IsSimple: true,
+          Parts: [
+            {
+              Content: command,
+              IsLiteral: true,
+              IsParameter: false,
+              IsSeparator: false
+            }
+          ]
+        },
+        {
+          IsSimple: true,
+          Parts: [
+            {
+              Content: stub-with-result,
+              IsLiteral: true,
+              IsParameter: false,
+              IsSeparator: false
+            }
+          ]
+        }
+      ]
+    },
+    DisplayName: HTTP: POST command/stub-with-result,
+    Metadata: [
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(ICommander commander, StubWithResultCommand command),
+      {
+        AcceptCorsPreflight: false,
+        HttpMethods: [
+          POST
+        ]
+      },
+      {
+        Name: commander,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'commander' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(ICommander commander, StubWithResultCommand command),
+        IsOptional: true
+      },
+      {
+        ContentTypes: [
+          application/json
+        ],
+        RequestType: StubWithResultCommand,
+        IsOptional: true
+      },
+      {
+        Name: command,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(ICommander commander, StubWithResultCommand command),
+        IsOptional: true
+      },
+      {
+        Type: IResult,
+        StatusCode: 200,
+        ContentTypes: [
+          application/json
+        ]
+      },
+      {
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_2>d,
+        TypeId: AsyncStateMachineAttribute
+      },
+      {
+        TypeId: DebuggerStepThroughAttribute
+      },
+      {
+        Route: command/stub-with-result
+      }
+    ],
+    RequestDelegate: {
+      Type: RequestDelegate,
+      Target: RequestDelegateFactory.<>c__DisplayClass80_0,
+      Method: System.Threading.Tasks.Task Create(Microsoft.AspNetCore.Http.HttpContext)
+    }
+  }
+]

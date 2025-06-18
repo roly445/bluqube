@@ -12,7 +12,7 @@ using GenericCommandHandlerOutputDefinition = BluQube.SourceGeneration.Definitio
 using GenericCommandOfTHandlerOutputDefinition = BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors.GenericCommandOfTHandlerOutputDefinitionProcessor.OutputDefinition;
 using JsonConverterOutputDefinition = BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors.JsonConverterOutputDefinitionProcessor.OutputDefinition;
 using QueryInputDefinition = BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors.QueryInputDefinitionProcessor.InputDefinition;
-using QueryProcessorOutputDefinition = BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors.QueryProcessorOutputDefinitionProcessor.OutputDefinition;
+using QueryProcessorOutputDefinition = BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors.GenericQueryProcessorOutputDefinitionProcessor.OutputDefinition;
 using RequesterInputDefinition = BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors.RequesterInputDefinitionProcessor.InputDefinition;
 
 namespace BluQube.SourceGeneration
@@ -54,7 +54,7 @@ namespace BluQube.SourceGeneration
 
             context.RegisterSourceOutput(combined, (spc, source) =>
             {
-                var queryOutputProcessor = new QueryProcessorOutputDefinitionProcessor();
+                var queryOutputProcessor = new GenericQueryProcessorOutputDefinitionProcessor();
                 var genericCommandHandlerOutputDefinitionProcessor = new GenericCommandHandlerOutputDefinitionProcessor();
                 var genericCommandOfTHandlerOutputDefinitionProcessor = new GenericCommandOfTHandlerOutputDefinitionProcessor();
                 var jsonConverterOutputProcessor = new JsonConverterOutputDefinitionProcessor();

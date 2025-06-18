@@ -1,13 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
-using BluQube.Attributes;
-using BluQube.Tests.TestHelpers.Stubs;
+using BluQube.Tests.RequesterHelpers.Stubs;
+using BluQube.Tests.ResponderHelpers.Stubs;
 using BluQube.Tests.TestHelpers.VerificationConverters;
 using DiffEngine;
 
 namespace BluQube.Tests;
 
-[BluQubeRequester]
-[BluQubeResponder]
 public static class Initialization
 {
     [ModuleInitializer]

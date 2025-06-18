@@ -1,6 +1,6 @@
-﻿using BluQube.Commands;
+﻿using BluQube.Tests.RequesterHelpers.Stubs;
+using BluQube.Tests.ResponderHelpers.Stubs;
 using BluQube.Tests.TestHelpers.Fakes;
-using BluQube.Tests.TestHelpers.Stubs;
 using FluentValidation;
 using FluentValidation.Results;
 using Moq;

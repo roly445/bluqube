@@ -12,14 +12,15 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
             var sb = new StringBuilder();
             sb.AppendLine("using BluQube.Queries;");
             sb.AppendLine("using BluQube.Commands;");
-            foreach (var queryToProcess in data.QueriesToProcess.Select(x => x.QueryNamespace).Distinct())
+            sb.AppendLine("using Microsoft.AspNetCore.Builder;");
+            sb.AppendLine("using Microsoft.AspNetCore.Http;");
+            sb.AppendLine("using Microsoft.AspNetCore.Routing;");
+            foreach (var queryToProcess in data
+                         .QueriesToProcess
+                         .Select(x => x.QueryNamespace)
+                         .Concat(data.CommandsToProcess.Select(x => x.CommandNamespace)).Distinct())
             {
                 sb.AppendLine($"using {queryToProcess};");
-            }
-
-            foreach (var commandToProcess in data.CommandsToProcess.Select(x => x.CommandNamespace).Distinct())
-            {
-                sb.AppendLine($"using {commandToProcess};");
             }
 
             sb.AppendLine($@"namespace {data.Namespace};
@@ -37,7 +38,9 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                 sb.AppendLine("         });");
             }
 
-            foreach (var commandToProcess in data.CommandsToProcess)
+            foreach (var commandToProcess in data.CommandsToProcess.GroupBy(x => x.Path.ToLower())
+                         .Select(g => g.First())
+                         .ToList())
             {
                 sb.AppendLine($"        endpointRouteBuilder.MapPost(\"{commandToProcess.Path}\", async (ICommander commander, {commandToProcess.Command} command) => {{");
                 sb.AppendLine("             var data = await commander.Send(command);");

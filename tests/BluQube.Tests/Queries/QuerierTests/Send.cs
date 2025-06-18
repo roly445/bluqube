@@ -1,5 +1,5 @@
 ﻿using BluQube.Queries;
-using BluQube.Tests.TestHelpers.Stubs;
+using BluQube.Tests.RequesterHelpers.Stubs;
 using MediatR;
 using MediatR.Behaviors.Authorization.Exceptions;
 using Moq;

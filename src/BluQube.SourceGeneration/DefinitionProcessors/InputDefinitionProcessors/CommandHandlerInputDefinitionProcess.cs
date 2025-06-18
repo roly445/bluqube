@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BluQube.CodeGenerators.Contracts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,30 +10,35 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
     {
         public override bool CanProcess(SyntaxNode syntaxNode)
         {
-            if (!(syntaxNode is ClassDeclarationSyntax classDeclaration))
+            var relevantClasses = syntaxNode.DescendantNodesAndSelf()
+                .OfType<ClassDeclarationSyntax>()
+                .FirstOrDefault(c => c.BaseList?.Types.Any(x =>
+                    x.ToString().Contains("CommandHandler")) == true);
+
+            if (relevantClasses?.BaseList == null || relevantClasses.BaseList.Types.Count == 0)
             {
                 return false;
             }
 
-            if (classDeclaration.BaseList == null || classDeclaration.BaseList.Types.Count == 0)
+            var baseType = relevantClasses.BaseList.Types.First();
+
+            switch (baseType)
             {
-                return false;
-            }
+                case SimpleBaseTypeSyntax simpleBase:
+                    if (simpleBase.Type is GenericNameSyntax genericName)
+                    {
+                        return genericName.TypeArgumentList.Arguments.Count is 1 or 2;
+                    }
 
-            foreach (var baseType in classDeclaration.BaseList.Types)
-            {
-                if (!(baseType is SimpleBaseTypeSyntax simpleBaseTypeSyntax))
-                {
-                    continue;
-                }
+                    break;
 
-                if (!(simpleBaseTypeSyntax.Type is GenericNameSyntax genericNameSyntax) || genericNameSyntax.Identifier.Text != "ICommandHandler" ||
-                    (genericNameSyntax.TypeArgumentList.Arguments.Count != 2 && genericNameSyntax.TypeArgumentList.Arguments.Count != 1))
-                {
-                    continue;
-                }
+                case PrimaryConstructorBaseTypeSyntax primaryBase:
+                    if (primaryBase.Type is GenericNameSyntax genericName2)
+                    {
+                        return genericName2.TypeArgumentList.Arguments.Count is 1 or 2;
+                    }
 
-                return true;
+                    break;
             }
 
             return false;
@@ -40,10 +46,33 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
 
         protected override InputDefinition ProcessInternal(SyntaxNode syntaxNode)
         {
-            return new InputDefinition(((ClassDeclarationSyntax)syntaxNode).BaseList!
-                .Types.Select(type =>
-                    ((GenericNameSyntax)((SimpleBaseTypeSyntax)type).Type).TypeArgumentList.Arguments[0])
-                .First());
+            var relevantClasses = syntaxNode.DescendantNodesAndSelf()
+                .OfType<ClassDeclarationSyntax>()
+                .FirstOrDefault(c => c.BaseList?.Types.Any(x =>
+                    x.ToString().Contains("CommandHandler")) == true);
+
+            var baseType = relevantClasses!.BaseList!.Types.First();
+
+            switch (baseType)
+            {
+                case SimpleBaseTypeSyntax simpleBase:
+                    if (simpleBase.Type is GenericNameSyntax genericName)
+                    {
+                        return new InputDefinition(genericName.TypeArgumentList.Arguments[0]);
+                    }
+
+                    break;
+
+                case PrimaryConstructorBaseTypeSyntax primaryBase:
+                    if (primaryBase.Type is GenericNameSyntax genericName2)
+                    {
+                        return new InputDefinition(genericName2.TypeArgumentList.Arguments[0]);
+                    }
+
+                    break;
+            }
+
+            throw new InvalidOperationException("Unable to process CommandHandler input definition.");
         }
 
         internal class InputDefinition : IInputDefinition

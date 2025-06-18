@@ -1,6 +1,6 @@
 ﻿using System.Net;
+using BluQube.Tests.RequesterHelpers.Stubs;
 using BluQube.Tests.TestHelpers.Fakes;
-using BluQube.Tests.TestHelpers.Stubs;
 using Moq;
 using Moq.Contrib.HttpClient;
 using Moq.Protected;
@@ -10,16 +10,16 @@ namespace BluQube.Tests.Queries.GenericQueryProcessorTests;
 public class Handle
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly FakeLogger<StubQueryProcessor> _fakeLogger;
-    private readonly StubQueryProcessor _handler;
+    private readonly FakeLogger<GenericStubQueryProcessor> _fakeLogger;
+    private readonly GenericStubQueryProcessor _handler;
     private readonly Mock<HttpMessageHandler> _handlerMock;
 
     public Handle()
     {
-        this._fakeLogger = new FakeLogger<StubQueryProcessor>();
+        this._fakeLogger = new FakeLogger<GenericStubQueryProcessor>();
         this._handlerMock = new Mock<HttpMessageHandler>();
         this._httpClientFactory = this._handlerMock.CreateClientFactory();
-        this._handler = new StubQueryProcessor(
+        this._handler = new GenericStubQueryProcessor(
             this._httpClientFactory,
             new StubQueryResultConverter(), this._fakeLogger);
     }

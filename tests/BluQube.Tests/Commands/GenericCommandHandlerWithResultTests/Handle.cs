@@ -1,6 +1,6 @@
 ﻿using System.Net;
+using BluQube.Tests.RequesterHelpers.Stubs;
 using BluQube.Tests.TestHelpers.Fakes;
-using BluQube.Tests.TestHelpers.Stubs;
 using Moq;
 using Moq.Contrib.HttpClient;
 using Moq.Protected;

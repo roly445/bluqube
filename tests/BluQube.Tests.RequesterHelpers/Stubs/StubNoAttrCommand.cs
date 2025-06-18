@@ -1,5 +1,5 @@
 ﻿using BluQube.Commands;
 
-namespace BluQube.Tests.TestHelpers.Stubs;
+namespace BluQube.Tests.RequesterHelpers.Stubs;
 
 public record StubNoAttrCommand(string Data) : ICommand;

@@ -1,0 +1,12 @@
+﻿[
+  {
+    ServiceType: QueryResultConverter<StubQueryResult>,
+    Lifetime: Transient,
+    ImplementationType: StubQueryResultConverter
+  },
+  {
+    ServiceType: CommandResultConverter<StubWithResultCommandResult>,
+    Lifetime: Transient,
+    ImplementationType: StubWithResultCommandResultConverter
+  }
+]

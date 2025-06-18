@@ -1,6 +1,5 @@
 ﻿using BluQube.Commands;
-using BluQube.Tests.Commands.CommanderTests;
-using BluQube.Tests.TestHelpers.Stubs;
+using BluQube.Tests.RequesterHelpers.Stubs;
 
 namespace BluQube.Tests.Commands.CommandResultWithResultTests;
 

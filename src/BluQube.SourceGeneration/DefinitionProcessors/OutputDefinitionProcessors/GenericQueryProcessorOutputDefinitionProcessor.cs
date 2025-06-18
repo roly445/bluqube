@@ -3,7 +3,7 @@ using BluQube.CodeGenerators.Contracts;
 
 namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors
 {
-    internal class QueryProcessorOutputDefinitionProcessor : IOutputDefinitionProcessor<QueryProcessorOutputDefinitionProcessor.OutputDefinition>
+    internal class GenericQueryProcessorOutputDefinitionProcessor : IOutputDefinitionProcessor<GenericQueryProcessorOutputDefinitionProcessor.OutputDefinition>
     {
         public string Process(OutputDefinition data)
         {
@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging;");
             sb.AppendLine($@"
 namespace {data.Namespace};
 
-internal class {data.QueryName}Processor(
+internal class Generic{data.QueryName}Processor(
     IHttpClientFactory httpClientFactory,
     QueryResultConverter<{data.QueryResult}> jsonConverter,
     ILogger<GenericQueryProcessor<{data.QueryName}, {data.QueryResult}>> logger)

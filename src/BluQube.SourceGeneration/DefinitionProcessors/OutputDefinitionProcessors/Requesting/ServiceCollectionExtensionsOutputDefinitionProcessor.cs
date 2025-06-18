@@ -10,6 +10,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
         public string Process(OutputDefinition data)
         {
             var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
             sb.AppendLine("using BluQube.Queries;");
             sb.AppendLine("using BluQube.Commands;");
             foreach (var dataJsonConverterOutputDefinition in data.JsonConverterOutputDefinitions.Select(x => x.QueryResultNamespace).Distinct())
