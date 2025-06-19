@@ -16,7 +16,7 @@ public class MarkTodoAsCompletedCommandHandler(ITodoService todoService, IEnumer
         {
             return Task.FromResult(CommandResult.Failed(new BluQubeErrorData(ErrorCodes.NotFound, "Todo not found")));
         }
-        
+
         todo.MarkAsCompleted();
         return Task.FromResult(CommandResult.Succeeded());
     }

@@ -8,57 +8,49 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace BluQube.Samples.Blazor.Client.Pages;
 
-public partial class Home
+public partial class Home(ICommander commander, IQuerier querier)
 {
     private AddToDoModel _addToDoModel = new();
     private List<ToDoListItem> _toDoList = new();
-    
-    [Inject]
-    private ICommander Commander { get; set; } = default!;
-    
-    [Inject]
-    private IQuerier Querier { get; set; } = default!;
 
     protected override async Task OnParametersSetAsync()
     {
-        var result = await Querier.Send(new GetAllToDoItemsQuery());
+        var result = await querier.Send(new GetAllToDoItemsQuery());
         if (result.Status == QueryResultStatus.Succeeded)
         {
             this._toDoList = result.Data.ToDoItems.Select(x => new ToDoListItem
             {
-                Id = x.Id, Title = x.Title, IsCompleted = x.IsCompleted
+                Id = x.Id,
+                Title = x.Title,
+                IsCompleted = x.IsCompleted,
             }).ToList();
         }
     }
 
-    private class AddToDoModel
+    private static void EnableEditMode(ToDoListItem item)
     {
-        public string Title { get; set; } = string.Empty;
+        item.EditModeEnabled = true;
+        item.EditedTitle = item.Title;
+    }
+
+    private static void CancelEditMode(ToDoListItem item)
+    {
+        item.EditModeEnabled = false;
     }
 
     private async Task AddToDo(EditContext arg)
     {
-        var result = await Commander.Send(new AddTodoCommand(this._addToDoModel.Title));
+        var result = await commander.Send(new AddTodoCommand(this._addToDoModel.Title));
         if (result.Status == CommandResultStatus.Succeeded)
         {
             this._toDoList.Add(new ToDoListItem { Id = result.Data.TodoId, Title = this._addToDoModel.Title });
             this._addToDoModel = new();
         }
     }
-    
-    public class ToDoListItem
-    {
-        public Guid Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        
-        public bool EditModeEnabled { get; set; }
-        public bool IsCompleted { get; set; }
-        public string? EditedTitle { get; set; }
-    }
 
     private async Task DeleteToDo(ToDoListItem item)
     {
-        var result = await Commander.Send(new DeleteTodoCommand(item.Id));
+        var result = await commander.Send(new DeleteTodoCommand(item.Id));
         if (result.Status == CommandResultStatus.Succeeded)
         {
             this._toDoList.Remove(item);
@@ -67,7 +59,7 @@ public partial class Home
 
     private async Task SaveToDo(ToDoListItem item)
     {
-        var result = await Commander.Send(new UpdateToDoTitleCommand(item.Id, item.EditedTitle!));
+        var result = await commander.Send(new UpdateToDoTitleCommand(item.Id, item.EditedTitle!));
         if (result.Status == CommandResultStatus.Succeeded)
         {
             item.Title = item.EditedTitle!;
@@ -75,14 +67,21 @@ public partial class Home
         }
     }
 
-    private void EnableEditMode(ToDoListItem item)
+    private sealed class AddToDoModel
     {
-        item.EditModeEnabled = true;
-        item.EditedTitle = item.Title;
+        public string Title { get; set; } = string.Empty;
     }
 
-    private void CancelEditMode(ToDoListItem item)
+    private sealed class ToDoListItem
     {
-        item.EditModeEnabled = false;
+        public Guid Id { get; set; }
+
+        public string Title { get; set; } = string.Empty;
+
+        public bool EditModeEnabled { get; set; }
+
+        public bool IsCompleted { get; set; }
+
+        public string? EditedTitle { get; set; }
     }
 }

@@ -6,9 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "._", "._", "{B5C5E918-8E31-4AD5-B781-DD557527E372}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		global.json = global.json
 		LICENSE = LICENSE
 		README.md = README.md
-		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{86A45549-7A8D-4C57-A075-41EFC0544063}"
@@ -22,10 +22,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{5A58AB5F-F9E0-48FF-8002-06D76AD39595}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "blazor", "blazor", "{078C2ECC-BA55-4A8F-B2E7-B40465396673}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluQube.Samples.Blazor", "samples\blazor\BluQube.Samples.Blazor\BluQube.Samples.Blazor\BluQube.Samples.Blazor.csproj", "{F6E13162-C856-4139-B1FE-4DF2F329E93D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluQube.Samples.Blazor.Client", "samples\blazor\BluQube.Samples.Blazor\BluQube.Samples.Blazor.Client\BluQube.Samples.Blazor.Client.csproj", "{81D0573A-8809-4394-8917-8FA18B77E1CD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{50984579-12DF-4144-A946-DCA4413D5462}"
 EndProject
@@ -44,6 +40,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluQube.Tests.ResponderHelp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluQube.Tests.RequesterHelpers", "tests\BluQube.Tests.RequesterHelpers\BluQube.Tests.RequesterHelpers.csproj", "{5A844507-A9AF-4B06-94F5-8800A2546E83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluQube.Samples.Blazor", "samples\blazor\BluQube.Samples.Blazor\BluQube.Samples.Blazor\BluQube.Samples.Blazor.csproj", "{B63B538B-1F68-4392-A0FB-56C3FD9C9128}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluQube.Samples.Blazor.Client", "samples\blazor\BluQube.Samples.Blazor\BluQube.Samples.Blazor.Client\BluQube.Samples.Blazor.Client.csproj", "{DBDCA282-8AD3-4FD5-9ACF-3ADF408225FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,14 +58,6 @@ Global
 		{EB18CDE0-7863-4AF9-A6B9-89F0473B2322}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB18CDE0-7863-4AF9-A6B9-89F0473B2322}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB18CDE0-7863-4AF9-A6B9-89F0473B2322}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6E13162-C856-4139-B1FE-4DF2F329E93D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6E13162-C856-4139-B1FE-4DF2F329E93D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6E13162-C856-4139-B1FE-4DF2F329E93D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6E13162-C856-4139-B1FE-4DF2F329E93D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81D0573A-8809-4394-8917-8FA18B77E1CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81D0573A-8809-4394-8917-8FA18B77E1CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81D0573A-8809-4394-8917-8FA18B77E1CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81D0573A-8809-4394-8917-8FA18B77E1CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B1EBDE0B-BF9A-41B6-B29D-CF8859A8672A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1EBDE0B-BF9A-41B6-B29D-CF8859A8672A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1EBDE0B-BF9A-41B6-B29D-CF8859A8672A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,6 +70,14 @@ Global
 		{5A844507-A9AF-4B06-94F5-8800A2546E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A844507-A9AF-4B06-94F5-8800A2546E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A844507-A9AF-4B06-94F5-8800A2546E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B63B538B-1F68-4392-A0FB-56C3FD9C9128}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B63B538B-1F68-4392-A0FB-56C3FD9C9128}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B63B538B-1F68-4392-A0FB-56C3FD9C9128}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B63B538B-1F68-4392-A0FB-56C3FD9C9128}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBDCA282-8AD3-4FD5-9ACF-3ADF408225FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBDCA282-8AD3-4FD5-9ACF-3ADF408225FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBDCA282-8AD3-4FD5-9ACF-3ADF408225FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBDCA282-8AD3-4FD5-9ACF-3ADF408225FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,18 +86,19 @@ Global
 		{F014761D-B9A8-4AC7-ABF6-819EFECFD814} = {86A45549-7A8D-4C57-A075-41EFC0544063}
 		{EB18CDE0-7863-4AF9-A6B9-89F0473B2322} = {76C80C8C-92BE-466E-BEA5-A431B940F800}
 		{078C2ECC-BA55-4A8F-B2E7-B40465396673} = {5A58AB5F-F9E0-48FF-8002-06D76AD39595}
-		{F6E13162-C856-4139-B1FE-4DF2F329E93D} = {078C2ECC-BA55-4A8F-B2E7-B40465396673}
-		{81D0573A-8809-4394-8917-8FA18B77E1CD} = {078C2ECC-BA55-4A8F-B2E7-B40465396673}
 		{B1EBDE0B-BF9A-41B6-B29D-CF8859A8672A} = {86A45549-7A8D-4C57-A075-41EFC0544063}
 		{32A2AD16-4150-40BB-BD6F-58695BAC45E6} = {50984579-12DF-4144-A946-DCA4413D5462}
 		{8B9BAC71-2B71-436F-AFBF-574A648C6A28} = {742EFA68-F8F3-46B6-A813-B373629842B3}
 		{D4ADC99C-E618-4356-A3F7-0C6846963837} = {76C80C8C-92BE-466E-BEA5-A431B940F800}
 		{5A844507-A9AF-4B06-94F5-8800A2546E83} = {76C80C8C-92BE-466E-BEA5-A431B940F800}
+		{B63B538B-1F68-4392-A0FB-56C3FD9C9128} = {078C2ECC-BA55-4A8F-B2E7-B40465396673}
+		{DBDCA282-8AD3-4FD5-9ACF-3ADF408225FB} = {078C2ECC-BA55-4A8F-B2E7-B40465396673}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		shared\BluQube.Shared\BluQube.Shared.projitems*{32a2ad16-4150-40bb-bd6f-58695bac45e6}*SharedItemsImports = 13
-		shared\BluQube.Shared\BluQube.Shared.projitems*{81d0573a-8809-4394-8917-8fa18b77e1cd}*SharedItemsImports = 5
+		shared\BluQube.Shared\BluQube.Shared.projitems*{5a844507-a9af-4b06-94f5-8800a2546e83}*SharedItemsImports = 5
 		shared\BluQube.Shared\BluQube.Shared.projitems*{b1ebde0b-bf9a-41b6-b29d-cf8859a8672a}*SharedItemsImports = 5
+		shared\BluQube.Shared\BluQube.Shared.projitems*{d4adc99c-e618-4356-a3f7-0c6846963837}*SharedItemsImports = 5
 		shared\BluQube.Shared\BluQube.Shared.projitems*{eb18cde0-7863-4af9-a6b9-89f0473b2322}*SharedItemsImports = 5
 		shared\BluQube.Shared\BluQube.Shared.projitems*{f014761d-b9a8-4ac7-abf6-819efecfd814}*SharedItemsImports = 5
 	EndGlobalSection

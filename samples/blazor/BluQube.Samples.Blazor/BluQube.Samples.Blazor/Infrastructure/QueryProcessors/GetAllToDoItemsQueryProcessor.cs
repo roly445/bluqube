@@ -12,8 +12,7 @@ public class GetAllToDoItemsQueryProcessor(ITodoService todoService) : IQueryPro
         var result = new GetAllToDoItemsQueryResult(
             todoService.Todos.Select(x => new GetAllToDoItemsQueryResult.ToDoItem(x.Id, x.Title, x.IsCompleted))
                 .ToList());
-        
+
         return Task.FromResult(QueryResult<GetAllToDoItemsQueryResult>.Succeeded(result));
     }
 }
-

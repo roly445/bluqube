@@ -12,7 +12,7 @@ public class ToDoStatsQueryProcessor(ITodoService todoService) : IQueryProcessor
         var result = new ToDoStatsQueryResult(
             todoService.Todos.Count(),
             todoService.Todos.Count(t => t.IsCompleted));
-        
+
         return Task.FromResult(QueryResult<ToDoStatsQueryResult>.Succeeded(result));
     }
 }

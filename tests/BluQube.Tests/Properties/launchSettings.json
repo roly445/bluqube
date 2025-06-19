@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "BluQube.Tests": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:21943;http://localhost:21944"
+    }
+  }
+}
