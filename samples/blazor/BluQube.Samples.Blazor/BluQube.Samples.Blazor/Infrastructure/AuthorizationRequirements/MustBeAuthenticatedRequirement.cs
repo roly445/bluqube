@@ -1,9 +1,11 @@
-﻿using MediatR.Behaviors.Authorization;
+﻿using JetBrains.Annotations;
+using MediatR.Behaviors.Authorization;
 
 namespace BluQube.Samples.Blazor.Infrastructure.AuthorizationRequirements;
 
 public class MustBeAuthenticatedRequirement : IAuthorizationRequirement
 {
+    [UsedImplicitly]
     private sealed class MustBeAuthenticatedRequirementHandler(IHttpContextAccessor httpContextAccessor)
         : IAuthorizationHandler<MustBeAuthenticatedRequirement>
     {
