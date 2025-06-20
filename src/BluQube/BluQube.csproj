@@ -6,21 +6,23 @@
         <Nullable>enable</Nullable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(CI)' == 'true'">
+        <Title>BluQube</Title>
         <Deterministic>true</Deterministic>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Authors>Andrew Davis</Authors>
+        <Authors>roly445</Authors>
         <Description>BluQube is a framework for Blazor to help with the write once, run on Sever or WASM</Description>
-        <PackageProjectUrl>$(GITHUB_SERVER_URL)/$(GITHUB_REPOSITORY)</PackageProjectUrl>
-        <RepositoryUrl>$(GITHUB_SERVER_URL)/$(GITHUB_REPOSITORY)</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/roly445/bluqube</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/roly445/bluqube</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>Blazor;Request;Response;Api;</PackageTags>
+        <PackageTags>Blazor;Mediatr;Request;Response;Api;</PackageTags>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
     </PropertyGroup>
 
     <ItemGroup>

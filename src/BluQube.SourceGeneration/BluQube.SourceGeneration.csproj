@@ -7,17 +7,14 @@
         <Nullable>enable</Nullable>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <IncludeSymbols>false</IncludeSymbols>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(CI)' == 'true'">
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Authors>Andrew Davis</Authors>
+        <Authors>roly445</Authors>
         <Description>Code generators for BluQube, a framework for Blazor to help with the write once, run on Sever or WASM</Description>
-        <PackageProjectUrl>$(GITHUB_SERVER_URL)/$(GITHUB_REPOSITORY)</PackageProjectUrl>
-        <RepositoryUrl>$(GITHUB_SERVER_URL)/$(GITHUB_REPOSITORY)</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/roly445/bluqube</PackageProjectUrl>
+        <RepositoryUrl>$https://github.com/roly445/bluqube</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>Blazor;Request;Response;Api;</PackageTags>
+        <PackageTags>Blazor;Mediatr;Request;Response;Api;</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,6 +37,10 @@
         </PackageReference>
     </ItemGroup>
 
+    <PropertyGroup>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
+    </PropertyGroup>
+    
     <ItemGroup>
         <!-- Package the generator in the analyzer directory of the nuget package -->
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
