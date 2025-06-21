@@ -1,5 +1,7 @@
 # BluQube
 
+[![NuGet](https://img.shields.io/nuget/v/BluQube.svg)](https://nuget.org/packages/BluQube) [![Nuget](https://img.shields.io/nuget/dt/BluQube.svg)](https://nuget.org/packages/BluQube)
+
 BluQube is a framework for Blazor to help with the write once, run on Server or WASM approach.
 
 ## Overview
