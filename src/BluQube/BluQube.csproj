@@ -30,12 +30,12 @@
       <PackageReference Include="MaybeMonad" Version="1.0.1.1" />
       <PackageReference Include="MediatR" Version="12.5.0" />
       <PackageReference Include="MediatR.Behaviors.Authorization" Version="12.5.0" />
-      <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.5" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.8" />
       <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="10.11.0.117924">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="10.15.0.120848">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

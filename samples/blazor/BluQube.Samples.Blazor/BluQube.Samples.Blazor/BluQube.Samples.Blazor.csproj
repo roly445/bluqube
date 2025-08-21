@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.11.0.117924">
+    <PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.15.0.120848">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -21,7 +21,7 @@
     <ProjectReference Include="..\BluQube.Samples.Blazor.Client\BluQube.Samples.Blazor.Client.csproj" />
     <ProjectReference Include="..\..\..\..\src\BluQube.SourceGeneration\BluQube.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8" />
   </ItemGroup>
 
   <Import Project="..\..\..\..\shared\BluQube.Shared\BluQube.Shared.projitems" Label="Shared" />
