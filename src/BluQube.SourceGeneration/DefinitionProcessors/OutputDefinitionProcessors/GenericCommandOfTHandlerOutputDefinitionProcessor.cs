@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;");
             }
 
             sb.AppendLine($@"
-namespace {data.Namespace};
+namespace {data.CommandNamespace};
 
 internal class {data.CommandName}GenericHandler(
 IHttpClientFactory httpClientFactory, CommandResultConverter<{data.CommandResultName}> jsonConverter, ILogger<GenericCommandHandler<{data.CommandName}, {data.CommandResultName}>> logger)
@@ -32,11 +32,10 @@ IHttpClientFactory httpClientFactory, CommandResultConverter<{data.CommandResult
 
         internal class OutputDefinition : IOutputDefinition
         {
-            public OutputDefinition(string commandNamespace, string commandResultNamespace, string ns, string commandName, string commandResultName, string path)
+            public OutputDefinition(string commandNamespace, string commandResultNamespace, string commandName, string commandResultName, string path)
             {
                 this.CommandNamespace = commandNamespace;
                 this.CommandResultNamespace = commandResultNamespace;
-                this.Namespace = ns;
                 this.CommandName = commandName;
                 this.CommandResultName = commandResultName;
                 this.Path = path;
@@ -45,8 +44,6 @@ IHttpClientFactory httpClientFactory, CommandResultConverter<{data.CommandResult
             public string CommandNamespace { get; }
 
             public string CommandResultNamespace { get; }
-
-            public string Namespace { get; }
 
             public string CommandName { get; }
 

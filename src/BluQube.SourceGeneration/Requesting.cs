@@ -76,7 +76,6 @@ namespace BluQube.SourceGeneration
                         return new QueryProcessorOutputDefinition(
                             queryNamespace,
                             queryResultNamespace,
-                            queryNamespace.Replace("Queries", "QueryProcessors"),
                             queryName,
                             queryResult,
                             x.QueryProcessor.BluQubeQueryAttributeSyntax.GetPath() ?? string.Empty);
@@ -89,7 +88,6 @@ namespace BluQube.SourceGeneration
                         var commandNamespace = x.Command.CommandDeclaration.GetNamespace();
                         return new GenericCommandHandlerOutputDefinition(
                             commandNamespace,
-                            commandNamespace.Replace("Commands", "CommandHandlers"),
                             commandName,
                             x.Command.BluQubeCommandAttributeSyntax.GetPath() ?? string.Empty);
                     }).ToList();
@@ -104,7 +102,6 @@ namespace BluQube.SourceGeneration
                         return new GenericCommandOfTHandlerOutputDefinition(
                             commandNamespace,
                             commandResultNamespace,
-                            commandNamespace.Replace("Commands", "CommandHandlers"),
                             commandName,
                             commandResult,
                             x.CommandWithResultHandler.BluQubeCommandAttributeSyntax.GetPath() ?? string.Empty);
@@ -118,7 +115,6 @@ namespace BluQube.SourceGeneration
 
                         return new JsonConverterOutputDefinition(
                             queryResultNamespace,
-                            queryResultNamespace.Replace("Queries", "QueryProcessors"),
                             queryResult,
                             JsonConverterOutputDefinition.Type.QueryResult);
                     }).ToList();
@@ -131,7 +127,6 @@ namespace BluQube.SourceGeneration
 
                         return new JsonConverterOutputDefinition(
                             commandResultNamespace,
-                            commandResultNamespace.Replace("Commands", "CommandHandlers"),
                             commandResult,
                             JsonConverterOutputDefinition.Type.CommandResult);
                     }).ToList());

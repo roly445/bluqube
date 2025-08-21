@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;");
             }
 
             sb.AppendLine($@"
-namespace {data.Namespace};
+namespace {data.QueryNamespace};
 
 internal class Generic{data.QueryName}Processor(
     IHttpClientFactory httpClientFactory,
@@ -33,11 +33,10 @@ internal class Generic{data.QueryName}Processor(
 
         internal class OutputDefinition : IOutputDefinition
         {
-            internal OutputDefinition(string queryNamespace, string queryResultNamespace, string ns, string queryName, string queryResult, string path)
+            internal OutputDefinition(string queryNamespace, string queryResultNamespace,  string queryName, string queryResult, string path)
             {
                 this.QueryNamespace = queryNamespace;
                 this.QueryResultNamespace = queryResultNamespace;
-                this.Namespace = ns;
                 this.QueryName = queryName;
                 this.QueryResult = queryResult;
                 this.Path = path;
@@ -46,8 +45,6 @@ internal class Generic{data.QueryName}Processor(
             public string QueryNamespace { get; }
 
             public string QueryResultNamespace { get; }
-
-            public string Namespace { get; }
 
             public string QueryName { get; }
 

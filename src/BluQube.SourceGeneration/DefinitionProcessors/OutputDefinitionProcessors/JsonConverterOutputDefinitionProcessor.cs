@@ -12,7 +12,7 @@ using {GetUsing(data.OutputType)};
 using Microsoft.Extensions.Logging;
 using {data.QueryResultNamespace};
 
-namespace {data.Namespace};
+namespace {data.QueryResultNamespace};
 
 public class {data.QueryResult}Converter : {GetConverter(data.OutputType)}<{data.QueryResult}>;";
         }
@@ -39,10 +39,9 @@ public class {data.QueryResult}Converter : {GetConverter(data.OutputType)}<{data
 
         internal class OutputDefinition : IOutputDefinition
         {
-            internal OutputDefinition(string queryResultNamespace, string ns, string queryResult, Type outputType)
+            internal OutputDefinition(string queryResultNamespace, string queryResult, Type outputType)
             {
                 this.QueryResultNamespace = queryResultNamespace;
-                this.Namespace = ns;
                 this.QueryResult = queryResult;
                 this.OutputType = outputType;
             }
@@ -56,8 +55,6 @@ public class {data.QueryResult}Converter : {GetConverter(data.OutputType)}<{data
             }
 
             public string QueryResultNamespace { get; }
-
-            public string Namespace { get; }
 
             public string QueryResult { get; }
 
