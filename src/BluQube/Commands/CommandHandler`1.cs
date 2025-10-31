@@ -9,8 +9,12 @@ public abstract class CommandHandler<TCommand>(IEnumerable<IValidator<TCommand>>
 {
     public async Task<CommandResult> Handle(TCommand request, CancellationToken cancellationToken)
     {
-        var failures = validators
-            .Select(v => v.Validate(request))
+        var validationTasks = validators
+            .Select(v => v.ValidateAsync(request, cancellationToken));
+
+        var results = await Task.WhenAll(validationTasks);
+
+        var failures = results
             .SelectMany(result => result.Errors)
             .Where(error => error != null)
             .ToList();
