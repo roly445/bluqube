@@ -32,8 +32,8 @@ public class Handle
         // Arrange
         var command = new StubWithResultCommand("stub-data");
         var validationFailure = new ValidationFailure("property-name", "error-message");
-        this._validatorMock.Setup(v => v.Validate(command))
-            .Returns(new ValidationResult(new List<ValidationFailure> { validationFailure }));
+        this._validatorMock.Setup(v => v.ValidateAsync(command, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { validationFailure }));
 
         // Act
         await this._commandWithResultHandler.Handle(command, CancellationToken.None);
@@ -47,7 +47,8 @@ public class Handle
     {
         // Arrange
         var command = new StubWithResultCommand("stub-data");
-        this._validatorMock.Setup(v => v.Validate(command)).Returns(new ValidationResult());
+        this._validatorMock.Setup(v => v.ValidateAsync(command, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
 
         // Act
         var result = await this._commandWithResultHandler.Handle(command, CancellationToken.None);
@@ -62,8 +63,8 @@ public class Handle
         // Arrange
         var command = new StubWithResultCommand("stub-data");
         var validationFailure = new ValidationFailure("property-name", "error-message");
-        this._validatorMock.Setup(v => v.Validate(command))
-            .Returns(new ValidationResult(new List<ValidationFailure> { validationFailure }));
+        this._validatorMock.Setup(v => v.ValidateAsync(command, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { validationFailure }));
 
         // Act
         var result = await this._commandWithResultHandler.Handle(command, CancellationToken.None);
