@@ -48,13 +48,7 @@
         ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, StubQuery query),
         IsOptional: true
       },
-      {
-        Type: IResult,
-        StatusCode: 200,
-        ContentTypes: [
-          application/json
-        ]
-      },
+      {},
       {
         StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_0>d,
         TypeId: AsyncStateMachineAttribute
@@ -68,7 +62,7 @@
     ],
     RequestDelegate: {
       Type: RequestDelegate,
-      Target: RequestDelegateFactory.<>c__DisplayClass80_0,
+      Target: RequestDelegateFactory.<>c__DisplayClass81_0,
       Method: System.Threading.Tasks.Task Create(Microsoft.AspNetCore.Http.HttpContext)
     }
   },
@@ -132,13 +126,7 @@
         ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(ICommander commander, StubCommand command),
         IsOptional: true
       },
-      {
-        Type: IResult,
-        StatusCode: 200,
-        ContentTypes: [
-          application/json
-        ]
-      },
+      {},
       {
         StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_1>d,
         TypeId: AsyncStateMachineAttribute
@@ -152,7 +140,7 @@
     ],
     RequestDelegate: {
       Type: RequestDelegate,
-      Target: RequestDelegateFactory.<>c__DisplayClass80_0,
+      Target: RequestDelegateFactory.<>c__DisplayClass81_0,
       Method: System.Threading.Tasks.Task Create(Microsoft.AspNetCore.Http.HttpContext)
     }
   },
@@ -216,13 +204,7 @@
         ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(ICommander commander, StubWithResultCommand command),
         IsOptional: true
       },
-      {
-        Type: IResult,
-        StatusCode: 200,
-        ContentTypes: [
-          application/json
-        ]
-      },
+      {},
       {
         StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_2>d,
         TypeId: AsyncStateMachineAttribute
@@ -236,7 +218,7 @@
     ],
     RequestDelegate: {
       Type: RequestDelegate,
-      Target: RequestDelegateFactory.<>c__DisplayClass80_0,
+      Target: RequestDelegateFactory.<>c__DisplayClass81_0,
       Method: System.Threading.Tasks.Task Create(Microsoft.AspNetCore.Http.HttpContext)
     }
   }
