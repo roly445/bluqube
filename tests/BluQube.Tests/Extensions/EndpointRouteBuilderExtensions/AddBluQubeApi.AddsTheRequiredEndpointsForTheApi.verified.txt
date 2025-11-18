@@ -3,6 +3,124 @@
     RoutePattern: {
       InboundPrecedence: 1.0,
       OutboundPrecedence: 5.0,
+      RawText: query-get,
+      PathSegments: [
+        {
+          IsSimple: true,
+          Parts: [
+            {
+              Content: query-get,
+              IsLiteral: true,
+              IsParameter: false,
+              IsSeparator: false
+            }
+          ]
+        }
+      ]
+    },
+    DisplayName: HTTP: GET query-get,
+    Metadata: [
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, HttpRequest req),
+      {
+        AcceptCorsPreflight: false,
+        HttpMethods: [
+          GET
+        ]
+      },
+      {
+        Name: querier,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, HttpRequest req),
+        IsOptional: true
+      },
+      {
+        Name: req,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'req' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, HttpRequest req),
+        IsOptional: true
+      },
+      {
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_0>d,
+        TypeId: AsyncStateMachineAttribute
+      },
+      {
+        TypeId: DebuggerStepThroughAttribute
+      },
+      {
+        Route: query-get
+      }
+    ],
+    RequestDelegate: {
+      Type: RequestDelegate,
+      Target: RequestDelegateFactory.<>c__DisplayClass81_0,
+      Method: System.Threading.Tasks.Task Create(Microsoft.AspNetCore.Http.HttpContext)
+    }
+  },
+  {
+    RoutePattern: {
+      InboundPrecedence: 1.0,
+      OutboundPrecedence: 5.0,
+      RawText: query-post,
+      PathSegments: [
+        {
+          IsSimple: true,
+          Parts: [
+            {
+              Content: query-post,
+              IsLiteral: true,
+              IsParameter: false,
+              IsSeparator: false
+            }
+          ]
+        }
+      ]
+    },
+    DisplayName: HTTP: GET query-post,
+    Metadata: [
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, HttpRequest req),
+      {
+        AcceptCorsPreflight: false,
+        HttpMethods: [
+          GET
+        ]
+      },
+      {
+        Name: querier,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, HttpRequest req),
+        IsOptional: true
+      },
+      {
+        Name: req,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'req' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, HttpRequest req),
+        IsOptional: true
+      },
+      {
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_1>d,
+        TypeId: AsyncStateMachineAttribute
+      },
+      {
+        TypeId: DebuggerStepThroughAttribute
+      },
+      {
+        Route: query-post
+      }
+    ],
+    RequestDelegate: {
+      Type: RequestDelegate,
+      Target: RequestDelegateFactory.<>c__DisplayClass81_0,
+      Method: System.Threading.Tasks.Task Create(Microsoft.AspNetCore.Http.HttpContext)
+    }
+  },
+  {
+    RoutePattern: {
+      InboundPrecedence: 1.0,
+      OutboundPrecedence: 5.0,
       RawText: query,
       PathSegments: [
         {
@@ -18,39 +136,31 @@
         }
       ]
     },
-    DisplayName: HTTP: POST query,
+    DisplayName: HTTP: GET query,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, StubQuery query),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, HttpRequest req),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
-          POST
+          GET
         ]
       },
       {
         Name: querier,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, StubQuery query),
+        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, HttpRequest req),
         IsOptional: true
       },
       {
-        ContentTypes: [
-          application/json
-        ],
-        RequestType: StubQuery,
-        IsOptional: true
-      },
-      {
-        Name: query,
+        Name: req,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, StubQuery query),
+        ParameterInfo: 'req' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, HttpRequest req),
         IsOptional: true
       },
-      {},
       {
-        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_0>d,
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_2>d,
         TypeId: AsyncStateMachineAttribute
       },
       {
@@ -98,7 +208,7 @@
     },
     DisplayName: HTTP: POST command/stub,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(ICommander commander, StubCommand command),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommander commander, StubCommand command),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
@@ -109,7 +219,7 @@
         Name: commander,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'commander' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(ICommander commander, StubCommand command),
+        ParameterInfo: 'commander' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommander commander, StubCommand command),
         IsOptional: true
       },
       {
@@ -123,12 +233,12 @@
         Name: command,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(ICommander commander, StubCommand command),
+        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommander commander, StubCommand command),
         IsOptional: true
       },
       {},
       {
-        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_1>d,
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_3>d,
         TypeId: AsyncStateMachineAttribute
       },
       {
@@ -176,7 +286,7 @@
     },
     DisplayName: HTTP: POST command/stub-with-result,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(ICommander commander, StubWithResultCommand command),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommander commander, StubWithResultCommand command),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
@@ -187,7 +297,7 @@
         Name: commander,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'commander' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(ICommander commander, StubWithResultCommand command),
+        ParameterInfo: 'commander' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommander commander, StubWithResultCommand command),
         IsOptional: true
       },
       {
@@ -201,12 +311,12 @@
         Name: command,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(ICommander commander, StubWithResultCommand command),
+        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommander commander, StubWithResultCommand command),
         IsOptional: true
       },
       {},
       {
-        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_2>d,
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_4>d,
         TypeId: AsyncStateMachineAttribute
       },
       {

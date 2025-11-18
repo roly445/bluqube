@@ -72,13 +72,15 @@ namespace BluQube.SourceGeneration
                         var queryNamespace = x.QueryProcessor.QueryDeclaration.GetNamespace();
                         var queryResultNamespace = x.QueryProcessor.QueryResultDeclaration.GetNamespace(x.SemanticModel);
                         var queryResult = x.QueryProcessor.QueryResultDeclaration.ToString();
+                        var httpMethod = x.QueryProcessor.BluQubeQueryAttributeSyntax.GetHttpMethod() ?? "GET";
 
                         return new QueryProcessorOutputDefinition(
                             queryNamespace,
                             queryResultNamespace,
                             queryName,
                             queryResult,
-                            x.QueryProcessor.BluQubeQueryAttributeSyntax.GetPath() ?? string.Empty);
+                            x.QueryProcessor.BluQubeQueryAttributeSyntax.GetPath() ?? string.Empty,
+                            httpMethod);
                     }).ToList();
 
                 var genericCommandHandlerOutputDefinitions = source.Where(x => x.InputType == InputType.Command)

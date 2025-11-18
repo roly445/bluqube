@@ -1,0 +1,6 @@
+﻿[
+  {
+    Item1: Critical,
+    Item2: Query failed with non status code: BadRequest
+  }
+]

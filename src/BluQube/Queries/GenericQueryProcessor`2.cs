@@ -13,14 +13,40 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
 {
     protected abstract string Path { get; }
 
+    protected virtual string HttpMethod => "GET";
+
     public async Task<QueryResult<TResult>> Handle(TQuery request, CancellationToken cancellationToken)
     {
         var client = httpClientFactory.CreateClient("bluqube");
 
-        var response = await client.PostAsJsonAsync(
-            $"{this.Path}",
-            request,
-            cancellationToken: cancellationToken);
+        HttpResponseMessage response;
+
+        if (this.HttpMethod.Equals("POST", System.StringComparison.OrdinalIgnoreCase))
+        {
+            response = await client.PostAsJsonAsync(
+                $"{this.Path}",
+                request,
+                cancellationToken: cancellationToken);
+        }
+        else
+        {
+            // For GET requests, serialize query properties as query string parameters
+            var queryParams = new System.Collections.Generic.List<string>();
+            foreach (var property in typeof(TQuery).GetProperties())
+            {
+                var value = property.GetValue(request);
+                if (value != null)
+                {
+                    var encodedValue = System.Uri.EscapeDataString(value.ToString() ?? string.Empty);
+                    queryParams.Add($"{property.Name}={encodedValue}");
+                }
+            }
+
+            var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
+            response = await client.GetAsync(
+                $"{this.Path}{queryString}",
+                cancellationToken: cancellationToken);
+        }
 
         if (!response.IsSuccessStatusCode)
         {

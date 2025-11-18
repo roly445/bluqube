@@ -77,21 +77,33 @@ namespace BluQube.SourceGeneration
                             continue;
                         }
 
-                        var bluQubeQueryAttributeSyntax = typeSymbol.GetAttributes()
-                            .Where(x => x.AttributeClass?.Name == "BluQubeQueryAttribute")
-                            .Select(x => x.NamedArguments.SingleOrDefault(y => y.Key == "Path").Value.Value?.ToString())
-                            .SingleOrDefault();
-                        if (bluQubeQueryAttributeSyntax == null)
+                        var bluQubeQueryAttributeSymbol = typeSymbol.GetAttributes()
+                            .FirstOrDefault(x => x.AttributeClass?.Name == "BluQubeQueryAttribute");
+                        if (bluQubeQueryAttributeSymbol == null)
                         {
                             continue;
                         }
+
+                        var pathValue = bluQubeQueryAttributeSymbol.NamedArguments
+                            .SingleOrDefault(y => y.Key == "Path").Value.Value?.ToString();
+                        if (pathValue == null)
+                        {
+                            continue;
+                        }
+
+                        var httpMethodValue = bluQubeQueryAttributeSymbol.NamedArguments
+                            .FirstOrDefault(y => y.Key == "HttpMethod").Value.Value?.ToString() ?? "Get";
+
+                        // Convert enum name to HTTP method string (e.g., "Get" -> "GET", "Post" -> "POST")
+                        var httpMethodString = httpMethodValue.Equals("Post", System.StringComparison.OrdinalIgnoreCase) ? "POST" : "GET";
 
                         queriesToProcess.Add(
                             new EndpointRouteBuilderExtensionsOutputDefinitionProcessor.OutputDefinition.
                                 QueryToProcess(
                                     typeSymbol.Name,
                                     typeSymbol.ContainingNamespace.ToDisplayString(),
-                                    bluQubeQueryAttributeSyntax));
+                                    pathValue,
+                                    httpMethodString));
 
                         var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{container.QueryProcessor.QueryDeclaration.ToString()}ResultConverter"));
                         if (string.IsNullOrWhiteSpace(converterName))

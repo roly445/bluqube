@@ -27,19 +27,21 @@ internal class Generic{data.QueryName}Processor(
         : GenericQueryProcessor<{data.QueryName}, {data.QueryResult}>(httpClientFactory, jsonConverter, logger)
 {{
     protected override string Path => {data.Path};
+    protected override string HttpMethod => ""{data.HttpMethod}"";
 }}");
             return sb.ToString();
         }
 
         internal class OutputDefinition : IOutputDefinition
         {
-            internal OutputDefinition(string queryNamespace, string queryResultNamespace,  string queryName, string queryResult, string path)
+            internal OutputDefinition(string queryNamespace, string queryResultNamespace,  string queryName, string queryResult, string path, string httpMethod = "GET")
             {
                 this.QueryNamespace = queryNamespace;
                 this.QueryResultNamespace = queryResultNamespace;
                 this.QueryName = queryName;
                 this.QueryResult = queryResult;
                 this.Path = path;
+                this.HttpMethod = httpMethod;
             }
 
             public string QueryNamespace { get; }
@@ -51,6 +53,8 @@ internal class Generic{data.QueryName}Processor(
             public string QueryResult { get; }
 
             public string Path { get; }
+
+            public string HttpMethod { get; }
         }
     }
 }

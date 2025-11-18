@@ -5,6 +5,16 @@
     ImplementationType: StubQueryResultConverter
   },
   {
+    ServiceType: QueryResultConverter<StubGetQueryResult>,
+    Lifetime: Transient,
+    ImplementationType: StubGetQueryResultConverter
+  },
+  {
+    ServiceType: QueryResultConverter<StubPostQueryResult>,
+    Lifetime: Transient,
+    ImplementationType: StubPostQueryResultConverter
+  },
+  {
     ServiceType: CommandResultConverter<StubWithResultCommandResult>,
     Lifetime: Transient,
     ImplementationType: StubWithResultCommandResultConverter
