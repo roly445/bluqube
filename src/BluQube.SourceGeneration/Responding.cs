@@ -228,6 +228,7 @@ namespace BluQube.SourceGeneration
                 var openApiCsClass = new StringBuilder();
                 openApiCsClass.AppendLine("using Microsoft.AspNetCore.Builder;");
                 openApiCsClass.AppendLine("using Microsoft.AspNetCore.Http;");
+                openApiCsClass.AppendLine("using Microsoft.AspNetCore.Routing;");
                 openApiCsClass.AppendLine();
                 openApiCsClass.AppendLine($"namespace {responderDefinition.Responder.TypeWithAttribute.GetNamespace()};");
                 openApiCsClass.AppendLine();

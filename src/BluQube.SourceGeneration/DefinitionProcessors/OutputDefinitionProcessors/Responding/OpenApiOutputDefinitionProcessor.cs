@@ -41,7 +41,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                 var pathJson = new StringBuilder();
                 pathJson.AppendLine($"    \"/{query.Path}\": {{");
                 pathJson.AppendLine($"      \"{httpMethod}\": {{");
-                pathJson.AppendLine($"        \"operationId\": \"{query.Query}\",");
+                pathJson.AppendLine($"        \"operationId\": \"{query.QueryNamespace}.{query.Query}\",");
                 pathJson.AppendLine($"        \"tags\": [\"Queries\"],");
 
                 if (requiresAuth)
@@ -56,7 +56,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                     pathJson.AppendLine("          \"required\": true,");
                     pathJson.AppendLine("          \"content\": {");
                     pathJson.AppendLine("            \"application/json\": {");
-                    pathJson.AppendLine($"              \"schema\": {{ \"type\": \"object\", \"description\": \"{query.Query}\" }}");
+                    pathJson.AppendLine($"              \"schema\": {{ \"type\": \"object\", \"description\": \"{query.QueryNamespace}.{query.Query}\" }}");
                     pathJson.AppendLine("            }");
                     pathJson.AppendLine("          }");
                     pathJson.AppendLine("        },");
@@ -86,7 +86,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                 var pathJson = new StringBuilder();
                 pathJson.AppendLine($"    \"/{command.Path}\": {{");
                 pathJson.AppendLine("      \"post\": {");
-                pathJson.AppendLine($"        \"operationId\": \"{command.Command}\",");
+                pathJson.AppendLine($"        \"operationId\": \"{command.CommandNamespace}.{command.Command}\",");
                 pathJson.AppendLine($"        \"tags\": [\"Commands\"],");
 
                 if (requiresAuth)
@@ -99,7 +99,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                 pathJson.AppendLine("          \"required\": true,");
                 pathJson.AppendLine("          \"content\": {");
                 pathJson.AppendLine("            \"application/json\": {");
-                pathJson.AppendLine($"              \"schema\": {{ \"type\": \"object\", \"description\": \"{command.Command}\" }}");
+                pathJson.AppendLine($"              \"schema\": {{ \"type\": \"object\", \"description\": \"{command.CommandNamespace}.{command.Command}\" }}");
                 pathJson.AppendLine("            }");
                 pathJson.AppendLine("          }");
                 pathJson.AppendLine("        },");

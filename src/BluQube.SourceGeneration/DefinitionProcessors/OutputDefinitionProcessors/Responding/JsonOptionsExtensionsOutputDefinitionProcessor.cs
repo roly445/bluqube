@@ -12,11 +12,6 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
             var sb = new StringBuilder();
             sb.AppendLine("using Microsoft.AspNetCore.Http.Json;");
 
-            foreach (var jsonConverterToProcess in data.JsonConvertersToProcess.Select(x => x.ConverterNamespace).Distinct())
-            {
-                sb.AppendLine($"using {jsonConverterToProcess};");
-            }
-
             sb.AppendLine($@"
 namespace {data.Namespace};
 
@@ -24,9 +19,9 @@ internal static class JsonOptionsExtensions
 {{
      internal static JsonOptions AddBluQubeJsonConverters(this JsonOptions jsonOptions)
      {{");
-            foreach (var jsonConverterToProcess in data.JsonConvertersToProcess.Select(x => x.ConverterName).Distinct())
+            foreach (var jsonConverterToProcess in data.JsonConvertersToProcess.Distinct())
             {
-                sb.AppendLine($"            jsonOptions.SerializerOptions.Converters.Add(new {jsonConverterToProcess}());");
+                sb.AppendLine($"            jsonOptions.SerializerOptions.Converters.Add(new {jsonConverterToProcess.ConverterNamespace}.{jsonConverterToProcess.ConverterName}());");
             }
 
             sb.AppendLine(@"            return jsonOptions;

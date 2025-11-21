@@ -15,13 +15,6 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
             sb.AppendLine("using Microsoft.AspNetCore.Builder;");
             sb.AppendLine("using Microsoft.AspNetCore.Http;");
             sb.AppendLine("using Microsoft.AspNetCore.Routing;");
-            foreach (var queryToProcess in data
-                         .QueriesToProcess
-                         .Select(x => x.QueryNamespace)
-                         .Concat(data.CommandsToProcess.Select(x => x.CommandNamespace)).Distinct())
-            {
-                sb.AppendLine($"using {queryToProcess};");
-            }
 
             sb.AppendLine($@"namespace {data.Namespace};
 ");
@@ -39,14 +32,14 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                     sb.AppendLine($"        endpointRouteBuilder.MapGet(\"{queryToProcess.Path}\", async (IQuerier querier, HttpRequest req) => {{");
                     sb.AppendLine("             var dict = req.Query.ToDictionary(k => k.Key, v => (object)v.Value.ToString());");
                     sb.AppendLine($"             var json = System.Text.Json.JsonSerializer.Serialize(dict);");
-                    sb.AppendLine($"             var query = System.Text.Json.JsonSerializer.Deserialize<{queryToProcess.Query}>(json, new System.Text.Json.JsonSerializerOptions {{ PropertyNameCaseInsensitive = true }});");
+                    sb.AppendLine($"             var query = System.Text.Json.JsonSerializer.Deserialize<{queryToProcess.QueryNamespace}.{queryToProcess.Query}>(json, new System.Text.Json.JsonSerializerOptions {{ PropertyNameCaseInsensitive = true }});");
                     sb.AppendLine("             var data = await querier.Send(query!);");
                     sb.AppendLine("             return Results.Json(data);");
                     sb.AppendLine("         });");
                 }
                 else
                 {
-                    sb.AppendLine($"        endpointRouteBuilder.MapPost(\"{queryToProcess.Path}\", async (IQuerier querier, {queryToProcess.Query} query) => {{");
+                    sb.AppendLine($"        endpointRouteBuilder.MapPost(\"{queryToProcess.Path}\", async (IQuerier querier, {queryToProcess.QueryNamespace}.{queryToProcess.Query} query) => {{");
                     sb.AppendLine("             var data = await querier.Send(query);");
                     sb.AppendLine("             return Results.Json(data);");
                     sb.AppendLine("         });");
@@ -57,7 +50,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                          .Select(g => g.First())
                          .ToList())
             {
-                sb.AppendLine($"        endpointRouteBuilder.MapPost(\"{commandToProcess.Path}\", async (ICommander commander, {commandToProcess.Command} command) => {{");
+                sb.AppendLine($"        endpointRouteBuilder.MapPost(\"{commandToProcess.Path}\", async (ICommander commander, {commandToProcess.CommandNamespace}.{commandToProcess.Command} command) => {{");
                 sb.AppendLine("             var data = await commander.Send(command);");
                 sb.AppendLine("             return Results.Json(data);");
                 sb.AppendLine("         });");
