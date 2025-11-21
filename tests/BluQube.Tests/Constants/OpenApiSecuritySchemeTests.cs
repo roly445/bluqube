@@ -47,4 +47,3 @@ public class OpenApiSecuritySchemeTests
         Assert.Equal(expectedName, result);
     }
 }
-

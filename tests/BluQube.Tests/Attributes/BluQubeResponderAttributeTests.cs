@@ -48,5 +48,3 @@ public class BluQubeResponderAttributeTests
         Assert.Equal(OpenApiSecurityScheme.Cookie, attribute.OpenApiSecurityScheme);
     }
 }
-
-

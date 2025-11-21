@@ -60,7 +60,8 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
                             var enumValue = arg.Expression.ToString();
                             if (enumValue.Contains("."))
                             {
-                                enumValue = enumValue.Split('.').Last();
+                                var parts = enumValue.Split('.');
+                                enumValue = parts[parts.Length - 1];
                             }
 
                             // Map enum name to value: Bearer=0, Cookie=1, ApiKey=2
