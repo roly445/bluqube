@@ -1,6 +1,7 @@
 using System.Reflection;
 using BluQube.Attributes;
 using BluQube.Commands;
+using BluQube.Constants;
 using BluQube.Queries;
 using BluQube.Samples.Blazor.Components;
 using BluQube.Samples.Blazor.Infrastructure.CommandValidators;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BluQube.Samples.Blazor;
 
-[BluQubeResponder]
+[BluQubeResponder(OpenApiSecurityScheme = OpenApiSecurityScheme.Cookie)]
 public static class Program
 {
     public static void Main(string[] args)
@@ -74,6 +75,7 @@ public static class Program
             .AddAdditionalAssemblies(typeof(BluQube.Samples.Blazor.Client._Imports).Assembly);
 
         app.AddBluQubeApi();
+        app.MapBluQubeOpenApi();
         app.Run();
     }
 }

@@ -7,6 +7,7 @@ using BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors.R
 using BluQube.SourceGeneration.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using AuthorizerInputDefinition = BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors.AuthorizerInputDefinitionProcessor.InputDefinition;
 using CommandHandlerInputDefinition = BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors.CommandHandlerInputDefinitionProcess.InputDefinition;
 using QueryProcessorInputDefinition = BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors.QueryProcessorInputDefinitionProcess.InputDefinition;
 using ResponderInputDefinition = BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors.ResponderInputDefinitionProcessor.InputDefinition;
@@ -22,6 +23,7 @@ namespace BluQube.SourceGeneration
             Responder,
             QueryProcessor,
             CommandHandler,
+            Authorizer,
         }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -29,17 +31,20 @@ namespace BluQube.SourceGeneration
             var responderInputDefinitionProcessor = new ResponderInputDefinitionProcessor();
             var queryProcessorInputDefinitionProcess = new QueryProcessorInputDefinitionProcess();
             var commandHandlerInputDefinitionProcess = new CommandHandlerInputDefinitionProcess();
+            var authorizerInputDefinitionProcessor = new AuthorizerInputDefinitionProcessor();
 
             var syntaxProvider = context.SyntaxProvider.CreateSyntaxProvider(
                     predicate: (syntaxNode, _) =>
                         responderInputDefinitionProcessor.CanProcess(syntaxNode) ||
                         queryProcessorInputDefinitionProcess.CanProcess(syntaxNode) ||
-                        commandHandlerInputDefinitionProcess.CanProcess(syntaxNode),
+                        commandHandlerInputDefinitionProcess.CanProcess(syntaxNode) ||
+                        authorizerInputDefinitionProcessor.CanProcess(syntaxNode),
                     transform: (ctx, _) => new Container(
                         ctx.SemanticModel,
                         responderInputDefinitionProcessor.Process(ctx.Node),
                         queryProcessorInputDefinitionProcess.Process(ctx.Node),
-                        commandHandlerInputDefinitionProcess.Process(ctx.Node)))
+                        commandHandlerInputDefinitionProcess.Process(ctx.Node),
+                        authorizerInputDefinitionProcessor.Process(ctx.Node)))
                 .Where(result => result.InputType != InputType.None);
 
             var combined = syntaxProvider.Collect().Combine(context.CompilationProvider);
@@ -160,6 +165,30 @@ namespace BluQube.SourceGeneration
                     }
                 }
 
+                // Collect authorization requirements from authorizers
+                var authorizationMap = new Dictionary<string, List<string>>();
+                foreach (var container in source.Left.Where(x => x.InputType == InputType.Authorizer))
+                {
+                    var requestTypeNamespace = container.Authorizer.RequestDeclaration.GetNamespace(container.SemanticModel);
+                    var requestTypeName = container.Authorizer.RequestDeclaration.ToString();
+                    var fullTypeName = $"{requestTypeNamespace}.{requestTypeName}";
+
+                    foreach (var reference in source.Right.References)
+                    {
+                        if (source.Right.GetAssemblyOrModuleSymbol(reference) is not IAssemblySymbol assemblySymbol)
+                        {
+                            continue;
+                        }
+
+                        var typeSymbol = assemblySymbol.GetTypeByMetadataName(fullTypeName);
+                        if (typeSymbol != null)
+                        {
+                            authorizationMap[typeSymbol.Name] = container.Authorizer.Requirements;
+                            break;
+                        }
+                    }
+                }
+
                 var src = endpointRouteBuilderExtensionsOutputDefinitionProcessor.Process(
                     new EndpointRouteBuilderExtensionsOutputDefinitionProcessor.OutputDefinition(
                         responderDefinition.Responder.TypeWithAttribute.GetNamespace(),
@@ -176,6 +205,48 @@ namespace BluQube.SourceGeneration
                 spc.AddSource(
                     $"JsonOptionsExtensions.g.cs",
                     SourceText.From(src, Encoding.UTF8));
+
+                // Generate OpenAPI specification
+                var openApiOutputDefinitionProcessor = new OpenApiOutputDefinitionProcessor();
+                var openApiQueries = queriesToProcess.Select(q =>
+                    new OpenApiOutputDefinitionProcessor.OutputDefinition.QueryToProcess(
+                        q.Query, q.QueryNamespace, q.Path, q.HttpMethod)).ToList();
+                var openApiCommands = commandsToProcess.GroupBy(x => x.Path.ToLower())
+                    .Select(g => g.First())
+                    .Select(c => new OpenApiOutputDefinitionProcessor.OutputDefinition.CommandToProcess(
+                        c.Command, c.CommandNamespace, c.Path)).ToList();
+
+                var openApiJson = openApiOutputDefinitionProcessor.Process(
+                    new OpenApiOutputDefinitionProcessor.OutputDefinition(
+                        responderDefinition.Responder.TypeWithAttribute.GetNamespace(),
+                        openApiQueries,
+                        openApiCommands,
+                        authorizationMap,
+                        responderDefinition.Responder.OpenApiSecurityScheme));
+
+                // Generate C# class with OpenAPI spec
+                var openApiCsClass = new StringBuilder();
+                openApiCsClass.AppendLine("using Microsoft.AspNetCore.Builder;");
+                openApiCsClass.AppendLine("using Microsoft.AspNetCore.Http;");
+                openApiCsClass.AppendLine();
+                openApiCsClass.AppendLine($"namespace {responderDefinition.Responder.TypeWithAttribute.GetNamespace()};");
+                openApiCsClass.AppendLine();
+                openApiCsClass.AppendLine("internal static class OpenApiExtensions");
+                openApiCsClass.AppendLine("{");
+                openApiCsClass.AppendLine("    private const string OpenApiSpec = @\"");
+                openApiCsClass.AppendLine(openApiJson.Replace("\"", "\"\""));
+                openApiCsClass.AppendLine("\";");
+                openApiCsClass.AppendLine();
+                openApiCsClass.AppendLine("    internal static IEndpointRouteBuilder MapBluQubeOpenApi(this IEndpointRouteBuilder endpoints)");
+                openApiCsClass.AppendLine("    {");
+                openApiCsClass.AppendLine("        endpoints.MapGet(\"/openapi.json\", () => Results.Content(OpenApiSpec, \"application/json\"));");
+                openApiCsClass.AppendLine("        return endpoints;");
+                openApiCsClass.AppendLine("    }");
+                openApiCsClass.AppendLine("}");
+
+                spc.AddSource(
+                    "OpenApiExtensions.g.cs",
+                    SourceText.From(openApiCsClass.ToString(), Encoding.UTF8));
             });
         }
 
@@ -220,12 +291,14 @@ namespace BluQube.SourceGeneration
             private readonly ResponderInputDefinition? _responder;
             private readonly QueryProcessorInputDefinition? _queryProcessor;
             private readonly CommandHandlerInputDefinition? _commandHandler;
+            private readonly AuthorizerInputDefinition? _authorizer;
 
             public Container(
                 SemanticModel semanticModel,
                 ResponderInputDefinition? responderInputDefinition,
                 QueryProcessorInputDefinition? queryProcessorInputDefinition,
-                CommandHandlerInputDefinition? commandHandlerInputDefinition)
+                CommandHandlerInputDefinition? commandHandlerInputDefinition,
+                AuthorizerInputDefinition? authorizerInputDefinition)
             {
                 this.SemanticModel = semanticModel;
                 if (responderInputDefinition != null)
@@ -242,6 +315,11 @@ namespace BluQube.SourceGeneration
                 {
                     this.InputType = InputType.CommandHandler;
                     this._commandHandler = commandHandlerInputDefinition;
+                }
+                else if (authorizerInputDefinition != null)
+                {
+                    this.InputType = InputType.Authorizer;
+                    this._authorizer = authorizerInputDefinition;
                 }
                 else
                 {
@@ -286,6 +364,19 @@ namespace BluQube.SourceGeneration
                     if (this.InputType == InputType.CommandHandler)
                     {
                         return this._commandHandler!;
+                    }
+
+                    throw new InvalidOperationException("Invalid input type");
+                }
+            }
+
+            public AuthorizerInputDefinition Authorizer
+            {
+                get
+                {
+                    if (this.InputType == InputType.Authorizer)
+                    {
+                        return this._authorizer!;
                     }
 
                     throw new InvalidOperationException("Invalid input type");
