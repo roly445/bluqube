@@ -54,6 +54,18 @@ internal static class JsonOptionsExtensions
                 internal string ConverterNamespace { get; }
 
                 internal string ConverterName { get; }
+
+                public override bool Equals(object obj)
+                {
+                    return obj is JsonConverterToProcess other &&
+                           this.ConverterNamespace == other.ConverterNamespace &&
+                           this.ConverterName == other.ConverterName;
+                }
+
+                public override int GetHashCode()
+                {
+                    return (this.ConverterNamespace, this.ConverterName).GetHashCode();
+                }
             }
         }
     }
