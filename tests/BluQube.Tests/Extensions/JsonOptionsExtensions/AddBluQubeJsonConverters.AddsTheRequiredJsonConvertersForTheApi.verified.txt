@@ -1,6 +1,14 @@
 ﻿[
   {
     HandleNull: false,
+    Type: QueryResult<StubGetQueryResult>
+  },
+  {
+    HandleNull: false,
+    Type: QueryResult<StubPostQueryResult>
+  },
+  {
+    HandleNull: false,
     Type: QueryResult<StubQueryResult>
   },
   {

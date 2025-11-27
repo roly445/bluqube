@@ -110,7 +110,8 @@ namespace BluQube.SourceGeneration
                                     pathValue,
                                     httpMethodString));
 
-                        var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{container.QueryProcessor.QueryDeclaration.ToString()}ResultConverter"));
+                        var queryResultTypeName = container.QueryProcessor.QueryResultDeclaration.ToString();
+                        var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{queryResultTypeName}Converter"));
                         if (string.IsNullOrWhiteSpace(converterName))
                         {
                             continue;
@@ -149,19 +150,24 @@ namespace BluQube.SourceGeneration
                                         typeSymbol.ContainingNamespace.ToDisplayString(),
                                         bluQubeQueryAttributeSyntax));
 
-                        var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{container.CommandHandler.CommandDeclaration.ToString()}ResultConverter"));
-                        if (string.IsNullOrWhiteSpace(converterName))
+                        // Only look for converters if the command handler has a result type (CommandHandler<T, TResult>)
+                        if (container.CommandHandler.CommandResultDeclaration != null)
                         {
-                            continue;
-                        }
+                            var commandResultTypeName = container.CommandHandler.CommandResultDeclaration.ToString();
+                            var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{commandResultTypeName}Converter"));
+                            if (string.IsNullOrWhiteSpace(converterName))
+                            {
+                                continue;
+                            }
 
-                        var converterType = FindTypeByName(assemblySymbol, converterName);
-                        if (converterType == null)
-                        {
-                            continue;
-                        }
+                            var converterType = FindTypeByName(assemblySymbol, converterName);
+                            if (converterType == null)
+                            {
+                                continue;
+                            }
 
-                        jsonConvertersToProcess.Add(new JsonOptionsExtensionsOutputDefinitionProcessor.OutputDefinition.JsonConverterToProcess(converterType.ContainingNamespace.ToDisplayString(), converterName));
+                            jsonConvertersToProcess.Add(new JsonOptionsExtensionsOutputDefinitionProcessor.OutputDefinition.JsonConverterToProcess(converterType.ContainingNamespace.ToDisplayString(), converterName));
+                        }
                     }
                 }
 

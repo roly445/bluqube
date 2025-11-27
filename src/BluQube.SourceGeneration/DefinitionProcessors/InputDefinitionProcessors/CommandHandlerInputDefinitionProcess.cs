@@ -58,7 +58,11 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
                 case SimpleBaseTypeSyntax simpleBase:
                     if (simpleBase.Type is GenericNameSyntax genericName)
                     {
-                        return new InputDefinition(genericName.TypeArgumentList.Arguments[0]);
+                        var commandDeclaration = genericName.TypeArgumentList.Arguments[0];
+                        var commandResultDeclaration = genericName.TypeArgumentList.Arguments.Count > 1
+                            ? genericName.TypeArgumentList.Arguments[1]
+                            : null;
+                        return new InputDefinition(commandDeclaration, commandResultDeclaration);
                     }
 
                     break;
@@ -66,7 +70,11 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
                 case PrimaryConstructorBaseTypeSyntax primaryBase:
                     if (primaryBase.Type is GenericNameSyntax genericName2)
                     {
-                        return new InputDefinition(genericName2.TypeArgumentList.Arguments[0]);
+                        var commandDeclaration = genericName2.TypeArgumentList.Arguments[0];
+                        var commandResultDeclaration = genericName2.TypeArgumentList.Arguments.Count > 1
+                            ? genericName2.TypeArgumentList.Arguments[1]
+                            : null;
+                        return new InputDefinition(commandDeclaration, commandResultDeclaration);
                     }
 
                     break;
@@ -77,12 +85,15 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
 
         internal class InputDefinition : IInputDefinition
         {
-            public InputDefinition(TypeSyntax commandDeclaration)
+            public InputDefinition(TypeSyntax commandDeclaration, TypeSyntax? commandResultDeclaration = null)
             {
                 this.CommandDeclaration = commandDeclaration;
+                this.CommandResultDeclaration = commandResultDeclaration;
             }
 
             public TypeSyntax CommandDeclaration { get; }
+
+            public TypeSyntax? CommandResultDeclaration { get; }
         }
     }
 }
