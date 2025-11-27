@@ -8,21 +8,6 @@ namespace BluQube.Tests.SourceGeneration
 {
     public class RequestingGeneratorTests
     {
-        private static GeneratorDriver RunGenerator(string code)
-        {
-            var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create(
-                assemblyName: "GeneratorTest",
-                syntaxTrees: new[] { syntaxTree },
-                references: new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) },
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-            var generator = new BluQube.SourceGeneration.Requesting();
-            GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
-            driver = driver.RunGenerators(compilation);
-            return driver;
-        }
-
         [Fact]
         public void SkipsGenerationWithoutRequester()
         {
@@ -61,6 +46,21 @@ internal class EntryPoint { }
                 .ToList();
 
             Assert.Contains(generatedHints, h => h.Contains("GenericCommandHandler.g.cs", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static GeneratorDriver RunGenerator(string code)
+        {
+            var syntaxTree = CSharpSyntaxTree.ParseText(code);
+            var compilation = CSharpCompilation.Create(
+                assemblyName: "GeneratorTest",
+                syntaxTrees: new[] { syntaxTree },
+                references: new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) },
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+            var generator = new BluQube.SourceGeneration.Requesting();
+            GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
+            driver = driver.RunGenerators(compilation);
+            return driver;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace BluQube.Attributes;
 public class BluQubeResponderAttribute : Attribute
 {
     /// <summary>
-    /// Gets or sets the OpenAPI security scheme type.
+    /// Gets the OpenAPI security scheme type.
     /// If not specified, defaults to Bearer when authorization is detected.
     /// </summary>
     public OpenApiSecurityScheme OpenApiSecurityScheme { get; init; } = OpenApiSecurityScheme.Bearer;

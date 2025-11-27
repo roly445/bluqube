@@ -34,7 +34,7 @@ internal class Generic{data.QueryName}Processor(
 
         internal class OutputDefinition : IOutputDefinition
         {
-            internal OutputDefinition(string queryNamespace, string queryResultNamespace,  string queryName, string queryResult, string path, string httpMethod = "GET")
+            internal OutputDefinition(string queryNamespace, string queryResultNamespace, string queryName, string queryResult, string path, string httpMethod = "GET")
             {
                 this.QueryNamespace = queryNamespace;
                 this.QueryResultNamespace = queryResultNamespace;
