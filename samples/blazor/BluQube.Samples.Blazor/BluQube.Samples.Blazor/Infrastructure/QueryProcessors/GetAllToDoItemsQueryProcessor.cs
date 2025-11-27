@@ -5,14 +5,14 @@ using BluQube.Samples.Blazor.Infrastructure.Data;
 
 namespace BluQube.Samples.Blazor.Infrastructure.QueryProcessors;
 
-public class GetAllToDoItemsQueryProcessor(ITodoService todoService) : IQueryProcessor<GetAllToDoItemsQuery, GetAllToDoItemsQueryResult>
+public class GetAllToDoItemsQueryProcessor(ITodoService todoService) : IQueryProcessor<GetAllToDoItemsQuery, GetAllToDoItemsQueryAnswer>
 {
-    public Task<QueryResult<GetAllToDoItemsQueryResult>> Handle(GetAllToDoItemsQuery request, CancellationToken cancellationToken)
+    public Task<QueryResult<GetAllToDoItemsQueryAnswer>> Handle(GetAllToDoItemsQuery request, CancellationToken cancellationToken)
     {
-        var result = new GetAllToDoItemsQueryResult(
-            todoService.Todos.Select(x => new GetAllToDoItemsQueryResult.ToDoItem(x.Id, x.Title, x.IsCompleted))
+        var result = new GetAllToDoItemsQueryAnswer(
+            todoService.Todos.Select(x => new GetAllToDoItemsQueryAnswer.ToDoItem(x.Id, x.Title, x.IsCompleted))
                 .ToList());
 
-        return Task.FromResult(QueryResult<GetAllToDoItemsQueryResult>.Succeeded(result));
+        return Task.FromResult(QueryResult<GetAllToDoItemsQueryAnswer>.Succeeded(result));
     }
 }

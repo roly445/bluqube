@@ -41,20 +41,27 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
 
         protected override InputDefinition ProcessInternal(SyntaxNode syntaxNode)
         {
-            return new InputDefinition(((ClassDeclarationSyntax)syntaxNode).BaseList!
-                .Types.Select(type =>
-                    ((GenericNameSyntax)((SimpleBaseTypeSyntax)type).Type).TypeArgumentList.Arguments[0])
-                .First());
+            var baseList = ((ClassDeclarationSyntax)syntaxNode).BaseList!;
+            var queryProcessorType = baseList.Types
+                .Select(type => ((GenericNameSyntax)((SimpleBaseTypeSyntax)type).Type))
+                .First(g => g.Identifier.Text == "IQueryProcessor");
+
+            return new InputDefinition(
+                queryProcessorType.TypeArgumentList.Arguments[0],
+                queryProcessorType.TypeArgumentList.Arguments[1]);
         }
 
         internal class InputDefinition : IInputDefinition
         {
-            public InputDefinition(TypeSyntax queryDeclaration)
+            public InputDefinition(TypeSyntax queryDeclaration, TypeSyntax queryResultDeclaration)
             {
                 this.QueryDeclaration = queryDeclaration;
+                this.QueryResultDeclaration = queryResultDeclaration;
             }
 
             public TypeSyntax QueryDeclaration { get; }
+
+            public TypeSyntax QueryResultDeclaration { get; }
         }
     }
 }
