@@ -44,9 +44,24 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                 pathJson.AppendLine($"        \"operationId\": \"{query.QueryNamespace}.{query.Query}\",");
                 pathJson.AppendLine($"        \"tags\": [\"Queries\"],");
 
+                var descriptionParts = new List<string>();
                 if (requiresAuth)
                 {
-                    pathJson.AppendLine($"        \"description\": \"Requires: {requirements}\",");
+                    descriptionParts.Add($"Requires: {requirements}");
+                }
+
+                if (httpMethod.Equals("get"))
+                {
+                    descriptionParts.Add("Experimental: GET queries are experimental");
+                }
+
+                if (descriptionParts.Count > 0)
+                {
+                    pathJson.AppendLine("        \"description\": \"" + string.Join(" | ", descriptionParts).Replace("\"", "\\\"") + "\",");
+                }
+
+                if (requiresAuth)
+                {
                     pathJson.AppendLine("        \"security\": [{ \"Bearer\": [] }],");
                 }
 

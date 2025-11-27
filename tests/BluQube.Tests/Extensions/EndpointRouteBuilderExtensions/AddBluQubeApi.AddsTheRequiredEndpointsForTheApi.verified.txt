@@ -46,9 +46,6 @@
         TypeId: AsyncStateMachineAttribute
       },
       {
-        TypeId: DebuggerStepThroughAttribute
-      },
-      {
         Route: query-get
       }
     ],
@@ -77,35 +74,40 @@
         }
       ]
     },
-    DisplayName: HTTP: GET query-post,
+    DisplayName: HTTP: POST query-post,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, HttpRequest req),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, StubQueryPost query),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
-          GET
+          POST
         ]
       },
       {
         Name: querier,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, HttpRequest req),
+        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, StubQueryPost query),
         IsOptional: true
       },
       {
-        Name: req,
-        HasTryParse: false,
-        HasBindAsync: false,
-        ParameterInfo: 'req' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, HttpRequest req),
+        ContentTypes: [
+          application/json
+        ],
+        RequestType: StubQueryPost,
         IsOptional: true
       },
+      {
+        Name: query,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, StubQueryPost query),
+        IsOptional: true
+      },
+      {},
       {
         StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_1>d,
         TypeId: AsyncStateMachineAttribute
-      },
-      {
-        TypeId: DebuggerStepThroughAttribute
       },
       {
         Route: query-post
@@ -136,35 +138,40 @@
         }
       ]
     },
-    DisplayName: HTTP: GET query,
+    DisplayName: HTTP: POST query,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, HttpRequest req),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, StubQuery query),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
-          GET
+          POST
         ]
       },
       {
         Name: querier,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, HttpRequest req),
+        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, StubQuery query),
         IsOptional: true
       },
       {
-        Name: req,
-        HasTryParse: false,
-        HasBindAsync: false,
-        ParameterInfo: 'req' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, HttpRequest req),
+        ContentTypes: [
+          application/json
+        ],
+        RequestType: StubQuery,
         IsOptional: true
       },
+      {
+        Name: query,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, StubQuery query),
+        IsOptional: true
+      },
+      {},
       {
         StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_2>d,
         TypeId: AsyncStateMachineAttribute
-      },
-      {
-        TypeId: DebuggerStepThroughAttribute
       },
       {
         Route: query
@@ -242,9 +249,6 @@
         TypeId: AsyncStateMachineAttribute
       },
       {
-        TypeId: DebuggerStepThroughAttribute
-      },
-      {
         Route: command/stub
       }
     ],
@@ -318,9 +322,6 @@
       {
         StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_4>d,
         TypeId: AsyncStateMachineAttribute
-      },
-      {
-        TypeId: DebuggerStepThroughAttribute
       },
       {
         Route: command/stub-with-result

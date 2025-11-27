@@ -72,7 +72,7 @@ namespace BluQube.SourceGeneration
                         var queryNamespace = x.QueryProcessor.QueryDeclaration.GetNamespace();
                         var queryResultNamespace = x.QueryProcessor.QueryResultDeclaration.GetNamespace(x.SemanticModel);
                         var queryResult = x.QueryProcessor.QueryResultDeclaration.ToString();
-                        var httpMethod = x.QueryProcessor.BluQubeQueryAttributeSyntax.GetHttpMethod() ?? "GET";
+                        var httpMethod = x.QueryProcessor.BluQubeQueryAttributeSyntax.GetHttpMethod() ?? "POST";
 
                         return new QueryProcessorOutputDefinition(
                             queryNamespace,

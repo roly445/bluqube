@@ -9,8 +9,8 @@ public class BluQubeQueryAttribute : Attribute
 
     /// <summary>
     /// Gets the HTTP request method for this query endpoint.
-    /// Defaults to GET for RESTful query semantics (simple, idempotent reads).
-    /// Set to <see cref="HttpRequestMethod.Post"/> to override with POST when body-based serialization is required.
+    /// Defaults to POST for reliable body-based serialization.
+    /// GET is experimental and should only be used for simple, idempotent reads.
     /// </summary>
-    public HttpRequestMethod HttpMethod { get; init; } = HttpRequestMethod.Get;
+    public HttpRequestMethod HttpMethod { get; init; } = HttpRequestMethod.Post;
 }

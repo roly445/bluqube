@@ -97,10 +97,13 @@ namespace BluQube.SourceGeneration
                         }
 
                         var httpMethodValue = bluQubeQueryAttributeSymbol.NamedArguments
-                            .FirstOrDefault(y => y.Key == "HttpMethod").Value.Value?.ToString() ?? "Get";
+                            .FirstOrDefault(y => y.Key == "HttpMethod").Value.Value;
 
-                        // Convert enum name to HTTP method string (e.g., "Get" -> "GET", "Post" -> "POST")
-                        var httpMethodString = httpMethodValue.Equals("Post", System.StringComparison.OrdinalIgnoreCase) ? "POST" : "GET";
+                        // Convert enum value to HTTP method string
+                        // HttpRequestMethod enum: 0 = Get, 1 = Post
+                        // Default to POST (1) if not specified
+                        var httpMethodInt = httpMethodValue != null ? System.Convert.ToInt32(httpMethodValue) : 1;
+                        var httpMethodString = httpMethodInt == 0 ? "GET" : "POST";
 
                         queriesToProcess.Add(
                             new EndpointRouteBuilderExtensionsOutputDefinitionProcessor.OutputDefinition.
