@@ -20,7 +20,7 @@
     },
     DisplayName: HTTP: GET query-get,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, HttpRequest req),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, HttpRequest req),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
@@ -28,17 +28,17 @@
         ]
       },
       {
-        Name: querier,
+        Name: queryRunner,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, HttpRequest req),
+        ParameterInfo: 'queryRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, HttpRequest req),
         IsOptional: true
       },
       {
         Name: req,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'req' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQuerier querier, HttpRequest req),
+        ParameterInfo: 'req' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, HttpRequest req),
         IsOptional: true
       },
       {
@@ -79,7 +79,7 @@
     },
     DisplayName: HTTP: POST query-post,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, StubQueryPost query),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQueryRunner queryRunner, StubQueryPost query),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
@@ -87,10 +87,10 @@
         ]
       },
       {
-        Name: querier,
+        Name: queryRunner,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, StubQueryPost query),
+        ParameterInfo: 'queryRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQueryRunner queryRunner, StubQueryPost query),
         IsOptional: true
       },
       {
@@ -104,7 +104,7 @@
         Name: query,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQuerier querier, StubQueryPost query),
+        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQueryRunner queryRunner, StubQueryPost query),
         IsOptional: true
       },
       {},
@@ -146,7 +146,7 @@
     },
     DisplayName: HTTP: POST query,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, StubQuery query),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQueryRunner queryRunner, StubQuery query),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
@@ -154,10 +154,10 @@
         ]
       },
       {
-        Name: querier,
+        Name: queryRunner,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'querier' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, StubQuery query),
+        ParameterInfo: 'queryRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQueryRunner queryRunner, StubQuery query),
         IsOptional: true
       },
       {
@@ -171,7 +171,7 @@
         Name: query,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQuerier querier, StubQuery query),
+        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQueryRunner queryRunner, StubQuery query),
         IsOptional: true
       },
       {},
@@ -224,7 +224,7 @@
     },
     DisplayName: HTTP: POST command/stub,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommander commander, StubCommand command),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommandRunner commandRunner, StubCommand command),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
@@ -232,10 +232,10 @@
         ]
       },
       {
-        Name: commander,
+        Name: commandRunner,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'commander' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommander commander, StubCommand command),
+        ParameterInfo: 'commandRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommandRunner commandRunner, StubCommand command),
         IsOptional: true
       },
       {
@@ -249,7 +249,7 @@
         Name: command,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommander commander, StubCommand command),
+        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommandRunner commandRunner, StubCommand command),
         IsOptional: true
       },
       {},
@@ -302,7 +302,7 @@
     },
     DisplayName: HTTP: POST command/stub-with-result,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommander commander, StubWithResultCommand command),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommandRunner commandRunner, StubWithResultCommand command),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
@@ -310,10 +310,10 @@
         ]
       },
       {
-        Name: commander,
+        Name: commandRunner,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'commander' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommander commander, StubWithResultCommand command),
+        ParameterInfo: 'commandRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommandRunner commandRunner, StubWithResultCommand command),
         IsOptional: true
       },
       {
@@ -327,7 +327,7 @@
         Name: command,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommander commander, StubWithResultCommand command),
+        ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommandRunner commandRunner, StubWithResultCommand command),
         IsOptional: true
       },
       {},

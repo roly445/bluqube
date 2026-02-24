@@ -12,8 +12,8 @@ public class AddBluQubeApi
     public async Task AddsTheRequiredEndpointsForTheApi()
     {
         var builder = WebApplication.CreateBuilder();
-        builder.Services.AddScoped<IQuerier>(_ => Mock.Of<IQuerier>());
-        builder.Services.AddScoped<ICommander>(_ => Mock.Of<ICommander>());
+        builder.Services.AddScoped<IQueryRunner>(_ => Mock.Of<IQueryRunner>());
+        builder.Services.AddScoped<ICommandRunner>(_ => Mock.Of<ICommandRunner>());
         WebApplication app = builder.Build();
 
         app.AddBluQubeApi();

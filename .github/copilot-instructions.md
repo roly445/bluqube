@@ -30,7 +30,7 @@ BluQube is a lightweight CQRS-style framework for Blazor that enables "write onc
 ## Key files to understand first
 
 - `README.md` — overview and quick examples
-- `src/BluQube/Commands/Commander.cs` — entry point for sending commands; catches `UnauthorizedException` from MediatR behaviors
+- `src/BluQube/Commands/CommandRunner.cs` — entry point for sending commands; catches `UnauthorizedException` from MediatR behaviors
 - `src/BluQube/Commands/CommandHandler<T>.cs` — base class showing validation pipeline and `PostHandle` extension hook
 - `src/BluQube/Commands/CommandResult*.cs` — result types (Success/Failed/Invalid/Unauthorized); uses `MaybeMonad` for optional error data
 - `src/BluQube/Queries/GenericQueryProcessor<TQuery, TResult>.cs` — query execution with error handling
@@ -63,11 +63,11 @@ BluQube is a lightweight CQRS-style framework for Blazor that enables "write onc
 - Enabled via `builder.Services.AddMediatorAuthorization(assembly)`
 - Apply `[Authorize]` or `[AuthorizeAttribute("PolicyName")]` to handlers
 - Commands with `PolicyName` property will check that policy; unauthorized requests return `CommandResult.Unauthorized()`
-- `Commander.Send` catches `UnauthorizedException` and converts to result
+- `CommandRunner.Send` catches `UnauthorizedException` and converts to result
 
 **Source Generation & JSON:**
 - Attributes on commands/queries trigger generators to emit HTTP requesters (client) and responders (server endpoints)
-- `Commander.cs` and `Querier.cs` use `ISender`/`IReceiver` from MediatR
+- `CommandRunner.cs` and `QueryRunner.cs` use `ISender`/`IReceiver` from MediatR
 - JSON converters (`CommandResultConverter`, `CommandResultConverter<T>`) handle polymorphic serialization
 - Register converters via `options.AddBluQubeJsonConverters()` in `Configure<JsonOptions>`
 
@@ -111,7 +111,7 @@ Run these from the repository root:
 | Component | Purpose | Usage |
 |-----------|---------|-------|
 | **FluentValidation** | Validator definitions | Inherit `AbstractValidator<T>`, register with `AddValidatorsFromAssemblyContaining<T>()` |
-| **MediatR** | Pipeline/handler dispatch | `ISender` injected into `Commander`; behaviors for authorization |
+| **MediatR** | Pipeline/handler dispatch | `ISender` injected into `CommandRunner`; behaviors for authorization |
 | **MediatR.Behaviors.Authorization** | Authorization pipeline | `[Authorize]` attributes, `UnauthorizedException` handling |
 | **MaybeMonad** | Optional error data | `Maybe<BluQubeErrorData>` in `CommandResult` |
 | **Blazor (WASM + Server)** | Runtime | Sample uses `AddInteractiveWebAssemblyComponents()` for dual render mode |

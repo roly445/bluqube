@@ -48,40 +48,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
 
             if (responderAttribute != null)
             {
-                // Extract OpenApiSecurityScheme from attribute arguments
-                var securityScheme = 0; // default to Bearer (enum value 0)
-                if (responderAttribute.ArgumentList?.Arguments.Count > 0)
-                {
-                    foreach (var arg in responderAttribute.ArgumentList.Arguments)
-                    {
-                        if (arg.NameEquals?.Name.ToString() == "OpenApiSecurityScheme")
-                        {
-                            // Parse enum: OpenApiSecurityScheme.Cookie -> "Cookie" -> 1
-                            var enumValue = arg.Expression.ToString();
-                            if (enumValue.Contains("."))
-                            {
-                                var parts = enumValue.Split('.');
-                                enumValue = parts[parts.Length - 1];
-                            }
-
-                            // Map enum name to value: Bearer=0, Cookie=1, ApiKey=2
-                            switch (enumValue.Trim())
-                            {
-                                case "Bearer":
-                                    securityScheme = 0;
-                                    break;
-                                case "Cookie":
-                                    securityScheme = 1;
-                                    break;
-                                case "ApiKey":
-                                    securityScheme = 2;
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                return new InputDefinition(typeDeclarationSyntax, securityScheme);
+                return new InputDefinition(typeDeclarationSyntax);
             }
 
             return null;
@@ -89,15 +56,12 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
 
         internal class InputDefinition : IInputDefinition
         {
-            public InputDefinition(TypeDeclarationSyntax typeWithAttribute, int openApiSecurityScheme)
+            public InputDefinition(TypeDeclarationSyntax typeWithAttribute)
             {
                 this.TypeWithAttribute = typeWithAttribute;
-                this.OpenApiSecurityScheme = openApiSecurityScheme;
             }
 
             public TypeDeclarationSyntax TypeWithAttribute { get; }
-
-            public int OpenApiSecurityScheme { get; }
         }
     }
 }

@@ -1,7 +1,6 @@
 using System.Reflection;
 using BluQube.Attributes;
 using BluQube.Commands;
-using BluQube.Constants;
 using BluQube.Queries;
 using BluQube.Samples.Blazor.Components;
 using BluQube.Samples.Blazor.Infrastructure.CommandValidators;
@@ -14,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BluQube.Samples.Blazor;
 
-[BluQubeResponder(OpenApiSecurityScheme = OpenApiSecurityScheme.Cookie)]
+[BluQubeResponder]
 public static class Program
 {
     public static void Main(string[] args)
@@ -44,8 +43,8 @@ public static class Program
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<App>());
         builder.Services.AddMediatorAuthorization(typeof(App).Assembly);
         builder.Services.AddAuthorizersFromAssembly(Assembly.GetExecutingAssembly());
-        builder.Services.AddScoped<ICommander, Commander>();
-        builder.Services.AddScoped<IQuerier, Querier>();
+        builder.Services.AddScoped<ICommandRunner, CommandRunner>();
+        builder.Services.AddScoped<IQueryRunner, QueryRunner>();
         builder.Services.AddSingleton<ITodoService, TodoService>();
 
         builder.Services.Configure<JsonOptions>(options =>
@@ -75,7 +74,6 @@ public static class Program
             .AddAdditionalAssemblies(typeof(BluQube.Samples.Blazor.Client._Imports).Assembly);
 
         app.AddBluQubeApi();
-        app.MapBluQubeOpenApi();
         app.Run();
     }
 }
