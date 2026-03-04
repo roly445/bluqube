@@ -25,25 +25,10 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
      {{");
             foreach (var queryToProcess in data.QueriesToProcess)
             {
-                var isGet = queryToProcess.HttpMethod.Equals("GET", System.StringComparison.OrdinalIgnoreCase);
-                if (isGet)
-                {
-                    // For GET we accept the HttpRequest and build the query object from query parameters
-                    sb.AppendLine($"        endpointRouteBuilder.MapGet(\"{queryToProcess.Path}\", async (IQueryRunner queryRunner, HttpRequest req) => {{");
-                    sb.AppendLine("             var dict = req.Query.ToDictionary(k => k.Key, v => (object)v.Value.ToString());");
-                    sb.AppendLine($"             var json = System.Text.Json.JsonSerializer.Serialize(dict);");
-                    sb.AppendLine($"             var query = System.Text.Json.JsonSerializer.Deserialize<{queryToProcess.QueryNamespace}.{queryToProcess.Query}>(json, new System.Text.Json.JsonSerializerOptions {{ PropertyNameCaseInsensitive = true }});");
-                    sb.AppendLine("             var data = await queryRunner.Send(query!);");
-                    sb.AppendLine("             return Results.Json(data);");
-                    sb.AppendLine("         });");
-                }
-                else
-                {
-                    sb.AppendLine($"        endpointRouteBuilder.MapPost(\"{queryToProcess.Path}\", async (IQueryRunner queryRunner, {queryToProcess.QueryNamespace}.{queryToProcess.Query} query) => {{");
-                    sb.AppendLine("             var data = await queryRunner.Send(query);");
-                    sb.AppendLine("             return Results.Json(data);");
-                    sb.AppendLine("         });");
-                }
+                sb.AppendLine($"        endpointRouteBuilder.MapPost(\"{queryToProcess.Path}\", async (IQueryRunner queryRunner, {queryToProcess.QueryNamespace}.{queryToProcess.Query} query) => {{");
+                sb.AppendLine("             var data = await queryRunner.Send(query);");
+                sb.AppendLine("             return Results.Json(data);");
+                sb.AppendLine("         });");
             }
 
             foreach (var commandToProcess in data.CommandsToProcess.GroupBy(x => x.Path.ToLower())
@@ -79,12 +64,11 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
 
             internal class QueryToProcess
             {
-                public QueryToProcess(string query, string queryNamespace, string path, string httpMethod)
+                public QueryToProcess(string query, string queryNamespace, string path)
                 {
                     this.Query = query;
                     this.QueryNamespace = queryNamespace;
                     this.Path = path;
-                    this.HttpMethod = httpMethod;
                 }
 
                 internal string Query { get; }
@@ -92,8 +76,6 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                 internal string QueryNamespace { get; }
 
                 internal string Path { get; }
-
-                internal string HttpMethod { get; }
             }
 
             internal class CommandToProcess

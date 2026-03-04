@@ -18,29 +18,37 @@
         }
       ]
     },
-    DisplayName: HTTP: GET query-get,
+    DisplayName: HTTP: POST query-get,
     Metadata: [
-      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, HttpRequest req),
+      EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, StubQueryGet query),
       {
         AcceptCorsPreflight: false,
         HttpMethods: [
-          GET
+          POST
         ]
       },
       {
         Name: queryRunner,
         HasTryParse: false,
         HasBindAsync: false,
-        ParameterInfo: 'queryRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, HttpRequest req),
+        ParameterInfo: 'queryRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, StubQueryGet query),
         IsOptional: true
       },
       {
-        Name: req,
-        HasTryParse: false,
-        HasBindAsync: false,
-        ParameterInfo: 'req' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, HttpRequest req),
+        ContentTypes: [
+          application/json
+        ],
+        RequestType: StubQueryGet,
         IsOptional: true
       },
+      {
+        Name: query,
+        HasTryParse: false,
+        HasBindAsync: false,
+        ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, StubQueryGet query),
+        IsOptional: true
+      },
+      {},
       {
         StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_0>d,
         TypeId: AsyncStateMachineAttribute

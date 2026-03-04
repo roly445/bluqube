@@ -151,21 +151,16 @@ public class AddTodoCommandHandler(
 
 **Define a query:**
 ```csharp
-using BluQube.Constants;
-
-// Default POST method for body-based serialization
 [BluQubeQuery(Path = "queries/get-todos")]
 public record GetTodosQuery : IQuery<GetTodosResult>;
 
-// Override to GET for RESTful read semantics (requires simple query types)
-[BluQubeQuery(Path = "queries/get-todos-simple", HttpMethod = HttpRequestMethod.Get)]
+[BluQubeQuery(Path = "queries/get-todos-simple")]
 public record GetTodosSimpleQuery : IQuery<GetTodosResult>;
 
 public record GetTodosResult(List<TodoItem> Items) : IQueryResult;
 ```
-- `HttpMethod` defaults to `HttpRequestMethod.Post` for body-based serialization
-- Set to `HttpRequestMethod.Get` for RESTful query endpoints (suitable for simple query types)
-- Endpoint generation automatically uses `MapPost` or `MapGet` based on configuration
+- All queries use POST for reliable body-based serialization
+- Endpoint generation automatically uses `MapPost`
 
 **Implement a query processor:**
 ```csharp

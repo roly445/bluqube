@@ -91,22 +91,12 @@ namespace BluQube.SourceGeneration
                             continue;
                         }
 
-                        var httpMethodValue = bluQubeQueryAttributeSymbol.NamedArguments
-                            .FirstOrDefault(y => y.Key == "HttpMethod").Value.Value;
-
-                        // Convert enum value to HTTP method string
-                        // HttpRequestMethod enum: 0 = Get, 1 = Post
-                        // Default to POST (1) if not specified
-                        var httpMethodInt = httpMethodValue != null ? System.Convert.ToInt32(httpMethodValue) : 1;
-                        var httpMethodString = httpMethodInt == 0 ? "GET" : "POST";
-
                         queriesToProcess.Add(
                             new EndpointRouteBuilderExtensionsOutputDefinitionProcessor.OutputDefinition.
                                 QueryToProcess(
                                     typeSymbol.Name,
                                     typeSymbol.ContainingNamespace.ToDisplayString(),
-                                    pathValue,
-                                    httpMethodString));
+                                    pathValue));
 
                         var queryResultTypeName = container.QueryProcessor.QueryResultDeclaration.ToString();
                         var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{queryResultTypeName}Converter"));

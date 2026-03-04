@@ -13,7 +13,7 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
 {
     protected abstract string Path { get; }
 
-    protected virtual string HttpMethod => "GET";
+    protected virtual string HttpMethod => "POST";
 
     public async Task<QueryResult<TResult>> Handle(TQuery request, CancellationToken cancellationToken)
     {
