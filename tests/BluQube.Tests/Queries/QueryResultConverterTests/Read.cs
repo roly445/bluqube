@@ -10,6 +10,7 @@ public class Read
     [InlineData("{\"Status\":1}", "Failed")]
     [InlineData("{\"Status\":2,\"Data\":{\"Result\":\"result\"}}", "Succeeded")]
     [InlineData("{\"Status\":3}", "NotAuthorized")]
+    [InlineData("{\"Status\":4}", "NotFound")]
     public async Task GeneratesAValidCommandResultWhenJsonIsValid(string json, string name)
     {
         // Arrange

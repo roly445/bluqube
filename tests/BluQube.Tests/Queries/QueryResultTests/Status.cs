@@ -43,4 +43,17 @@ public class Status
         // Assert
         await Verify(result);
     }
+
+    [Fact]
+    public async Task ReturnsNotFoundWhenNotFound()
+    {
+        // Arrange
+        var commandResult = QueryResult<IQueryResult>.NotFound();
+
+        // Act
+        var result = commandResult.Status;
+
+        // Assert
+        await Verify(result);
+    }
 }

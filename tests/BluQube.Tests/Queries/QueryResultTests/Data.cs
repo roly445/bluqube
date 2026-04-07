@@ -43,4 +43,17 @@ public class Data
         // Assert
         await Verify(exception);
     }
+
+    [Fact]
+    public async Task ThrowsInvalidOperationExceptionWhenNotFound()
+    {
+        // Arrange
+        var queryResult = QueryResult<IQueryResult>.NotFound();
+
+        // Act
+        var exception = Record.Exception(() => queryResult.Data);
+
+        // Assert
+        await Verify(exception);
+    }
 }

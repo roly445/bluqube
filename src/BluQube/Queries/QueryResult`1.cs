@@ -43,4 +43,9 @@ public class QueryResult<T>
     {
         return new QueryResult<T>(Maybe<T>.Nothing, QueryResultStatus.Unauthorized);
     }
+
+    public static QueryResult<T> NotFound()
+    {
+        return new QueryResult<T>(Maybe<T>.Nothing, QueryResultStatus.NotFound);
+    }
 }
