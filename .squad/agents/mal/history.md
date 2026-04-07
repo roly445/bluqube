@@ -33,3 +33,14 @@
 ## Learnings
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
+
+### 2026-04-08 — QueryResult<T> enum values and JSON serialization
+
+Reviewed external request to add `NotFound()` and `Empty()` to `QueryResult<T>`. Key findings:
+
+- **QueryResultStatus uses integer serialization** — JSON format is `{"Status":2}` not `{"Status":"Succeeded"}`. Adding new enum values requires explicit integer assignment to avoid breaking existing clients.
+- **Current API has no convenience properties** — No `IsSucceeded`, `IsFailed` etc. Only `Status` is exposed. Keep it that way unless there's strong demand.
+- **Source generators don't inspect QueryResultStatus** — They treat `QueryResult<T>` as opaque, so enum changes don't cascade to generated code.
+- **Data property guard is already defensive** — Only allows access when `Status == Succeeded`, so new statuses automatically throw. No code change needed.
+
+Decision: Approved `NotFound()` only. Rejected `Empty()` (redundant with `Succeeded(Array.Empty<T>())`). Rejected bundled convenience properties (separate request).
