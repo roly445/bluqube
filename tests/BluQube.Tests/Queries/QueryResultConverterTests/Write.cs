@@ -65,4 +65,17 @@ public class Write
         // Assert
         await Verify(result);
     }
+
+    [Fact]
+    public async Task GeneratesValidJsonWhenEmpty()
+    {
+        // Arrange
+        var queryResult = QueryResult<StubQueryResult>.Empty();
+
+        // Act
+        var result = JsonSerializer.Serialize(queryResult, this._options);
+
+        // Assert
+        await Verify(result);
+    }
 }

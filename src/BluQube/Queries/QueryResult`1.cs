@@ -16,6 +16,16 @@ public class QueryResult<T>
 
     public QueryResultStatus Status { get; }
 
+    public bool IsSucceeded => this.Status == QueryResultStatus.Succeeded;
+
+    public bool IsFailed => this.Status == QueryResultStatus.Failed;
+
+    public bool IsUnauthorized => this.Status == QueryResultStatus.Unauthorized;
+
+    public bool IsNotFound => this.Status == QueryResultStatus.NotFound;
+
+    public bool IsEmpty => this.Status == QueryResultStatus.Empty;
+
     public T Data
     {
         get
@@ -47,5 +57,10 @@ public class QueryResult<T>
     public static QueryResult<T> NotFound()
     {
         return new QueryResult<T>(Maybe<T>.Nothing, QueryResultStatus.NotFound);
+    }
+
+    public static QueryResult<T> Empty()
+    {
+        return new QueryResult<T>(Maybe<T>.Nothing, QueryResultStatus.Empty);
     }
 }

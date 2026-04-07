@@ -61,6 +61,8 @@ public abstract class QueryResultConverter<TResult> : JsonConverter<QueryResult<
                 return QueryResult<TResult>.Unauthorized();
             case QueryResultStatus.NotFound:
                 return QueryResult<TResult>.NotFound();
+            case QueryResultStatus.Empty:
+                return QueryResult<TResult>.Empty();
             default:
                 throw new JsonException();
         }

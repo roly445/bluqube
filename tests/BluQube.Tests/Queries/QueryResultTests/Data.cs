@@ -56,4 +56,17 @@ public class Data
         // Assert
         await Verify(exception);
     }
+
+    [Fact]
+    public async Task ThrowsInvalidOperationExceptionWhenEmpty()
+    {
+        // Arrange
+        var queryResult = QueryResult<IQueryResult>.Empty();
+
+        // Act
+        var exception = Record.Exception(() => queryResult.Data);
+
+        // Assert
+        await Verify(exception);
+    }
 }

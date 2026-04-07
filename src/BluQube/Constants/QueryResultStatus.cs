@@ -7,4 +7,5 @@ public enum QueryResultStatus
     Succeeded = 2,
     Unauthorized = 3,
     NotFound = 4,
+    Empty = 5,
 }
