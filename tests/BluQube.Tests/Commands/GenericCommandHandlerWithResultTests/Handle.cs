@@ -163,7 +163,7 @@ public class Handle
         var command = new StubWithResultCommand("data");
 
         this._handlerMock.SetupRequest(HttpMethod.Post, "https://bluqube.local/api/command/stub-with-result")
-            .ReturnsResponse(HttpStatusCode.OK, "{\"Data\": {}}");
+            .ReturnsResponse(HttpStatusCode.OK, "{\"Status\": 3, \"Data\": {}}");
 
         Mock.Get(this._httpClientFactory).Setup(x => x.CreateClient("bluqube"))
             .Returns(() =>
