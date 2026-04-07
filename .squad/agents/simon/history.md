@@ -27,6 +27,17 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-04-10 — QueryResult<T> Empty() + five boolean property tests written (pre-Kaylee)
+
+- **Tests written ahead of implementation** — Kaylee is implementing `Empty()`, `QueryResultStatus.Empty = 5`, and the five boolean properties (`IsSucceeded`, `IsFailed`, `IsUnauthorized`, `IsNotFound`, `IsEmpty`) in parallel. Tests were written against the approved spec (MAL-2026-004) and snapshot files pre-created so everything is ready to compile and pass when her branch lands.
+- **Andrew's placement overrode Mal's structure** — Mal's decision doc called for a new `Properties.cs` file with `[Theory]` tests. Andrew's task brief specified adding the boolean property tests directly to `Status.cs` using individual `[Fact]` methods with `Assert.True`/`Assert.False`. Followed Andrew's explicit instruction.
+- **Boolean property tests are non-async** — Since they use `Assert.True`/`Assert.False` instead of `await Verify(...)`, these are plain `void` `[Fact]` methods. This is intentional — no snapshot overhead for simple boolean assertions.
+- **DisplayClass4_0 for ThrowsInvalidOperationExceptionWhenEmpty** — The new Data.cs method is at 0-indexed position 4 in the class, producing `<>c__DisplayClass4_0.<ThrowsInvalidOperationExceptionWhenEmpty>b__0()` in the stack trace snapshot. Consistent with the pattern established for prior methods.
+- **PowerShell `\r\n` vs `` `r`n ``** — When creating snapshot files in PowerShell, backtick escapes (`` `r`n ``) produce actual CRLF bytes. Using `\r\n` in double-quoted strings produces literal backslash-r-backslash-n, which breaks snapshot matching. Always use backtick escapes for line endings in snapshot creation scripts.
+- **Empty read snapshot is 24 bytes** — `{` + CRLF + `  Status: Empty` + CRLF + `}` = 21 bytes content + 3 BOM = 24 bytes total. Matches the pattern of the NotFound read snapshot (27 bytes, with `NotFound` being 3 chars longer than `Empty`).
+
+**Orchestration:** Scribe logged orchestration entry `20260410T113508-simon-empty-tests.md`. Decisions merged from inbox into `.squad/decisions.md` (SIMON-2026-001 + supporting decisions). Team history updated.
+
 ### 2026-04-08 — QueryResult<T> NotFound tests written and passing
 
 - **All 4 NotFound tests implemented and green** — Status, Data, Read (converter), Write (converter). Kaylee's implementation (`NotFound()` factory + `QueryResultStatus.NotFound = 4`) was already merged when tests were written, so tests compiled and passed immediately.

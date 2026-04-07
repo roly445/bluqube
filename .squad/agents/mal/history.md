@@ -34,6 +34,18 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-04-10 — Reversed position on Empty(), IsNotFound, IsEmpty (MAL-2026-004)
+
+Re-evaluated the three items deferred from MAL-2026-001 after PearDrop returned with an updated brief. Approved all three plus a binding condition. Key lasting findings:
+
+- **`IsSucceeded` semantics must align with `Data` access guard.** The `Data` property throws for any status other than `Succeeded`. Therefore `IsSucceeded == true` must mean "Data is safe to access." My original MAL-2026-001 position that NotFound/Empty are "successful operations" was philosophically defensible but inconsistent with our own code. When the code says "only Succeeded gets Data," `IsSucceeded` must track that boundary.
+- **`Empty()` is NOT redundant with `Succeeded(emptyList)`.** They have different caller contracts: `Succeeded(emptyList)` returns the empty list via `.Data` — caller renders zero items. `Empty()` throws on `.Data` access — caller is forced to handle the empty case explicitly (show "no results" UI). Different semantics, both valid.
+- **Boolean properties must ship as a complete set.** Shipping `IsNotFound` and `IsEmpty` without `IsSucceeded`, `IsFailed`, and `IsUnauthorized` creates an inconsistent API. All five or nothing. They're one-line `Status ==` checks — zero cost, full consistency.
+- **Pattern matching is the real driver.** C# switch expressions with `{ IsNotFound: true }` are cleaner and more exhaustive than `Status == QueryResultStatus.NotFound`. This is the caller pattern that justifies boolean properties over raw enum access.
+- **When the facts change, change the call.** The updated brief addressed every concern from MAL-2026-001: HTTP 404 off the table, concrete caller patterns, `IsSucceeded` aligned with Data guard. Sticking to a prior rejection when the inputs have changed is worse than reversing.
+
+**Orchestration:** Decision documented in MAL-2026-004. Orchestration logged. Decisions merged into `.squad/decisions.md`. Team history updated.
+
 ### 2026-04-09 — CommandResult.Unauthorized() scope analysis (MAL-2026-003)
 
 Investigated the full scope of fixing the Unauthorized/Failed asymmetry in command results. Key lasting findings:

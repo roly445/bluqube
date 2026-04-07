@@ -39,3 +39,18 @@ Added explicit integer values to all `CommandResultStatus` members (`Unknown = 0
 ### 2026-04-08 — QueryResult<T>.NotFound() implementation
 
 Added `NotFound` status to `QueryResultStatus` enum, `NotFound()` factory to `QueryResult<T>`, and the corresponding `case` in `QueryResultConverter<T>.Read`. No change needed to the `Data` property guard — the existing `Status != Succeeded` check already prevents access on `NotFound`. Deferred: `IsNotFound`, `IsEmpty`, `HasData`, and `Empty()` factory (per MAL-2026-001).
+
+### 2026-04-10 — Empty() factory + five boolean properties (MAL-2026-004)
+
+Implemented the full approved set from MAL-2026-004:
+- Added `Empty = 5` to `QueryResultStatus` (explicit integer value, consistent with prior pattern)
+- Added `Empty()` factory to `QueryResult<T>` — mirrors `NotFound()`, stores `Maybe<T>.Nothing`
+- Added all five boolean properties: `IsSucceeded`, `IsFailed`, `IsUnauthorized`, `IsNotFound`, `IsEmpty` — each a one-liner expression-body property checking `this.Status`
+- Added `case QueryResultStatus.Empty` in `QueryResultConverter<T>.Read` — mirrors `NotFound` case
+- Write side needed no change: `Empty` has no data payload, existing `if (value.Status == Succeeded)` guard already skips the Data write
+
+StyleCop SA1516 requires a blank line between each auto-property (expression-body properties count as elements). Group five booleans together but separate each with a blank line. Build with 0 warnings/errors confirmed on net10.0.
+
+Mal's binding condition was "all five or nothing" — do not ship a partial set of the boolean properties.
+
+**Orchestration:** Scribe logged orchestration entry `20260410T113508-kaylee-empty-impl.md`. Decisions merged from inbox into `.squad/decisions.md` (MAL-2026-004 + supporting decisions). Team history updated.
