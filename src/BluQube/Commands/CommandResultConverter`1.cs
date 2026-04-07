@@ -15,7 +15,7 @@ public class CommandResultConverter<TResult> : JsonConverter<CommandResult<TResu
             throw new JsonException();
         }
 
-        var status = CommandResultStatus.Succeeded;
+        var status = CommandResultStatus.Unknown;
         BluQubeErrorData? errorData = null;
         CommandValidationResult? validationResult = null;
         TResult? data = default;

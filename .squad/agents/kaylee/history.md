@@ -25,3 +25,17 @@
 ## Learnings
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
+
+### 2026-04-08 — QueryResultStatus explicit integer values
+
+When adding a new value to `QueryResultStatus`, always use explicit integer values (e.g. `NotFound = 4`). The converter (`QueryResultConverter<T>`) serializes/deserializes status as an integer, so implicit ordering is fragile — explicit values make the contract clear and stable across versions. Mal flagged this explicitly in MAL-2026-001.
+
+### 2026-04-08 — CommandResultConverter<TResult> default status and CommandResultStatus explicit values
+
+`CommandResultConverter<TResult>` was initializing `status` to `CommandResultStatus.Succeeded` before reading the JSON. This meant that if the `Status` property was absent, the converter would try to return a success result (and throw if `data` was null) rather than failing cleanly. Always initialize to `Unknown` so the `default` case in the switch throws `JsonException` on missing/unrecognized status — matching `CommandResultConverter` (non-generic).
+
+Added explicit integer values to all `CommandResultStatus` members (`Unknown = 0`, `Invalid = 1`, `Failed = 2`, `Succeeded = 3`). Enum integer values drive JSON serialization; without explicit assignments, any future reordering silently breaks deserialization. This aligns with the pattern already applied to `QueryResultStatus` per MAL-2026-001.
+
+### 2026-04-08 — QueryResult<T>.NotFound() implementation
+
+Added `NotFound` status to `QueryResultStatus` enum, `NotFound()` factory to `QueryResult<T>`, and the corresponding `case` in `QueryResultConverter<T>.Read`. No change needed to the `Data` property guard — the existing `Status != Succeeded` check already prevents access on `NotFound`. Deferred: `IsNotFound`, `IsEmpty`, `HasData`, and `Empty()` factory (per MAL-2026-001).

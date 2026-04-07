@@ -34,6 +34,17 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-04-09 — CommandResult.Unauthorized() scope analysis (MAL-2026-003)
+
+Investigated the full scope of fixing the Unauthorized/Failed asymmetry in command results. Key lasting findings:
+
+- **`CommandResult.Unauthorized()` is a small fix, not a big one.** 23 files total (5 framework, 18 test/snapshot). ~75 lines. Kaylee can ship in 2–3 hours.
+- **The constructor is the root cause.** `CommandResult`'s base constructor determines status from which Maybe fields have values. `Unauthorized()` passes an `errorData`, so it becomes `Failed`. Fix: add a new protected constructor that accepts `CommandResultStatus` directly, bypassing the inference logic.
+- **Wire format changes — real breaking change.** Old: `{"Status":2,"ErrorData":{"Code":"NotAuthorized",...}}`. New: `{"Status":4}`. Any client converter will throw on `{"Status":4}` unless upgraded. Mitigation: read-side shim in converters to accept old format.
+- **`ErrorData` behavior inverts under Option A.** Currently, `ErrorData` is accessible for `Unauthorized()` (since it IS a `Failed`). After fix, it must throw. Tests `ReturnsDataWhenUnauthorized` need to flip to `ThrowsInvalidOperationExceptionWhenUnauthorized`.
+- **`CommandResultStatus` still lacks explicit integer values.** Now is the right time to add them alongside `Unauthorized = 4`. Prevents any future reordering from silently breaking JSON.
+- **Read-side shim enables safe rollout.** New converter reads `{"Status":2, Code="NotAuthorized"}` as `Unauthorized()` — old-server-to-new-client round-trips safely.
+
 ### 2026-04-08 — QueryResult<T> enum values and JSON serialization
 
 Reviewed external request to add `NotFound()` and `Empty()` to `QueryResult<T>`. Key findings:
@@ -44,3 +55,20 @@ Reviewed external request to add `NotFound()` and `Empty()` to `QueryResult<T>`.
 - **Data property guard is already defensive** — Only allows access when `Status == Succeeded`, so new statuses automatically throw. No code change needed.
 
 Decision: Approved `NotFound()` only. Rejected `Empty()` (redundant with `Succeeded(Array.Empty<T>())`). Rejected bundled convenience properties (separate request).
+
+### 2026-04-07 — Full codebase review
+
+Performed a thorough review of all core framework, source generation, tests, sample app, and CI config. Key lasting findings:
+
+- **`CommandResultConverter<TResult>` initializes status to `Succeeded`, not `Unknown`** — bug. Non-generic version correctly uses `Unknown`. Fix: line 18 of `CommandResultConverter`1`.cs`.
+- **`CommandResultStatus` has no explicit integer values** — `QueryResultStatus` does (post MAL-2026-001). Inconsistency. Both enums need explicit assignments before next release.
+- **`CommandResult.Unauthorized()` is NOT a distinct status** — it maps to `Failed` with `ErrorData.Code = "NotAuthorized"`. JSON round-trip loses the Unauthorized semantic. `QueryResult<T>.Unauthorized()` uses a proper distinct status. Asymmetry will confuse callers.
+- **JSON converters throw on unknown properties** — both Command and Query converters use `default: throw new JsonException()`. Any new field from a newer server version will crash older clients. Fix: `reader.Skip()`.
+- **Source generators store `SemanticModel` in pipeline** — breaks incremental caching. Every edit triggers full regeneration. This is a Roslyn generator anti-pattern.
+- **No Roslyn diagnostics emitted** — malformed attribute paths produce syntax errors in generated code, not generator diagnostics. Very hard to debug.
+- **Two `.received.txt` files committed** — unapproved Verify snapshots in source control. Delete them.
+- **`NotFound` tests from MAL-2026-001 were never written** — decision approved, implementation shipped, tests missing.
+- **`QueryResultTests/Status.cs` has a wrong test name** — `ReturnsFailedWhenUnauthorized` actually verifies `Unauthorized` status (correct behavior, wrong name).
+- **CI pushes to MyGet on every main push, not just tags** — NuGet.org is tag-gated; MyGet is not. Clarify intent.
+- **`HttpRequestMethod` enum is dead code** — exists in Constants, used nowhere. Generator and GenericQueryProcessor use raw strings.
+- **`TreatWarningsAsErrors` is CI-only** — should be in the csproj so it's enforced locally too.
