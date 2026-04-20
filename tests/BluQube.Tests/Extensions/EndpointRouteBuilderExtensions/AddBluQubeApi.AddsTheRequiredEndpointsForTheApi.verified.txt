@@ -32,29 +32,30 @@
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'queryRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, StubQueryGet query),
-        IsOptional: true
+        IsOptional: false
       },
       {
         ContentTypes: [
           application/json
         ],
         RequestType: StubQueryGet,
-        IsOptional: true
+        IsOptional: false
       },
       {
         Name: query,
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_0(IQueryRunner queryRunner, StubQueryGet query),
-        IsOptional: true
+        IsOptional: false
       },
       {},
       {
-        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_0>d,
-        TypeId: AsyncStateMachineAttribute
+        Flag: 1,
+        TypeId: NullableContextAttribute
       },
       {
-        TypeId: DebuggerStepThroughAttribute
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_0>d,
+        TypeId: AsyncStateMachineAttribute
       },
       {
         Route: query-get
@@ -99,29 +100,30 @@
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'queryRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQueryRunner queryRunner, StubQueryPost query),
-        IsOptional: true
+        IsOptional: false
       },
       {
         ContentTypes: [
           application/json
         ],
         RequestType: StubQueryPost,
-        IsOptional: true
+        IsOptional: false
       },
       {
         Name: query,
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_1(IQueryRunner queryRunner, StubQueryPost query),
-        IsOptional: true
+        IsOptional: false
       },
       {},
       {
-        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_1>d,
-        TypeId: AsyncStateMachineAttribute
+        Flag: 1,
+        TypeId: NullableContextAttribute
       },
       {
-        TypeId: DebuggerStepThroughAttribute
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_1>d,
+        TypeId: AsyncStateMachineAttribute
       },
       {
         Route: query-post
@@ -166,29 +168,30 @@
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'queryRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQueryRunner queryRunner, StubQuery query),
-        IsOptional: true
+        IsOptional: false
       },
       {
         ContentTypes: [
           application/json
         ],
         RequestType: StubQuery,
-        IsOptional: true
+        IsOptional: false
       },
       {
         Name: query,
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'query' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_2(IQueryRunner queryRunner, StubQuery query),
-        IsOptional: true
+        IsOptional: false
       },
       {},
       {
-        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_2>d,
-        TypeId: AsyncStateMachineAttribute
+        Flag: 1,
+        TypeId: NullableContextAttribute
       },
       {
-        TypeId: DebuggerStepThroughAttribute
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_2>d,
+        TypeId: AsyncStateMachineAttribute
       },
       {
         Route: query
@@ -244,29 +247,30 @@
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'commandRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommandRunner commandRunner, StubCommand command),
-        IsOptional: true
+        IsOptional: false
       },
       {
         ContentTypes: [
           application/json
         ],
         RequestType: StubCommand,
-        IsOptional: true
+        IsOptional: false
       },
       {
         Name: command,
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_3(ICommandRunner commandRunner, StubCommand command),
-        IsOptional: true
+        IsOptional: false
       },
       {},
       {
-        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_3>d,
-        TypeId: AsyncStateMachineAttribute
+        Flag: 1,
+        TypeId: NullableContextAttribute
       },
       {
-        TypeId: DebuggerStepThroughAttribute
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_3>d,
+        TypeId: AsyncStateMachineAttribute
       },
       {
         Route: command/stub
@@ -322,29 +326,30 @@
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'commandRunner' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommandRunner commandRunner, StubWithResultCommand command),
-        IsOptional: true
+        IsOptional: false
       },
       {
         ContentTypes: [
           application/json
         ],
         RequestType: StubWithResultCommand,
-        IsOptional: true
+        IsOptional: false
       },
       {
         Name: command,
         HasTryParse: false,
         HasBindAsync: false,
         ParameterInfo: 'command' of EndpointRouteBuilderExtensions.<>c.<AddBluQubeApi>b__0_4(ICommandRunner commandRunner, StubWithResultCommand command),
-        IsOptional: true
+        IsOptional: false
       },
       {},
       {
-        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_4>d,
-        TypeId: AsyncStateMachineAttribute
+        Flag: 1,
+        TypeId: NullableContextAttribute
       },
       {
-        TypeId: DebuggerStepThroughAttribute
+        StateMachineType: EndpointRouteBuilderExtensions.<>c.<<AddBluQubeApi>b__0_4>d,
+        TypeId: AsyncStateMachineAttribute
       },
       {
         Route: command/stub-with-result
