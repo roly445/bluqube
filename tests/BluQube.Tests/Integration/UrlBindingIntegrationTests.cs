@@ -1,6 +1,6 @@
 // Integration tests for URL binding feature
 // These tests verify end-to-end behavior: client → server → handler round-trip
-// Mark tests as [Fact(Skip = "Integration test — run after Kaylee's implementation")]
+// Integration test infrastructure (WebApplicationFactory, in-memory test server) not yet set up
 
 using System;
 using System.Net.Http;
@@ -12,12 +12,14 @@ namespace BluQube.Tests.Integration;
 
 public class UrlBindingIntegrationTests
 {
-    // TODO: Set up test server with WebApplicationFactory once feature is complete
-    
-    [Fact(Skip = "Integration test — requires URL binding implementation")]
+    [Fact(Skip = "Requires integration test infrastructure — WebApplicationFactory or in-memory test server not yet configured")]
     public async Task CommandWithRouteParameter_ClientToServer_CorrectlyTransmitsRouteValue()
     {
-        // TODO: Implement when feature is ready
+        // Requires:
+        // - WebApplicationFactory<Program> or similar test server setup
+        // - Test HttpClient configuration
+        // - Handler registration in test DI container
+        
         // Test pattern:
         // 1. Create test server with [BluQubeResponder]
         // 2. Register handler for DeleteTodoCommand(Guid Id)
@@ -25,13 +27,17 @@ public class UrlBindingIntegrationTests
         // 4. Verify handler receives correct Id value from route, not body
         // 5. Verify body is minimal/empty (no Id in body JSON)
         
-        Assert.True(true, "Pending implementation");
+        await Task.CompletedTask;
     }
 
-    [Fact(Skip = "Integration test — requires URL binding implementation")]
+    [Fact(Skip = "Requires integration test infrastructure — WebApplicationFactory or in-memory test server not yet configured")]
     public async Task GetQueryWithPathAndQuerystring_ClientToServer_CorrectlyReconstructsQuery()
     {
-        // TODO: Implement when feature is ready
+        // Requires:
+        // - WebApplicationFactory<Program> or similar test server setup
+        // - Test HttpClient configuration
+        // - Processor registration in test DI container
+        
         // Test pattern:
         // 1. Create test server with [BluQubeResponder]
         // 2. Register processor for GetTodoQuery(Guid Id, string? Filter)
@@ -40,13 +46,17 @@ public class UrlBindingIntegrationTests
         // 5. Verify processor receives correct Filter from querystring
         // 6. Verify HTTP method is GET (not POST)
         
-        Assert.True(true, "Pending implementation");
+        await Task.CompletedTask;
     }
 
-    [Fact(Skip = "Integration test — requires URL binding implementation")]
+    [Fact(Skip = "Requires integration test infrastructure — WebApplicationFactory or in-memory test server not yet configured")]
     public async Task NullableQuerystringParameter_ClientToServer_HandlesNullCorrectly()
     {
-        // TODO: Implement when feature is ready
+        // Requires:
+        // - WebApplicationFactory<Program> or similar test server setup
+        // - Test HttpClient configuration
+        // - Processor registration in test DI container
+        
         // Test pattern:
         // 1. Create test server with [BluQubeResponder]
         // 2. Register processor for ListTodosQuery(string? Status)
@@ -55,13 +65,17 @@ public class UrlBindingIntegrationTests
         // 5. Send query with Status = "active"
         // 6. Verify processor receives "active"
         
-        Assert.True(true, "Pending implementation");
+        await Task.CompletedTask;
     }
 
-    [Fact(Skip = "Integration test — requires URL binding implementation")]
+    [Fact(Skip = "Requires integration test infrastructure — WebApplicationFactory or in-memory test server not yet configured")]
     public async Task SpecialCharactersInRouteParameter_ClientToServer_UrlEscapedCorrectly()
     {
-        // TODO: Implement when feature is ready
+        // Requires:
+        // - WebApplicationFactory<Program> or similar test server setup
+        // - Test HttpClient configuration
+        // - Handler registration in test DI container
+        
         // Test pattern:
         // 1. Create test server with [BluQubeResponder]
         // 2. Register handler for GetBySlugCommand(string Slug)
@@ -69,13 +83,17 @@ public class UrlBindingIntegrationTests
         // 4. Verify BuildPath() uses Uri.EscapeDataString
         // 5. Verify handler receives original unescaped value
         
-        Assert.True(true, "Pending implementation");
+        await Task.CompletedTask;
     }
 
-    [Fact(Skip = "Integration test — requires URL binding implementation")]
+    [Fact(Skip = "Requires integration test infrastructure — WebApplicationFactory or in-memory test server not yet configured")]
     public async Task CommandWithBodyAndRouteParameters_ClientToServer_CorrectlySplitsParameters()
     {
-        // TODO: Implement when feature is ready
+        // Requires:
+        // - WebApplicationFactory<Program> or similar test server setup
+        // - Test HttpClient configuration
+        // - Handler registration in test DI container
+        
         // Test pattern:
         // 1. Create test server with [BluQubeResponder]
         // 2. Register handler for UpdateTodoCommand(Guid Id, string NewTitle, string NewDescription)
@@ -83,26 +101,34 @@ public class UrlBindingIntegrationTests
         // 4. Verify handler receives all three values correctly
         // 5. Verify body JSON contains only NewTitle + NewDescription (not Id)
         
-        Assert.True(true, "Pending implementation");
+        await Task.CompletedTask;
     }
 
-    [Fact(Skip = "Integration test — requires URL binding implementation")]
+    [Fact(Skip = "Requires integration test infrastructure — WebApplicationFactory or in-memory test server not yet configured")]
     public async Task CaseInsensitiveRouteParameterMatching_ClientToServer_Works()
     {
-        // TODO: Implement when feature is ready
+        // Requires:
+        // - WebApplicationFactory<Program> or similar test server setup
+        // - Test HttpClient configuration
+        // - Handler registration in test DI container
+        
         // Test pattern:
         // 1. Define command with property "Id" (capital I)
         // 2. Use path "commands/todo/{id}" (lowercase i)
         // 3. Verify generator matches case-insensitively
         // 4. Verify handler receives correct value
         
-        Assert.True(true, "Pending implementation");
+        await Task.CompletedTask;
     }
 
-    [Fact(Skip = "Integration test — requires URL binding implementation")]
+    [Fact(Skip = "Requires integration test infrastructure — WebApplicationFactory or in-memory test server not yet configured")]
     public async Task PostQueryWithRouteParameter_ClientToServer_UsesPostMethod()
     {
-        // TODO: Implement when feature is ready
+        // Requires:
+        // - WebApplicationFactory<Program> or similar test server setup
+        // - Test HttpClient configuration
+        // - Processor registration in test DI container
+        
         // Test pattern:
         // 1. Create test server with [BluQubeResponder]
         // 2. Register processor for SearchQuery(string Category, ComplexFilter Filter) — no Method property (defaults to POST)
@@ -110,13 +136,17 @@ public class UrlBindingIntegrationTests
         // 4. Verify HTTP method is POST
         // 5. Verify processor receives both values correctly
         
-        Assert.True(true, "Pending implementation");
+        await Task.CompletedTask;
     }
 
-    [Fact(Skip = "Integration test — requires URL binding implementation")]
+    [Fact(Skip = "Requires integration test infrastructure — WebApplicationFactory or in-memory test server not yet configured")]
     public async Task MultipleRouteParameters_ClientToServer_OrderPreserved()
     {
-        // TODO: Implement when feature is ready
+        // Requires:
+        // - WebApplicationFactory<Program> or similar test server setup
+        // - Test HttpClient configuration
+        // - Handler registration in test DI container
+        
         // Test pattern:
         // 1. Create test server with [BluQubeResponder]
         // 2. Register handler for DeleteTenantTodoCommand(Guid TenantId, Guid TodoId)
@@ -124,6 +154,6 @@ public class UrlBindingIntegrationTests
         // 4. Send command with specific GUIDs
         // 5. Verify handler receives correct values in correct order
         
-        Assert.True(true, "Pending implementation");
+        await Task.CompletedTask;
     }
 }

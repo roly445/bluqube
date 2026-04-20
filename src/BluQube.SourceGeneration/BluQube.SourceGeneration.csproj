@@ -42,6 +42,10 @@
     </PropertyGroup>
     
     <ItemGroup>
+        <InternalsVisibleTo Include="BluQube.Tests" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <!-- Package the generator in the analyzer directory of the nuget package -->
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
