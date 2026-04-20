@@ -98,3 +98,14 @@ Performed a thorough review of all core framework, source generation, tests, sam
 - **CI pushes to MyGet on every main push, not just tags** — NuGet.org is tag-gated; MyGet is not. Clarify intent.
 - **`HttpRequestMethod` enum is dead code** — exists in Constants, used nowhere. Generator and GenericQueryProcessor use raw strings.
 - **`TreatWarningsAsErrors` is CI-only** — should be in the csproj so it's enforced locally too.
+
+### 2026-04-20 — TDD Red/Green Workflow Adopted (MAL-2026-006)
+
+Andrew Davis directed the squad to adopt TDD red/green workflow. Key changes made:
+
+- **Simon's charter updated:** TDD red phase is now his PRIMARY responsibility. He writes failing tests FIRST, signals "tests are red — ready for Kaylee," and rejects PRs where tests don't precede implementation.
+- **Kaylee's charter updated:** She does NOT start implementation until failing tests exist. Her job is to make red tests green. If she receives a feature request with no failing tests, she requests Simon writes them first.
+- **Mal's charter updated:** I enforce TDD in code review. Feature PRs without prior failing test commits are rejected. I check git history to verify red-before-green ordering.
+- **TDD Gate ceremony added:** Auto-triggers before Kaylee starts any new feature. Simon facilitates — confirms tests are red, describes coverage. Kaylee confirms understanding. Go/no-go gates implementation.
+
+**Why this matters:** Tests written after implementation often just rubber-stamp the code. Tests written first prove we're testing behavior, not implementation details. This gives us real confidence that the test would catch a regression.

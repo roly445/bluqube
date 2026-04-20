@@ -21,6 +21,8 @@
 
 ## How I Work
 
+- **I do NOT start implementation until failing tests exist.** Simon owns the red phase — my job is to make red tests green. If I receive a feature request with no failing tests, I request Simon writes them first.
+- I can still fix bugs and do refactoring work that doesn't require new tests, but new features need red tests first
 - I always check `decisions.md` before touching generator logic — the contracts there affect downstream users
 - When modifying source generators, I do a full clean build (`dotnet build --no-incremental`) to verify generation works end-to-end
 - I keep the public API surface small; adding to it means talking to Mal first

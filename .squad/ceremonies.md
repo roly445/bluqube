@@ -39,3 +39,23 @@
 2. Root cause analysis
 3. What should change?
 4. Action items for next iteration
+
+---
+
+## TDD Gate
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | auto |
+| **When** | before |
+| **Condition** | new feature implementation task assigned to Kaylee |
+| **Facilitator** | Simon |
+| **Participants** | Simon, Kaylee |
+| **Time budget** | focused |
+| **Enabled** | ✅ yes |
+
+**Agenda:**
+1. Simon confirms tests are written and currently failing (red)
+2. Simon describes what the failing tests cover (happy path, edge cases)
+3. Kaylee confirms she understands what "green" means for this feature
+4. Go/no-go: Simon says go → implementation starts. No-go → Simon writes more tests first.

@@ -345,6 +345,120 @@ All 117 tests passing.
 
 ---
 
+### Decision 7: URL Binding API Design (MAL-2026-005)
+
+**Decision ID:** MAL-2026-005  
+**Date:** 2026-04-11  
+**Author:** Mal (Lead)  
+**Status:** APPROVED AND IMPLEMENTED
+
+#### Verdict
+
+**APPROVED** — Implement Option D with Option A's path inference. This design enables RESTful URL patterns while keeping BluQube's API surface clean and backward-compatible.
+
+#### The Problem
+
+BluQube currently binds ALL command/query properties from POST body, blocking REST patterns like `commands/todo/{id}/update` where path parameters need explicit extraction.
+
+#### Approved Design
+
+1. **Add `Method` property to `BluQubeQueryAttribute`** — default `"POST"`, optional `"GET"` for idempotent queries
+2. **Infer path parameters from path template** using regex pattern `\{(\w+)\}` — case-insensitive matching to record properties
+3. **Commands:** Always POST; path params from template, rest to body
+4. **Queries:** Path params from template, remaining based on Method (`POST` → body, `GET` → querystring)
+5. **Client-side:** Generated `BuildPath()` override with string interpolation + `Uri.EscapeDataString()` (WASM-safe, zero reflection)
+6. **Server-side:** Generator emits internal shim records with explicit `[FromRoute]`/`[FromQuery]` attributes; keeps user types clean
+
+#### Example: Command with Path Param
+
+```csharp
+[BluQubeCommand(Path = "commands/todo/{id}/update")]
+public record UpdateTodoCommand(Guid Id, string Title) : ICommand;
+// POST /commands/todo/abc123/update  Body: {"Title":"..."}
+```
+
+Generated client:
+```csharp
+protected override string BuildPath(UpdateTodoCommand request)
+{
+    return $"commands/todo/{Uri.EscapeDataString(request.Id.ToString())}/update";
+}
+```
+
+Generated server:
+```csharp
+endpointRouteBuilder.MapPost("commands/todo/{id}/update", 
+    async (ICommandRunner runner, [FromRoute] Guid id, UpdateTodoCommandBody body) => {
+        var cmd = new UpdateTodoCommand(id, body.Title);
+        var result = await runner.Send(cmd);
+        return Results.Json(result);
+    });
+```
+
+#### Breaking Changes
+
+**None.** Existing commands/queries without `{param}` in path work exactly as before. New feature requires explicit opt-in.
+
+#### Implementation Status
+
+- **Kaylee:** Implemented full URL parameter binding (Phase 1). Build: 0 errors, 0 warnings on .NET 8/9/10.
+- **Simon:** Wrote 7 generator snapshot tests + 8 integration test stubs. All compile, ready to enable post-implementation.
+- **16 files modified**, ~500 lines added. Tests for URL escaping, querystring null handling, and generator error handling deferred per team roadmap.
+
+---
+
+### Decision 6: TDD Red/Green Workflow Adopted (MAL-2026-006)
+
+**Decision ID:** MAL-2026-006  
+**Date:** 2026-04-20  
+**Author:** Andrew Davis (user directive)  
+**Status:** APPROVED
+
+#### Verdict
+
+**APPROVED** — Squad adopts strict TDD red/green workflow. Tests precede implementation at all times.
+
+#### The Directive
+
+User requirement: "The squad works TDD — red/green pattern. Simon writes failing tests first. Kaylee makes them green. Mal enforces this in code review. No implementation ships without a prior failing test."
+
+#### Implementation
+
+**Red Phase (Simon):**
+- Write xUnit tests that compile but fail (no `[Skip]`, no placeholder assertions)
+- Tests must be committed to git and visibly failing *before* implementation starts
+- Must cover happy path and edge cases
+
+**Green Phase (Kaylee):**
+- Implement feature to make tests pass
+- No implementation code ships without prior red test commits in history
+- Focus on minimal implementation to satisfy tests
+
+**Enforcement (Mal):**
+- Code review rejects PRs where failing test commits don't precede implementation commits
+- Validates commit history shows red → green progression
+- Returns PRs for rework if pattern violated
+
+**Ceremony: TDD Gate**
+- **Trigger:** Auto, before Kaylee starts any new feature implementation task
+- **Facilitator:** Simon
+- **Participants:** Simon, Kaylee
+- **Agenda:**
+  1. Simon confirms tests are written, compiled, and currently failing (red state)
+  2. Simon describes what tests cover (happy path, edge cases)
+  3. Kaylee confirms she understands what "green" means for this feature
+  4. Go/no-go decision: Simon green-lights implementation start, or Simon writes more tests first
+
+#### Rationale
+
+Ensures tests validate *actual behavior* rather than being written after implementation as rubber-stamp documentation. Prevents implementation bias in test design and guarantees test suite reflects real requirements.
+
+#### Governance Update
+
+TDD Gate ceremony already present in `ceremonies.md` (line 45–62). Team charters updated to enforce pattern.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
