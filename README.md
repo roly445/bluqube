@@ -71,6 +71,74 @@ BluQube provides structured error handling with `BluQubeErrorData` containing er
 BluQube integrates validation using [FluentValidation](https://github.com/FluentValidation/FluentValidation), allowing you to define validation rules for commands and queries.
 ### Authorization
 BluQube supports authorization checks for commands, ensuring that only authorized users can perform certain actions.  This is performed using the Mediatr behavior [MediatR.Behaviors.Authorization](https://github.com/AustinDavies/MediatR.Behaviors.Authorization/tree/master).
+
+## URL Binding
+
+BluQube enables RESTful URL patterns by automatically binding command and query properties to URL path parameters, query strings, and request bodies—all inferred from your path template.
+
+### Path Parameter Inference
+
+Properties are matched to path parameters using the `{paramName}` pattern in your route template. Matching is case-insensitive.
+
+#### Command with Path Parameter
+
+Properties named in the path template are extracted from the route; remaining properties come from the POST body.
+
+```csharp
+[BluQubeCommand(Path = "commands/todo/{id}")]
+public record DeleteTodoCommand(Guid Id) : ICommand;
+
+// DELETE POST to: /commands/todo/abc-123-def
+// Request body: empty (or omitted)
+// Id is bound from the route
+```
+
+#### Command with Path Parameter and Body Fields
+
+Mix route parameters with body fields naturally—the generator handles the split.
+
+```csharp
+[BluQubeCommand(Path = "commands/todo/{id}/update")]
+public record UpdateTodoCommand(Guid Id, string Title) : ICommand;
+
+// POST to: /commands/todo/abc-123-def/update
+// Request body: {"Title":"New title"}
+// Id from route, Title from body
+```
+
+#### GET Query with Path Parameter and Query String
+
+Set `Method = "GET"` for idempotent queries. Path parameters bind to the route; remaining properties become query string parameters.
+
+```csharp
+[BluQubeQuery(Path = "queries/todo/{id}", Method = "GET")]
+public record GetTodoQuery(Guid Id, string? Filter = null) : IQuery<TodoResult>;
+
+// GET to: /queries/todo/abc-123-def?Filter=completed
+// Id from route, Filter from querystring
+```
+
+### Automatic URL Building
+
+The client-side request generator produces a `BuildPath()` method that properly escapes URL parameters—fully AOT-safe with zero reflection.
+
+```csharp
+// Generated requester handles URL escaping internally
+var request = new UpdateTodoCommand(todoId, "New Title");
+// Generated code produces: /commands/todo/[todoId-escaped]/update
+```
+
+### POST Queries (Default)
+
+If `Method` is not specified, queries POST. Path parameters bind to the route; remaining properties go in the body.
+
+```csharp
+[BluQubeQuery(Path = "queries/todo/{id}")]
+public record GetTodoDetailQuery(Guid Id) : IQuery<TodoDetailResult>;
+
+// POST to: /queries/todo/abc-123-def
+// Request body: empty (if only path params)
+```
 ## Contributing
 1. Fork the repository
 2. Create a feature branch
