@@ -4,9 +4,29 @@ using BluQube.Constants;
 
 namespace BluQube.Queries;
 
+/// <summary>
+/// Base JSON converter for <see cref="QueryResult{TResult}"/> that handles polymorphic serialization based on <see cref="QueryResultStatus"/>.
+/// </summary>
+/// <typeparam name="TResult">The type of result data. Must implement <see cref="IQueryResult"/>.</typeparam>
+/// <remarks>
+/// This abstract converter serializes/deserializes the status as an integer and conditionally includes <see cref="QueryResult{TResult}.Data"/>
+/// based on the status value (only Succeeded status includes data).
+/// Used when query results cross HTTP boundaries between client and server.
+/// <para>
+/// Applications must create concrete subclasses (typically via source generation) for each specific <typeparamref name="TResult"/> type and register them in JSON options.
+/// </para>
+/// </remarks>
 public abstract class QueryResultConverter<TResult> : JsonConverter<QueryResult<TResult>>
     where TResult : class, IQueryResult
 {
+    /// <summary>
+    /// Reads a <see cref="QueryResult{TResult}"/> from JSON.
+    /// </summary>
+    /// <param name="reader">The JSON reader.</param>
+    /// <param name="typeToConvert">The type being converted.</param>
+    /// <param name="options">JSON serializer options.</param>
+    /// <returns>A <see cref="QueryResult{TResult}"/> instance constructed from the JSON data.</returns>
+    /// <exception cref="JsonException">Thrown if the JSON structure is invalid, status is unrecognized, or data is missing for Succeeded status.</exception>
     public override QueryResult<TResult>? Read(
         ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -68,6 +88,16 @@ public abstract class QueryResultConverter<TResult> : JsonConverter<QueryResult<
         }
     }
 
+    /// <summary>
+    /// Writes a <see cref="QueryResult{TResult}"/> to JSON.
+    /// </summary>
+    /// <param name="writer">The JSON writer.</param>
+    /// <param name="value">The <see cref="QueryResult{TResult}"/> to serialize.</param>
+    /// <param name="options">JSON serializer options.</param>
+    /// <remarks>
+    /// Writes the Status property as an integer. Conditionally writes Data only if status is Succeeded.
+    /// Failed, Unauthorized, NotFound, and Empty results contain only the Status property.
+    /// </remarks>
     public override void Write(Utf8JsonWriter writer, QueryResult<TResult> value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();

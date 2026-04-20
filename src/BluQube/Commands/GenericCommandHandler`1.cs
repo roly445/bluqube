@@ -6,13 +6,46 @@ using Microsoft.Extensions.Logging;
 
 namespace BluQube.Commands;
 
+/// <summary>
+/// Base class for source-generated HTTP requesters that send commands without return data to a server endpoint.
+/// </summary>
+/// <typeparam name="TCommand">The type of command being sent. Must implement <see cref="ICommand"/>.</typeparam>
+/// <remarks>
+/// This class is used by the BluQube source generator to create HTTP requester implementations for client-side (Blazor WASM) command execution.
+/// The generator creates a subclass for each command marked with <see cref="Attributes.BluQubeCommandAttribute"/>, implementing the <see cref="Path"/> property
+/// and optionally overriding <see cref="BuildPath"/> for route parameter substitution.
+/// <para>
+/// Commands always use POST requests. The command is serialized as JSON and sent to the configured endpoint. The server response is deserialized
+/// into a <see cref="CommandResult"/> using the provided <see cref="CommandResultConverter"/>.
+/// </para>
+/// <para>
+/// Do not inherit from this class directly in user code. It's designed for source generation only.
+/// </para>
+/// </remarks>
 public abstract class GenericCommandHandler<TCommand>(
     IHttpClientFactory httpClientFactory, CommandResultConverter jsonConverter, ILogger logger)
     : ICommandHandler<TCommand>
     where TCommand : ICommand
 {
+    /// <summary>
+    /// Gets the endpoint path for this command. Overridden by source-generated subclasses.
+    /// </summary>
+    /// <value>The relative URL path where the command will be sent. Example: "commands/create-todo".</value>
     protected abstract string Path { get; }
 
+    /// <summary>
+    /// Sends the command to the server and returns the result.
+    /// </summary>
+    /// <param name="request">The command to send.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>
+    /// A <see cref="CommandResult"/> deserialized from the server response.
+    /// Returns <see cref="CommandResult.Failed(BluQubeErrorData)"/> if the HTTP request fails or deserialization fails.
+    /// </returns>
+    /// <remarks>
+    /// This method creates an HTTP client named "bluqube" via <c>IHttpClientFactory</c>, sends a POST request with the command as JSON body,
+    /// and deserializes the response. Non-success HTTP status codes and JSON deserialization errors are converted to failed results.
+    /// </remarks>
     public async Task<CommandResult> Handle(TCommand request, CancellationToken cancellationToken)
     {
         var client = httpClientFactory.CreateClient("bluqube");
@@ -57,5 +90,14 @@ public abstract class GenericCommandHandler<TCommand>(
         }
     }
 
+    /// <summary>
+    /// Builds the request URL for this command. Override in generated subclasses to substitute route parameters.
+    /// </summary>
+    /// <param name="request">The command instance containing parameter values.</param>
+    /// <returns>The URL path with route parameters substituted. The base implementation returns <see cref="Path"/> unchanged.</returns>
+    /// <remarks>
+    /// Source-generated subclasses override this method when the command path contains route parameters (e.g., "commands/todo/{id}/update").
+    /// The generated code uses string interpolation and <c>Uri.EscapeDataString</c> to safely construct URLs from command properties.
+    /// </remarks>
     protected virtual string BuildPath(TCommand request) => this.Path;
 }

@@ -1,6 +1,6 @@
 # BluQube
 
-[![NuGet](https://img.shields.io/nuget/v/BluQube.svg)](https://nuget.org/packages/BluQube) [![Nuget](https://img.shields.io/nuget/dt/BluQube.svg)](https://nuget.org/packages/BluQube)
+[![Build](https://github.com/roly445/bluqube/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/roly445/bluqube/actions/workflows/build-and-test.yml) [![NuGet](https://img.shields.io/nuget/v/BluQube.svg)](https://www.nuget.org/packages/BluQube) [![Codecov](https://codecov.io/gh/roly445/bluqube/branch/main/graph/badge.svg)](https://codecov.io/gh/roly445/bluqube)
 
 BluQube is a framework for Blazor to help with the write once, run on Server or WASM approach.
 
@@ -15,6 +15,20 @@ BluQube provides a unified development experience for Blazor applications, allow
 - **Validation Support**: Integrated validation with detailed error reporting
 - **Source Generation**: Automated code generation for improved performance
 - **Error Handling**: Comprehensive error handling with structured error data
+
+## Documentation
+
+Comprehensive guides for getting started, advanced patterns, and troubleshooting:
+
+| Guide | Description |
+|-------|-------------|
+| [Getting Started](docs/GETTING_STARTED.md) | Zero to working app—setup, DI configuration, and your first command |
+| [URL Binding](docs/URL_BINDING_GUIDE.md) | Automatic extraction of path parameters, query strings, and request bodies |
+| [Validation](docs/VALIDATION_GUIDE.md) | FluentValidation integration with before-handler pipeline |
+| [Authorization](docs/AUTHORIZATION_GUIDE.md) | MediatR authorization behaviors with role and dynamic policy support |
+| [WASM Deployment](docs/WASM_DEPLOYMENT.md) | Server and WebAssembly deployment patterns and configuration |
+| [Source Generation Internals](docs/SOURCE_GENERATION_INTERNALS.md) | How generators work, inspecting output, and troubleshooting |
+| [Troubleshooting](docs/TROUBLESHOOTING.md) | Symptom-indexed resolution guide for common issues |
 
 ## Quick Start
 
@@ -139,7 +153,24 @@ public record GetTodoDetailQuery(Guid Id) : IQuery<TodoDetailResult>;
 // POST to: /queries/todo/abc-123-def
 // Request body: empty (if only path params)
 ```
+
+## Sample Application
+
+The repository includes a full-featured Blazor sample app at `samples/blazor/BluQube.Samples.Blazor/` that demonstrates:
+
+- Command and query definitions with URL binding
+- Handler and processor implementation patterns
+- Validation and authorization in action
+- Blazor Server and WebAssembly interoperability
+- Complete DI setup and middleware configuration
+
+Run it locally: `dotnet run --project samples/blazor/BluQube.Samples.Blazor/BluQube.Samples.Blazor.csproj`
+
 ## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and contribution guidelines.
+
+Development workflow:
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes

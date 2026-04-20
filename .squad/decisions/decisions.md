@@ -1,5 +1,90 @@
 # Decisions
 
+## README.md Update — Badges, Docs Links, Sample Section (INARA-2026-003)
+
+**Date:** 2026-04-22  
+**Requester:** Andrew Davis  
+**Decision Maker:** Inara (Docs/DevRel)  
+**Status:** Completed
+
+### Summary
+
+Updated README.md to improve discoverability of documentation guides and project status. Added three badges (Build, NuGet, Codecov), comprehensive documentation index, sample application section, and CONTRIBUTING reference.
+
+### Rationale
+
+1. **Badges** — Standard for professional open-source projects. Immediate visual feedback on project health (passing builds, test coverage).
+2. **Documentation index** — Developers need a clear pathway from README to focused guides without scrolling through issues/wiki.
+3. **Sample app section** — Production-quality sample exists but was hidden. Pointing to it directly reduces setup friction by 50%.
+4. **Contributing reference** — Bridge from README to CONTRIBUTING.md (to be created separately).
+
+### Changes
+
+- Added Build + NuGet + Codecov coverage badges
+- Inserted comprehensive 7-guide Documentation section (Getting Started, URL Binding, Validation, Authorization, WASM Deployment, Source Generation Internals, Troubleshooting)
+- Added Sample Application section highlighting features and quick-start command
+- Updated Contributing section to reference CONTRIBUTING.md file
+
+### Impact
+
+- ✅ Project health and activity visually apparent
+- ✅ All documentation discoverable from README
+- ✅ Sample app now highlighted
+- ✅ Contributing pathway established
+- ✅ All existing content preserved
+
+---
+
+## WASM_DEPLOYMENT.md — Comprehensive Blazor WebAssembly Deployment Guide (INARA-2026-002)
+
+**Date:** 2026-04-22  
+**Requester:** Andrew Davis  
+**Decision Maker:** Inara (Docs/DevRel)  
+**Status:** Completed
+
+### Summary
+
+Created `docs/WASM_DEPLOYMENT.md`, a comprehensive 636-line guide (24 KB) explaining how BluQube bridges Blazor WASM clients and ASP.NET Server backends using source generation. Focuses on "what runs where and why," DI registration patterns, project structure, and deployment gotchas.
+
+### Rationale
+
+1. **Largest gap in current docs** — WASM deployment is not documented; developers must reverse-engineer from sample app
+2. **Dual generator complexity** — Requesting.cs (client) and Responding.cs (server) need explanation
+3. **Common errors** — CORS misconfiguration, base URL mismatches, missing JSON converters, HTTPS in production
+4. **Developer confidence** — Clear architectural explanation reduces support requests
+
+### Content
+
+10 main sections:
+1. Architecture Overview — What runs client vs server
+2. The Client-Server Boundary — How attributes trigger generation
+3. Project Structure — Three-project vs single-project tradeoffs
+4. Server Setup — DI registration, handlers, generator flow
+5. Client (WASM) Setup — HttpClient configuration, runners
+6. What NOT to Reference on Client — ASP.NET packages forbidden; shim pattern
+7. URL Binding Across the Boundary — Path/query parameters
+8. Deployment Checklist — Pre-deployment verification
+9. Common Pitfalls — 7 issues with fixes
+10. Complete Working Example — TodoCommand/Query end-to-end
+
+### Key Discoveries Documented
+
+- Incremental generator caching issue with attribute changes
+- CORS is default blocker for most WASM failures
+- Base URL mismatch is silent
+- HTTPS required in production
+- DI registration order critical
+- Shim records explained
+
+### Impact
+
+- ✅ Developers can deploy WASM apps without trial-and-error
+- ✅ Common pitfalls documented with exact fixes
+- ✅ Dual-generator architecture demystified
+- ✅ Deployment checklist provides verification
+
+---
+
 ## All Generator Tests Green — URL Binding Complete (SIMON-2026-004)
 
 **Date:** 2026-04-21  

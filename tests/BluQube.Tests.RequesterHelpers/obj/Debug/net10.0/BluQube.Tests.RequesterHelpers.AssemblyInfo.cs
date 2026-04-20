@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BluQube.Tests.RequesterHelpers")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4876c3326617640890b2ee5c58304a9ee01b82e2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e95410024fd5aab1d46396795218c83996a4ec0e")]
 [assembly: System.Reflection.AssemblyProductAttribute("BluQube.Tests.RequesterHelpers")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BluQube.Tests.RequesterHelpers")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
