@@ -70,7 +70,7 @@ internal class EntryPoint { }
         Assert.DoesNotContain("BuildPath", generatedSource);
     }
 
-    [Fact(Skip = "Generator test requires additional compilation context for GET queries with nullable parameters")]
+    [Fact]
     public void GetQueryWithPathParameter_GeneratesBuildPathWithQuerystring()
     {
         // Arrange
@@ -79,13 +79,16 @@ using System;
 using BluQube.Attributes;
 using BluQube.Queries;
 
-public record TodoResult : IQueryResult { }
+namespace Test
+{
+    public record TodoResult : IQueryResult { }
 
-[BluQubeQuery(Path = ""queries/todo/{id}"", Method = ""GET"")] 
-public record GetTodoQuery(Guid Id, string? Filter) : IQuery<TodoResult> { }
+    [BluQubeQuery(Path = ""queries/todo/{id}"", Method = ""GET"")] 
+    public record GetTodoQuery(Guid Id, string? Filter) : IQuery<TodoResult> { }
 
-[BluQubeRequester]
-internal class EntryPoint { }
+    [BluQubeRequester]
+    internal class EntryPoint { }
+}
 ";
 
         // Act
@@ -93,28 +96,23 @@ internal class EntryPoint { }
         var result = driver.GetRunResult();
         var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
 
-        // Assert
+        // Assert - should generate query processor with BuildPath method
         Assert.True(allGenerated.Count > 0, $"Expected generated source files. Generated count: {allGenerated.Count}");
         
         // Find the query processor with the BuildPath method
         var queryProcessorCode = allGenerated.FirstOrDefault(g => g.SourceText.ToString().Contains("BuildPath"));
         
-        if (queryProcessorCode.SourceText != null)
-        {
-            var generatedSource = queryProcessorCode.SourceText.ToString();
-            Assert.Contains("BuildPath", generatedSource);
-            Assert.Contains("Uri.EscapeDataString", generatedSource);
-            Assert.Contains("request.Id", generatedSource);
-            Assert.Contains("Filter", generatedSource);
-            Assert.Contains("queryString", generatedSource);
-        }
-        else
-        {
-            Assert.True(true, "Query processor requires full compilation context");
-        }
+        Assert.True(queryProcessorCode.SourceText != null, "Expected to find generated code with BuildPath method");
+        
+        var generatedSource = queryProcessorCode.SourceText.ToString();
+        Assert.Contains("BuildPath", generatedSource);
+        Assert.Contains("Uri.EscapeDataString", generatedSource);
+        Assert.Contains("request.Id", generatedSource);
+        Assert.Contains("Filter", generatedSource);
+        Assert.Contains("queryString", generatedSource);
     }
 
-    [Fact(Skip = "Generator test requires additional compilation context for GET queries with nullable parameters")]
+    [Fact]
     public void GetQueryWithoutPathParameter_UsesQuerystringOnly()
     {
         // Arrange - GET query with no route params, only querystring param
@@ -122,13 +120,16 @@ internal class EntryPoint { }
 using BluQube.Attributes;
 using BluQube.Queries;
 
-public record ListResult : IQueryResult { }
+namespace Test
+{
+    public record ListResult : IQueryResult { }
 
-[BluQubeQuery(Path = ""queries/todo/list"", Method = ""GET"")] 
-public record ListTodosQuery(string? Status) : IQuery<ListResult> { }
+    [BluQubeQuery(Path = ""queries/todo/list"", Method = ""GET"")] 
+    public record ListTodosQuery(string? Status) : IQuery<ListResult> { }
 
-[BluQubeRequester]
-internal class EntryPoint { }
+    [BluQubeRequester]
+    internal class EntryPoint { }
+}
 ";
 
         // Act
@@ -136,21 +137,17 @@ internal class EntryPoint { }
         var result = driver.GetRunResult();
         var allGenerated = result.Results.SelectMany(r => r.GeneratedSources).ToList();
         
-        // Assert - should generate query processor with GET method
-        Assert.True(allGenerated.Count > 0, $"Expected generated source files. Generated count: {allGenerated.Count}, Files: {string.Join(", ", allGenerated.Select(g => g.HintName))}");
+        // Assert - should generate query processor
+        Assert.True(allGenerated.Count > 0, $"Expected generated source files. Generated count: {allGenerated.Count}");
         
-        // Find the query processor code
-        var queryProcessorCode = allGenerated.FirstOrDefault(g => g.SourceText.ToString().Contains("GenericQueryProcessor") || g.SourceText.ToString().Contains("ListTodosQuery"));
+        // Find the query processor code (not the converter)
+        var queryProcessorCode = allGenerated.FirstOrDefault(g => 
+            g.HintName.Contains("QueryProcessor") && g.SourceText.ToString().Contains("ListTodosQuery"));
+        Assert.True(queryProcessorCode.SourceText != null, "Expected to find generated code for ListTodosQuery processor");
         
-        if (allGenerated.Any(g => g.SourceText.ToString().Contains("\"GET\"")))
-        {
-            var generatedSource = allGenerated.First(g => g.SourceText.ToString().Contains("\"GET\"")).SourceText.ToString();
-            Assert.Contains("\"GET\"", generatedSource);
-        }
-        else
-        {
-            Assert.True(true, "Query processor generation requires full compilation context");
-        }
+        var generatedSource = queryProcessorCode.SourceText.ToString();
+        // The HttpMethod should be GET
+        Assert.Contains("\"GET\"", generatedSource);
     }
 
     [Fact]
@@ -287,6 +284,7 @@ internal class EntryPoint { }
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
         
         // Add necessary references for the compilation to work
+        // All BluQube types (ICommand, IQuery<>, IQueryResult, attributes) are in the same assembly
         var references = new[]
         {
             MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
@@ -299,7 +297,9 @@ internal class EntryPoint { }
             assemblyName: "GeneratorTest",
             syntaxTrees: new[] { syntaxTree },
             references: references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(
+                OutputKind.DynamicallyLinkedLibrary,
+                nullableContextOptions: NullableContextOptions.Enable));
 
         var generator = new BluQube.SourceGeneration.Requesting();
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);

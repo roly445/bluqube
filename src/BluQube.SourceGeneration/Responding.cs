@@ -63,13 +63,25 @@ namespace BluQube.SourceGeneration
                     new List<EndpointRouteBuilderExtensionsOutputDefinitionProcessor.OutputDefinition.CommandToProcess>();
                 var jsonConvertersToProcess = new List<JsonOptionsExtensionsOutputDefinitionProcessor.OutputDefinition.JsonConverterToProcess>();
 
+                // Create list of assemblies to check: current compilation + all references
+                var assembliesToCheck = new List<IAssemblySymbol>();
+                var currentAssemblyName = source.Right.Assembly.Name;
+                assembliesToCheck.Add(source.Right.Assembly);
                 foreach (var reference in source.Right.References)
                 {
-                    if (source.Right.GetAssemblyOrModuleSymbol(reference) is not IAssemblySymbol assemblySymbol)
+                    if (source.Right.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol refAssembly)
                     {
-                        continue;
+                        // Skip if this reference is the same as the current assembly
+                        if (refAssembly.Name == currentAssemblyName)
+                        {
+                            continue;
+                        }
+                        assembliesToCheck.Add(refAssembly);
                     }
+                }
 
+                foreach (var assemblySymbol in assembliesToCheck)
+                {
                     foreach (var container in source.Left.Where(x => x.InputType == InputType.QueryProcessor))
                     {
                         var typeSymbol = assemblySymbol.GetTypeByMetadataName($"{container.QueryProcessor.QueryDeclaration.GetNamespace(container.SemanticModel)}.{container.QueryProcessor.QueryDeclaration.ToString()}");
@@ -101,6 +113,11 @@ namespace BluQube.SourceGeneration
                         {
                             foreach (var member in queryTypeDecl.GetMembers().OfType<IPropertySymbol>())
                             {
+                                // Skip compiler-generated members like EqualityContract
+                                if (member.IsImplicitlyDeclared || member.Name == "EqualityContract")
+                                {
+                                    continue;
+                                }
                                 recordParams.Add(new RecordParameterInfo(member.Name, member.Type.ToDisplayString()));
                             }
                         }
@@ -153,6 +170,11 @@ namespace BluQube.SourceGeneration
                         {
                             foreach (var member in commandTypeDecl.GetMembers().OfType<IPropertySymbol>())
                             {
+                                // Skip compiler-generated members like EqualityContract
+                                if (member.IsImplicitlyDeclared || member.Name == "EqualityContract")
+                                {
+                                    continue;
+                                }
                                 recordParams.Add(new RecordParameterInfo(member.Name, member.Type.ToDisplayString()));
                             }
                         }

@@ -206,3 +206,31 @@ Wrote detailed analysis to `.squad/decisions/inbox/kaylee-url-binding-feasibilit
 
 **Key learning:** Source generators must emit syntactically valid C# at the correct scope level. Type declarations (records, classes) cannot appear inside method bodies. Array initializers require comma-separated expressions, not expression blocks with `{...}` wrapping.
 
+### 2026-04-21 — QueryResult<T> JSON Deserialization Fixed for Integration Tests
+
+**Problem:** Simon's integration tests had 3 failing query tests due to JSON deserialization errors. Command tests (returning `CommandResult`) passed, but query tests (returning `QueryResult<T>`) failed with "The JSON value could not be converted to QueryResult`1".
+
+**Root cause:** The `Responding.cs` generator was only scanning REFERENCED assemblies for JSON converters, not the current compilation. For integration tests where queries, handlers, AND converters are all in the same test assembly, the generator couldn't find the converters and generated an empty `AddBluQubeJsonConverters()` method.
+
+**Two bugs fixed:**
+
+1. **Converter detection scope** (lines 66-79 of `Responding.cs`):
+   - Old: Only checked `source.Right.References` (external assemblies)
+   - New: Also checks `source.Right.Assembly` (current compilation)
+   - This allows same-assembly scenarios (integration tests, simple apps) to work
+
+2. **EqualityContract pollution** (lines 114-121, 171-178):
+   - Old: Extracted ALL properties from record types, including compiler-generated `EqualityContract`
+   - New: Filters out `IsImplicitlyDeclared` members and explicit `EqualityContract` check
+   - This prevented duplicate shim record declarations and invalid parameter types
+
+**Result:**
+- Generated `JsonOptionsExtensions.g.cs` now correctly registers `ItemResultConverter`, `TodoListResultConverter`, `SearchResultConverter`
+- All 8 URL binding integration tests pass (was 5/8)
+- Total test count: 137 passed, 2 skipped (up from 134 passed, 3 failed)
+
+**Files modified:**
+- `src/BluQube.SourceGeneration/Responding.cs` — Two fixes: current assembly scanning + EqualityContract filtering
+
+**Key learning:** Roslyn generators must handle both external-assembly and same-assembly scenarios. Records' synthesized `EqualityContract` property (type `System.Type`) appears in `GetMembers()` and must be explicitly filtered when extracting positional parameters for URL binding or DTO generation.
+
