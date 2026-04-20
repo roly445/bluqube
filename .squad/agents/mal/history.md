@@ -34,6 +34,20 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-04-11 — URL Binding API Design (MAL-2026-005)
+
+Designed URL binding support for commands/queries — path params, querystrings, and body composition. Key lasting findings:
+
+- **Path parameter inference from templates is clean and familiar.** `{param}` in path template binds to property with matching name (case-insensitive). Zero new attributes needed. ASP.NET devs expect this pattern.
+- **HTTP method should drive binding semantics, not per-property attributes.** Adding `Method = "GET"` to `BluQubeQueryAttribute` is cleaner than `[FromPath]`/`[FromQuery]`/`[FromBody]` on every property. GET → remaining props to querystring. POST → remaining props to body.
+- **Commands are always POST.** No `Method` property needed on `BluQubeCommandAttribute`. Path params from template, everything else to body. Simple, RESTful, correct.
+- **Generator changes are surgical.** Need `BuildUrl(T request)` and `BuildBody(T request)` virtual methods on base handlers. Generated subclasses override these for path substitution and selective body serialization.
+- **Server-side needs body record generation.** For POST commands with path params, generator must emit a body-only record class (e.g., `UpdateTodoCommandBody`) since the full command includes route-bound properties.
+- **`GenericQueryProcessor`2.cs` already has GET support** — but uses runtime reflection for querystring params (line 35-48). This is bad for WASM. Generated code should handle this at compile time.
+- **The `HttpRequestMethod` enum in Constants is dead code.** Confirmed in 2026-04-07 review, still true. Generator uses string `"POST"` directly. New `Method` property should also be a string, not enum.
+
+**Decision:** Approved Option D (method-driven semantics) + Option A (path template inference). Implementation in MAL-2026-005.
+
 ### 2026-04-10 — Reversed position on Empty(), IsNotFound, IsEmpty (MAL-2026-004)
 
 Re-evaluated the three items deferred from MAL-2026-001 after PearDrop returned with an updated brief. Approved all three plus a binding condition. Key lasting findings:

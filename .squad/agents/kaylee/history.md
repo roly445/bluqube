@@ -54,3 +54,27 @@ StyleCop SA1516 requires a blank line between each auto-property (expression-bod
 Mal's binding condition was "all five or nothing" — do not ship a partial set of the boolean properties.
 
 **Orchestration:** Scribe logged orchestration entry `20260410T113508-kaylee-empty-impl.md`. Decisions merged from inbox into `.squad/decisions.md` (MAL-2026-004 + supporting decisions). Team history updated.
+
+### 2026-04-11 — URL Binding Feasibility Analysis
+
+**Deep-dive into Roslyn incremental generators for URL parameter binding:**
+
+1. **RecordDeclarationSyntax.ParameterList** — Positional record parameters are accessible via `.ParameterList.Parameters`, each `ParameterSyntax` exposes `.AttributeLists` for reading per-parameter attributes like `[FromRoute]`. This is how we can support explicit binding hints.
+
+2. **Path template parsing** — Simple regex `@"\{(\w+)\}"` extracts route param names from path strings. Case-insensitive matching (`todoId` vs `TodoId`) avoids friction. The generator already has `GetPath()` extension in `AttributeSyntaxExtensions.cs` to read the `Path` property from attributes.
+
+3. **Client-side URL construction without reflection** — Must be fully source-generated for WASM compatibility. The pattern: add a `protected virtual string BuildPath(TCommand request)` method to the base `GenericCommandHandler<T>` and `GenericQueryProcessor<T,TResult>` classes (default returns literal `Path`), then override in generated subclasses to emit string interpolation code like `$"commands/todo/{Uri.EscapeDataString(request.Id.ToString())}"`.
+
+4. **Server-side mixed binding** — ASP.NET Core 7+ supports `[FromRoute]`, `[FromQuery]`, `[FromBody]` directly on **record constructor parameters**. The model binder inspects the record and binds each parameter from the appropriate source. This means we can keep the clean `MapPost(path, async (ICommandRunner runner, TCommand command) => ...)` pattern without manual decomposition — ASP.NET does it all. No changes to `EndpointRouteBuilderExtensionsOutputDefinitionProcessor.cs` needed if we use native binding.
+
+5. **Key files for URL binding implementation:**
+   - Runtime: `GenericCommandHandler`1.cs`, `GenericCommandHandler`2.cs`, `GenericQueryProcessor`2.cs` (add `BuildPath` virtual method)
+   - Input processors: `CommandInputDefinitionProcessor.cs`, `QueryInputDefinitionProcessor.cs` (extract parameter metadata from `ParameterList`)
+   - Output processors: `GenericCommandHandlerOutputDefinitionProcessor.cs`, `GenericQueryProcessorOutputDefinitionProcessor.cs`, `GenericCommandOfTHandlerOutputDefinitionProcessor.cs` (emit `BuildPath` override when route params detected)
+   - New utilities: `PathTemplateParser.cs` (regex-based route param extraction), `ParameterBindingInfo.cs` (data class), `ParameterSyntaxExtensions.cs` (read `[FromRoute]` etc.)
+
+6. **Incremental generator caching** — Adding parameter binding metadata to input definitions requires careful value-equality on the data classes (`ParameterBindingInfo` must implement value equality for incremental caching to work correctly).
+
+**Recommended approach:** Inference-based (detect route params from path template) + optional explicit attributes (`[FromRoute]`, `[FromQuery]`, `[FromBody]`) + native ASP.NET binding on server + source-generated `BuildPath` on client. Avoids reflection, keeps client types clean, leverages ASP.NET's robust binding infrastructure.
+
+Wrote detailed analysis to `.squad/decisions/inbox/kaylee-url-binding-feasibility.md` with code examples, file change matrix, and open questions for team decision.
