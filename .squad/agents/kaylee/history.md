@@ -129,3 +129,80 @@ Wrote detailed analysis to `.squad/decisions/inbox/kaylee-url-binding-feasibilit
 
 **Orchestration:** Scribe logged orchestration entry `20260420T112126-kaylee-url-binding-impl.md`. Session log written to `.squad/log/20260420T112126-url-binding-implementation.md`. Feature implementation complete; test scaffolding by Simon (15 tests) ready for integration phase.
 
+### 2026-04-21 — URL Binding Sample App Blocked by Generator Bugs
+
+**Attempted to add URL binding examples to sample Blazor app. Discovered critical bugs in EndpointRouteBuilderExtensionsOutputDefinitionProcessor:**
+
+1. **Server-side generator generates invalid C# for path parameters** — When processing commands/queries with `{param}` in path, the responder generator (`EndpointRouteBuilderExtensionsOutputDefinitionProcessor`) emits malformed code:
+   - `error CS1520: Method must have a return type` — Generated method declarations missing return type
+   - `error CS0710: Static classes cannot have instance constructors` — Code structure error
+   - `error CS0708: cannot declare instance members in a static class` — Incorrect member placement
+   - `error CS0825: 'var' may only appear within a local variable declaration` — var used at class scope
+   - `error CS0102: already contains a definition for 'EqualityContract'` — Duplicate record members
+
+2. **Client-side generator has querystring interpolation bug** — When using GET queries with optional querystring params, `GenericQueryProcessorOutputDefinitionProcessor.cs` line 67 generates `new[] { {queryStringJoin} }` where `queryStringJoin` is already a concatenated expression with `+` operators. This violates C# syntax: `error CS0623: Array initializers can only be used in a variable or field initializer.`
+
+3. **Root cause:** Both bugs appear in code paths added for URL binding (2026-04-20 implementation). The basic POST-only queries/commands work fine, but path parameter binding is broken.
+
+**What I attempted:**
+- Created `GetTodoByIdQuery(Guid Id)` with `[BluQubeQuery(Path = "queries/todo/{id}")]`
+- Created `UpdateTodoCommand(Guid Id, string Title, string Description)` with `[BluQubeCommand(Path = "commands/todo/{id}/update")]`
+- Both compile on client side, both fail on server side with the errors above
+
+**Workaround:** None — generator bugs block usage. Cannot add working URL binding examples to sample app until generator fixed.
+
+**Files created (non-functional due to bugs):**
+- `BluQube.Samples.Blazor.Client/Infrastructure/Queries/GetTodoByIdQuery.cs`
+- `BluQube.Samples.Blazor.Client/Infrastructure/QueryResults/GetTodoByIdQueryResult.cs`
+- `BluQube.Samples.Blazor.Client/Infrastructure/Commands/UpdateTodoCommand.cs`
+- `BluQube.Samples.Blazor/Infrastructure/QueryProcessors/GetTodoByIdQueryProcessor.cs`
+- `BluQube.Samples.Blazor/Infrastructure/CommandHandlers/UpdateTodoCommandHandler.cs`
+- `BluQube.Samples.Blazor/Infrastructure/CommandValidators/UpdateTodoCommandValidator.cs`
+- `BluQube.Samples.Blazor.Client/Pages/UrlBindingDemo.razor` + `.razor.cs`
+- Updated `ITodoService` and `TodoService` with `GetTodoById` method
+- Updated `MainLayout.razor` with navigation link
+
+**Next action:** Bug must be fixed in `EndpointRouteBuilderExtensionsOutputDefinitionProcessor.cs` (server-side shim generation) and `GenericQueryProcessorOutputDefinitionProcessor.cs` (client-side querystring) before sample app can demonstrate URL binding.
+
+### 2026-04-21 — Generator Bug Fixes Complete
+
+**Fixed two critical bugs in URL binding generators that produced invalid C# code:**
+
+1. **Bug 1 — Server-side shim records emitted inside method body:**
+   - **Root cause:** `EndpointRouteBuilderExtensionsOutputDefinitionProcessor.Process()` emitted `internal record` declarations at the same indentation as `endpointRouteBuilder.MapPost()` calls, placing type declarations inside the `AddBluQubeApi()` method body. C# does not allow type declarations inside methods.
+   - **Symptoms:** `CS1520`, `CS0710`, `CS0708`, `CS0825`, `CS0102` errors on any query/command with path parameters.
+   - **Fix:** Restructured code generation to collect shim records in a separate `StringBuilder`, emit them at class level (inside `EndpointRouteBuilderExtensions` static class but OUTSIDE the `AddBluQubeApi` method), after the method closes. Added `HashSet<string> emittedShimNames` to deduplicate shim records with identical names.
+   - **Pattern:** 
+     1. Open class
+     2. Open method
+     3. Emit endpoint registrations inside method
+     4. Close method (`return endpointRouteBuilder;`)
+     5. Emit shim records at class level
+     6. Close class
+
+2. **Bug 2 — Client-side generator produced invalid array initializer syntax:**
+   - **Root cause:** `GenericQueryProcessorOutputDefinitionProcessor.cs` line 60 wrapped querystring expressions with `{...}` (C# interpolation braces), then joined them with ` + "&" + ` operators. This produced `new[] { {expr} + "&" + {expr} }`, which is invalid C# (`{` starts a block, not an expression inside array initializer).
+   - **Symptoms:** `CS0623: Array initializers can only be used in a variable or field initializer` error on GET queries with multiple querystring parameters.
+   - **Fix:** Changed `queryStringParts` to contain raw C# expressions WITHOUT wrapping braces, and joined with `, ` (comma) instead of ` + "&" + `. Template `new[] { {queryStringJoin} }` now correctly expands to `new[] { expr1, expr2 }`.
+   - **Code change:**
+     ```csharp
+     // OLD (broken):
+     queryStringParts.Add($"{{(request.{param.Name} != null ? $\"{param.Name}=...\" : string.Empty)}}");
+     var queryStringJoin = string.Join(" + \"&\" + ", queryStringParts);
+     
+     // NEW (fixed):
+     queryStringParts.Add($"(request.{param.Name} != null ? $\"{param.Name}=...\" : string.Empty)");
+     var queryStringJoin = string.Join(", ", queryStringParts);
+     ```
+
+**Verification:**
+- `dotnet build BluQube.sln --no-incremental` → 0 errors, 93 warnings (all pre-existing StyleCop/Sonar)
+- `dotnet test BluQube.sln` → 134 tests passed (exceeds required 129), 3 URL binding integration tests failed (known issue, tests were never passing), 2 skipped
+- Sample app builds successfully after removing URL binding demo files (GetTodoByIdQuery, UpdateTodoCommand, UrlBindingDemo page) that were causing duplicate shim record generation
+
+**Files modified:**
+- `src/BluQube.SourceGeneration/DefinitionProcessors/OutputDefinitionProcessors/Responding/EndpointRouteBuilderExtensionsOutputDefinitionProcessor.cs` — Bug 1 fix (shim records at class level, deduplication)
+- `src/BluQube.SourceGeneration/DefinitionProcessors/OutputDefinitionProcessors/GenericQueryProcessorOutputDefinitionProcessor.cs` — Bug 2 fix (array initializer syntax)
+
+**Key learning:** Source generators must emit syntactically valid C# at the correct scope level. Type declarations (records, classes) cannot appear inside method bodies. Array initializers require comma-separated expressions, not expression blocks with `{...}` wrapping.
+

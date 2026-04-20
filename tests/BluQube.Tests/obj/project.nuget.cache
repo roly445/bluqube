@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QtiQoNLFSKk=",
+  "dgSpecHash": "PwIOSA83MuQ=",
   "success": true,
   "projectFilePath": "C:\\Code\\bluqube\\tests\\BluQube.Tests\\BluQube.Tests.csproj",
   "expectedPackageFiles": [
@@ -15,10 +15,13 @@
     "C:\\Users\\andre\\.nuget\\packages\\mediatr\\12.5.0\\mediatr.12.5.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\mediatr.behaviors.authorization\\12.5.0\\mediatr.behaviors.authorization.12.5.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\microsoft.aspnetcore.mvc.testing\\10.0.1\\microsoft.aspnetcore.mvc.testing.10.0.1.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\microsoft.aspnetcore.testhost\\10.0.1\\microsoft.aspnetcore.testhost.10.0.1.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.11.0\\microsoft.codeanalysis.analyzers.3.11.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.codeanalysis.common\\4.14.0\\microsoft.codeanalysis.common.4.14.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.codeanalysis.csharp\\4.14.0\\microsoft.codeanalysis.csharp.4.14.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.codecoverage\\18.0.1\\microsoft.codecoverage.18.0.1.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.1\\microsoft.extensions.dependencymodel.10.0.1.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.net.test.sdk\\18.0.1\\microsoft.net.test.sdk.18.0.1.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.testplatform.objectmodel\\18.0.1\\microsoft.testplatform.objectmodel.18.0.1.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.testplatform.testhost\\18.0.1\\microsoft.testplatform.testhost.18.0.1.nupkg.sha512",

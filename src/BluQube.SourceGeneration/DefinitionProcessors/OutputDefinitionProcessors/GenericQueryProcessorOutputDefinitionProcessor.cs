@@ -57,10 +57,10 @@ internal class Generic{data.QueryName}Processor(
                     var queryStringParts = new List<string>();
                     foreach (var param in nonRouteParams)
                     {
-                        queryStringParts.Add($"{{(request.{param.Name} != null ? $\"{param.Name}={{System.Uri.EscapeDataString(request.{param.Name}.ToString() ?? string.Empty)}}\" : string.Empty)}}");
+                        queryStringParts.Add($"(request.{param.Name} != null ? $\"{param.Name}={{System.Uri.EscapeDataString(request.{param.Name}.ToString() ?? string.Empty)}}\" : string.Empty)");
                     }
 
-                    var queryStringJoin = string.Join(" + \"&\" + ", queryStringParts);
+                    var queryStringJoin = string.Join(", ", queryStringParts);
                     sb.AppendLine($@"
     protected override string BuildPath({data.QueryName} request)
     {{

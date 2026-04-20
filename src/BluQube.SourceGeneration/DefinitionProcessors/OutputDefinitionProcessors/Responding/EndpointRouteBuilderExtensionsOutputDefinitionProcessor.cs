@@ -24,6 +24,10 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
 {{
      internal static IEndpointRouteBuilder AddBluQubeApi(this IEndpointRouteBuilder endpointRouteBuilder)
      {{");
+
+            var shimRecords = new StringBuilder();
+            var emittedShimNames = new HashSet<string>();
+
             foreach (var queryToProcess in data.QueriesToProcess)
             {
                 var routeParams = PathTemplateParser.ExtractRouteParameters(queryToProcess.Path);
@@ -59,12 +63,16 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                         {
                             var fromAttribute = httpMethod.Equals("GET", System.StringComparison.OrdinalIgnoreCase)
                                 ? "[property: Microsoft.AspNetCore.Mvc.FromQuery] "
-                                : "";
+                                : string.Empty;
                             bodyShimProps.Add($"{fromAttribute}{param.TypeName} {param.Name}");
                             ctorParamList.Add($"{queryToProcess.Query.ToLowerInvariant()}Params.{param.Name}");
                         }
 
-                        sb.AppendLine($"        internal record {shimName}({string.Join(", ", bodyShimProps)});");
+                        if (emittedShimNames.Add(shimName))
+                        {
+                            shimRecords.AppendLine($"     internal record {shimName}({string.Join(", ", bodyShimProps)});");
+                        }
+
                         sb.AppendLine($"        endpointRouteBuilder.{mapMethod}(\"{queryToProcess.Path}\", async (IQueryRunner queryRunner, {string.Join(", ", routeParamList)}, [Microsoft.AspNetCore.Http.AsParameters] {shimName} {queryToProcess.Query.ToLowerInvariant()}Params) => {{");
                     }
                     else
@@ -123,7 +131,11 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                             ctorParamList.Add($"body.{param.Name}");
                         }
 
-                        sb.AppendLine($"        internal record {shimName}({string.Join(", ", bodyShimProps)});");
+                        if (emittedShimNames.Add(shimName))
+                        {
+                            shimRecords.AppendLine($"     internal record {shimName}({string.Join(", ", bodyShimProps)});");
+                        }
+
                         sb.AppendLine($"        endpointRouteBuilder.MapPost(\"{commandToProcess.Path}\", async (ICommandRunner commandRunner, {string.Join(", ", routeParamList)}, {shimName} body) => {{");
                     }
                     else
@@ -146,8 +158,9 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
             }
 
             sb.AppendLine(@"        return endpointRouteBuilder;
-     }
-}");
+     }");
+            sb.Append(shimRecords.ToString());
+            sb.AppendLine("}");
             return sb.ToString();
         }
 

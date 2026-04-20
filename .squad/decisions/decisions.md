@@ -41,25 +41,35 @@
 
 ---
 
-## URL Binding Generator Bugs Found — CRITICAL BLOCKER (KAYLEE-2026-001)
+## Generator Bug Fixes — Critical Invalid C# Code Issues (KAYLEE-2026-002)
 
 **Date:** 2026-04-21  
 **Author:** Kaylee (Framework Dev)  
-**Status:** BLOCKING ISSUE (new)
+**Status:** IMPLEMENTED
 
-**Summary:** URL binding feature advertised as implemented but has critical bugs in both generators preventing any path parameter usage from compiling.
+**Summary:** Fixed two critical bugs in URL binding source generators that emitted syntactically invalid C# code, preventing compilation of any project using path parameter binding.
 
-**Bugs:**
-1. **Server-Side:** EndpointRouteBuilderExtensionsOutputDefinitionProcessor emits malformed C# (CS1520, CS0710, CS0708, CS0825, CS0102)
-2. **Client-Side:** GenericQueryProcessorOutputDefinitionProcessor generates invalid array initializer syntax (CS0623)
+### Bug 1: Server-Side Shim Records Emitted Inside Method Body
 
-**Impact:** Any command/query with `{param}` in path fails to compile.
+**Root cause:** Shim record declarations were emitted at the same indentation as endpoint registrations, placing type declarations inside the `AddBluQubeApi()` method body.
 
-**Estimate:** 2–4 hours to fix both generators plus test verification.
+**Fix:** Restructured code generation to collect shim records separately, emit them at class level AFTER the method closes, with HashSet deduplication.
 
-**Owner:** Kaylee (implemented feature, responsible for fixes).
+**File:** `EndpointRouteBuilderExtensionsOutputDefinitionProcessor.cs`
 
-**Blocked:** Sample app URL binding examples cannot proceed.
+### Bug 2: Client-Side Invalid Array Initializer
+
+**Root cause:** Querystring expressions wrapped with `{...}` braces, then joined with ` + "&" + `, produced `new[] { {expr} + ... }` which is invalid syntax.
+
+**Fix:** Removed wrapping braces, joined with `, ` for comma-separated array elements.
+
+**File:** `GenericQueryProcessorOutputDefinitionProcessor.cs`
+
+### Verification
+
+- Build: 0 errors, 93 warnings (pre-existing)
+- Tests: 134 passed (exceeds required 129)
+- Sample app: Builds successfully
 
 ---
 

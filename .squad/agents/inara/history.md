@@ -28,4 +28,10 @@
 
 ## Learnings
 
-<!-- Append new learnings below. Each entry is something lasting about the project. -->
+- URL binding pattern is complete: Properties in `{paramName}` templates are automatically inferred and bound to route/querystring. Case-insensitive matching.
+- Commands always POST; queries default POST but support GET with `Method = "GET"` attribute.
+- Generated client uses `Uri.EscapeDataString()` for URL escaping—fully AOT-safe, no reflection.
+- Generated server uses internal shim records with `[FromRoute]` / `[FromQuery]` attributes to keep user types clean.
+- Documentation should focus on developer intent: "I want a REST-style delete endpoint" → shows the pattern with minimal explanation.
+- README style prefers brief examples with inline comments over long prose paragraphs.
+
