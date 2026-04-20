@@ -32,14 +32,14 @@ namespace BluQube.Queries;
 ///     var items = await _repository.GetAllAsync(cancellationToken);
 ///     return QueryResult&lt;GetTodosResult&gt;.Succeeded(new GetTodosResult(items));
 /// }
-/// 
+///
 /// // Single-entity not found:
-/// var todo = await _repository.GetByIdAsync(request.Id);
-/// if (todo == null)
+/// var entity = await _repository.GetByIdAsync(request.Id);
+/// if (entity == null)
 /// {
 ///     return QueryResult&lt;GetTodoResult&gt;.NotFound();
 /// }
-/// 
+///
 /// // Consumer code:
 /// var result = await queryRunner.Send(query);
 /// if (result.IsSucceeded)

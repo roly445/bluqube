@@ -13,7 +13,7 @@
 /// // In your Blazor Server or ASP.NET project:
 /// [BluQubeResponder]
 /// public partial class ServerConfiguration { }
-/// 
+///
 /// // Then in Program.cs:
 /// app.AddBluQubeApi();
 /// </code>

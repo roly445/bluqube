@@ -1,4 +1,4 @@
-using BluQube.Attributes;
+﻿using BluQube.Attributes;
 using BluQube.Commands;
 
 namespace BluQube.Tests.Integration;

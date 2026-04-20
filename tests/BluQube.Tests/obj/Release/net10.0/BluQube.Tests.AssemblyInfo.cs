@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BluQube.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aac6dd1e19e9fa705025051385655ac90fb32ce8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5eace1e323ba9cf9e22e62b9ef86e006bfd7f188")]
 [assembly: System.Reflection.AssemblyProductAttribute("BluQube.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BluQube.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

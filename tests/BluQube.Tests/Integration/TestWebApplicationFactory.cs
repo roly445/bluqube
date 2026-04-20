@@ -1,4 +1,4 @@
-using BluQube.Attributes;
+﻿using BluQube.Attributes;
 using BluQube.Commands;
 using BluQube.Queries;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +26,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         {
             // Services are configured in Program.cs
         });
-        
+
         builder.Configure(app =>
         {
             app.UseRouting();
@@ -91,18 +91,18 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         endpoints.MapGet("test/item/{id}", async (
             [FromServices] IQueryRunner runner,
             [FromRoute] Guid id,
-            [FromQuery] string? Filter) =>
+            [FromQuery] string? filter) =>
         {
-            var query = new GetItemQuery(id, Filter);
+            var query = new GetItemQuery(id, filter);
             var result = await runner.Send(query);
             return Results.Json(result);
         });
 
         endpoints.MapGet("test/todos", async (
             [FromServices] IQueryRunner runner,
-            [FromQuery] string? Status) =>
+            [FromQuery] string? status) =>
         {
-            var query = new ListTodosQuery(Status);
+            var query = new ListTodosQuery(status);
             var result = await runner.Send(query);
             return Results.Json(result);
         });

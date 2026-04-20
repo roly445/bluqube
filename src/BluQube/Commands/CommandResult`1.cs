@@ -25,16 +25,16 @@ namespace BluQube.Commands;
 /// protected override async Task&lt;CommandResult&lt;CreateTodoResult&gt;&gt; HandleInternal(
 ///     CreateTodoCommand request, CancellationToken cancellationToken)
 /// {
-///     var todo = new Todo { Id = Guid.NewGuid(), Title = request.Title };
-///     await _repository.AddAsync(todo, cancellationToken);
-///     return CommandResult&lt;CreateTodoResult&gt;.Succeeded(new CreateTodoResult(todo.Id));
+///     var entity = new Entity { Id = Guid.NewGuid(), Title = request.Title };
+///     await _repository.AddAsync(entity, cancellationToken);
+///     return CommandResult&lt;CreateTodoResult&gt;.Succeeded(new CreateTodoResult(entity.Id));
 /// }
-/// 
+///
 /// // Consumer code:
 /// var result = await commandRunner.Send(command);
 /// if (result.Status == CommandResultStatus.Succeeded)
 /// {
-///     Console.WriteLine($"Created todo with ID: {result.Data.Id}");
+///     Console.WriteLine($"Created item with ID: {result.Data.Id}");
 /// }
 /// </code>
 /// </example>

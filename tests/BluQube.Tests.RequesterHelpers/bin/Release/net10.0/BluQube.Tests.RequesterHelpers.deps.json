@@ -330,7 +330,7 @@
         "runtime": {
           "BluQube.dll": {
             "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.11.0"
+            "fileVersion": "1.0.13.0"
           }
         }
       },
@@ -341,7 +341,7 @@
         "runtime": {
           "BluQube.SourceGeneration.dll": {
             "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.11.0"
+            "fileVersion": "1.0.13.0"
           }
         }
       }

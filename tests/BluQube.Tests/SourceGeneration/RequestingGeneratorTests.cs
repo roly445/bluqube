@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -15,7 +15,7 @@ namespace BluQube.Tests.SourceGeneration
 using BluQube.Attributes;
 using BluQube.Commands;
 
-[BluQubeCommand(Path = ""commands/stub"")] 
+[BluQubeCommand(Path = ""commands/stub"")]
 public class StubCommand : ICommand { }
 ";
             GeneratorDriver driver = RunGenerator(code);
@@ -32,7 +32,7 @@ public class StubCommand : ICommand { }
 using BluQube.Attributes;
 using BluQube.Commands;
 
-[BluQubeCommand(Path = ""commands/stub"")] 
+[BluQubeCommand(Path = ""commands/stub"")]
 public class StubCommand : ICommand { }
 
 [BluQubeRequester]

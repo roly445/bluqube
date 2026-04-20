@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 
 namespace BluQube.Queries;
 
@@ -18,11 +18,11 @@ namespace BluQube.Queries;
 /// <code>
 /// [BluQubeQuery(Path = "queries/get-todos")]
 /// public record GetTodosQuery : IQuery&lt;GetTodosResult&gt;;
-/// 
+///
 /// public record GetTodosResult(List&lt;TodoItem&gt; Items) : IQueryResult;
-/// 
+///
 /// // With GET method:
-/// [BluQubeQuery(Path = "queries/todo/{id}", Method = "GET")]
+/// [BluQubeQuery(Path = "queries/item/{id}", Method = "GET")]
 /// public record GetTodoByIdQuery(Guid Id) : IQuery&lt;GetTodoResult&gt;;
 /// </code>
 /// </example>

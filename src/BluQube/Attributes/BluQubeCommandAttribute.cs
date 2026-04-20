@@ -13,11 +13,11 @@
 /// </remarks>
 /// <example>
 /// <code>
-/// [BluQubeCommand(Path = "commands/create-todo")]
+/// [BluQubeCommand(Path = "commands/create-item")]
 /// public record CreateTodoCommand(string Title, string Description) : ICommand;
-/// 
+///
 /// // With route parameters:
-/// [BluQubeCommand(Path = "commands/todo/{id}/update")]
+/// [BluQubeCommand(Path = "commands/item/{id}/update")]
 /// public record UpdateTodoCommand(Guid Id, string Title) : ICommand;
 /// </code>
 /// </example>
@@ -27,6 +27,6 @@ public class BluQubeCommandAttribute : Attribute
     /// <summary>
     /// Gets or initializes the endpoint path for this command. Route parameters can be specified using {parameterName} syntax.
     /// </summary>
-    /// <value>The relative URL path where the command will be sent. Example: "commands/create-todo" or "commands/todo/{id}/update".</value>
+    /// <value>The relative URL path where the command will be sent. Example: "commands/create-item" or "commands/item/{id}/update".</value>
     public string Path { get; init; } = string.Empty;
 }

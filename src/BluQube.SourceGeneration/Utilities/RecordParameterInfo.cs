@@ -1,4 +1,4 @@
-namespace BluQube.SourceGeneration.Utilities
+﻿namespace BluQube.SourceGeneration.Utilities
 {
     internal class RecordParameterInfo
     {
@@ -13,4 +13,3 @@ namespace BluQube.SourceGeneration.Utilities
         public string TypeName { get; }
     }
 }
-

@@ -25,17 +25,17 @@ namespace BluQube.Commands;
 /// // In a handler:
 /// protected override async Task&lt;CommandResult&gt; HandleInternal(CreateTodoCommand request, CancellationToken cancellationToken)
 /// {
-///     var todo = new Todo { Title = request.Title };
-///     await _repository.AddAsync(todo, cancellationToken);
+///     var entity = new Entity { Title = request.Title };
+///     await _repository.AddAsync(entity, cancellationToken);
 ///     return CommandResult.Succeeded();
 /// }
-/// 
+///
 /// // Error handling:
 /// if (!_repository.Exists(request.Id))
 /// {
-///     return CommandResult.Failed(new BluQubeErrorData("TODO_NOT_FOUND", "The todo does not exist"));
+///     return CommandResult.Failed(new BluQubeErrorData("ITEM_NOT_FOUND", "The item does not exist"));
 /// }
-/// 
+///
 /// // Consumer code:
 /// var result = await commandRunner.Send(command);
 /// if (result.Status == CommandResultStatus.Succeeded)

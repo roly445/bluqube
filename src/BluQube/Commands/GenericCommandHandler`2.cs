@@ -31,7 +31,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
     /// <summary>
     /// Gets the endpoint path for this command. Overridden by source-generated subclasses.
     /// </summary>
-    /// <value>The relative URL path where the command will be sent. Example: "commands/create-todo".</value>
+    /// <value>The relative URL path where the command will be sent. Example: "commands/create-item".</value>
     protected abstract string Path { get; }
 
     /// <summary>
@@ -98,7 +98,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
     /// <param name="request">The command instance containing parameter values.</param>
     /// <returns>The URL path with route parameters substituted. The base implementation returns <see cref="Path"/> unchanged.</returns>
     /// <remarks>
-    /// Source-generated subclasses override this method when the command path contains route parameters (e.g., "commands/todo/{id}/update").
+    /// Source-generated subclasses override this method when the command path contains route parameters (e.g., "commands/item/{id}/update").
     /// The generated code uses string interpolation and <c>Uri.EscapeDataString</c> to safely construct URLs from command properties.
     /// </remarks>
     protected virtual string BuildPath(TCommand request) => this.Path;

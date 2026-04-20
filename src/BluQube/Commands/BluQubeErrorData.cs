@@ -15,8 +15,8 @@ namespace BluQube.Commands;
 /// <example>
 /// <code>
 /// // With message:
-/// var error = new BluQubeErrorData("DUPLICATE_ENTITY", "A todo with this title already exists");
-/// 
+/// var error = new BluQubeErrorData("DUPLICATE_ENTITY", "An item with this title already exists");
+///
 /// // Code-only (message defaults to code):
 /// var error = new BluQubeErrorData(BluQubeErrorCodes.NotAuthorized);
 /// </code>

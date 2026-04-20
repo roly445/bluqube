@@ -16,3 +16,4 @@ C:\Code\bluqube\tests\BluQube.Tests.RequesterHelpers\obj\Release\net10.0\BluQube
 C:\Code\bluqube\tests\BluQube.Tests.RequesterHelpers\obj\Release\net10.0\refint\BluQube.Tests.RequesterHelpers.dll
 C:\Code\bluqube\tests\BluQube.Tests.RequesterHelpers\obj\Release\net10.0\BluQube.Tests.RequesterHelpers.pdb
 C:\Code\bluqube\tests\BluQube.Tests.RequesterHelpers\obj\Release\net10.0\ref\BluQube.Tests.RequesterHelpers.dll
+C:\Code\bluqube\tests\BluQube.Tests.RequesterHelpers\bin\Release\net10.0\BluQube.xml

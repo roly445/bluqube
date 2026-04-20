@@ -9,6 +9,7 @@
         <IsTestProject>true</IsTestProject>
         <LangVersion>latest</LangVersion>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <GenerateProgramFile>false</GenerateProgramFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -54,8 +55,8 @@
       <ProjectReference Include="..\BluQube.Tests.RequesterHelpers\BluQube.Tests.RequesterHelpers.csproj" />
       <ProjectReference Include="..\BluQube.Tests.ResponderHelpers\BluQube.Tests.ResponderHelpers.csproj" />
     </ItemGroup>
-    
-    
+
+
     <Import Project="..\..\shared\BluQube.Shared\BluQube.Shared.projitems" Label="Shared" />
 
 </Project>

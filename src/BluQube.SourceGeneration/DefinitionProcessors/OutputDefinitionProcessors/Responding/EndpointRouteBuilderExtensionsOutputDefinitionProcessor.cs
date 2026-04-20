@@ -11,6 +11,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
         public string Process(OutputDefinition data)
         {
             var sb = new StringBuilder();
+            sb.AppendLine("#nullable enable");
             sb.AppendLine("using BluQube.Queries;");
             sb.AppendLine("using BluQube.Commands;");
             sb.AppendLine("using Microsoft.AspNetCore.Builder;");

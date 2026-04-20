@@ -1,4 +1,4 @@
-using BluQube.Commands;
+﻿using BluQube.Commands;
 using BluQube.Queries;
 using BluQube.Tests.Integration;
 using MediatR.Behaviors.Authorization.Extensions.DependencyInjection;
@@ -23,9 +23,12 @@ var app = builder.Build();
 // Map BluQube endpoints
 app.AddBluQubeApi();
 
-app.Run();
+await app.RunAsync();
 
 // Make Program accessible to WebApplicationFactory
 public partial class Program
 {
+    protected Program()
+    {
+    }
 }

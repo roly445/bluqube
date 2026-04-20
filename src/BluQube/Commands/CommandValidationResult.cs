@@ -13,7 +13,7 @@
 /// <example>
 /// <code>
 /// var result = await commandRunner.Send(new CreateTodoCommand("", "Description"));
-/// 
+///
 /// if (result.Status == CommandResultStatus.Invalid)
 /// {
 ///     foreach (var failure in result.ValidationResult.Failures)

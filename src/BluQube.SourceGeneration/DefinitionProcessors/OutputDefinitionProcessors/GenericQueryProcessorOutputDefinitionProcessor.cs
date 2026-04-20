@@ -11,6 +11,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
         public string Process(OutputDefinition data)
         {
             var sb = new StringBuilder();
+            sb.AppendLine("#nullable enable");
             sb.AppendLine($@"using System.Text.Json.Serialization;
 using BluQube.Queries;
 using Microsoft.Extensions.Logging;");
@@ -54,11 +55,7 @@ internal class Generic{data.QueryName}Processor(
 
                 if (data.Method.Equals("GET", System.StringComparison.OrdinalIgnoreCase) && nonRouteParams.Any())
                 {
-                    var queryStringParts = new List<string>();
-                    foreach (var param in nonRouteParams)
-                    {
-                        queryStringParts.Add($"(request.{param.Name} != null ? $\"{param.Name}={{System.Uri.EscapeDataString(request.{param.Name}.ToString() ?? string.Empty)}}\" : string.Empty)");
-                    }
+                    var queryStringParts = nonRouteParams.Select(param => $"(request.{param.Name} != null ? $\"{param.Name}={{System.Uri.EscapeDataString(request.{param.Name}.ToString() ?? string.Empty)}}\" : string.Empty)").ToList();
 
                     var queryStringJoin = string.Join(", ", queryStringParts);
                     sb.AppendLine($@"

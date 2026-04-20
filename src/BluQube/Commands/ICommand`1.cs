@@ -15,9 +15,9 @@ namespace BluQube.Commands;
 /// </remarks>
 /// <example>
 /// <code>
-/// [BluQubeCommand(Path = "commands/create-todo")]
+/// [BluQubeCommand(Path = "commands/create-item")]
 /// public record CreateTodoCommand(string Title) : ICommand&lt;CreateTodoResult&gt;;
-/// 
+///
 /// public record CreateTodoResult(Guid Id) : ICommandResult;
 /// </code>
 /// </example>

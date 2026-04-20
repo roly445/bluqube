@@ -1,4 +1,4 @@
-using BluQube.Queries;
+﻿using BluQube.Queries;
 
 namespace BluQube.Tests.Integration;
 

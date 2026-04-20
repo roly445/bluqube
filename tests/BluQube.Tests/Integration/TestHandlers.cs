@@ -1,4 +1,4 @@
-using BluQube.Commands;
+﻿using BluQube.Commands;
 using FluentValidation;
 
 namespace BluQube.Tests.Integration;

@@ -76,6 +76,7 @@ namespace BluQube.SourceGeneration
                         {
                             continue;
                         }
+
                         assembliesToCheck.Add(refAssembly);
                     }
                 }
@@ -118,6 +119,7 @@ namespace BluQube.SourceGeneration
                                 {
                                     continue;
                                 }
+
                                 recordParams.Add(new RecordParameterInfo(member.Name, member.Type.ToDisplayString()));
                             }
                         }
@@ -175,6 +177,7 @@ namespace BluQube.SourceGeneration
                                 {
                                     continue;
                                 }
+
                                 recordParams.Add(new RecordParameterInfo(member.Name, member.Type.ToDisplayString()));
                             }
                         }

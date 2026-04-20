@@ -10,7 +10,7 @@
 /// <example>
 /// <code>
 /// public record GetTodosResult(List&lt;TodoItem&gt; Items) : IQueryResult;
-/// 
+///
 /// public record GetTodoByIdResult(Guid Id, string Title, string Description) : IQueryResult;
 /// </code>
 /// </example>

@@ -12,15 +12,15 @@
 /// </remarks>
 /// <example>
 /// <code>
-/// public class TodoService
+/// public class ItemService
 /// {
 ///     private readonly IQueryRunner _queryRunner;
-///     
+///
 ///     public TodoService(IQueryRunner queryRunner)
 ///     {
 ///         _queryRunner = queryRunner;
 ///     }
-///     
+///
 ///     public async Task&lt;QueryResult&lt;GetTodosResult&gt;&gt; GetTodosAsync(CancellationToken ct)
 ///     {
 ///         var query = new GetTodosQuery();

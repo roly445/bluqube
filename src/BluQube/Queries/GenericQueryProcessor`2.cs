@@ -129,7 +129,7 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
     /// <param name="request">The query instance containing parameter values.</param>
     /// <returns>The URL path with route parameters substituted. The base implementation returns <see cref="Path"/> unchanged.</returns>
     /// <remarks>
-    /// Source-generated subclasses override this method when the query path contains route parameters (e.g., "queries/todo/{id}").
+    /// Source-generated subclasses override this method when the query path contains route parameters (e.g., "queries/item/{id}").
     /// The generated code uses string interpolation and <c>Uri.EscapeDataString</c> to safely construct URLs from query properties.
     /// For GET queries, route parameters are extracted from the path and non-route parameters are serialized as querystring (handled by <see cref="Handle"/>).
     /// </remarks>

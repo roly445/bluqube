@@ -29,7 +29,7 @@ namespace BluQube.Commands;
 /// public class CreateTodoCommandHandler : CommandHandler&lt;CreateTodoCommand, CreateTodoResult&gt;
 /// {
 ///     private readonly ITodoRepository _repository;
-///     
+///
 ///     public CreateTodoCommandHandler(
 ///         IEnumerable&lt;IValidator&lt;CreateTodoCommand&gt;&gt; validators,
 ///         ILogger&lt;CreateTodoCommandHandler&gt; logger,
@@ -38,13 +38,13 @@ namespace BluQube.Commands;
 ///     {
 ///         _repository = repository;
 ///     }
-///     
+///
 ///     protected override async Task&lt;CommandResult&lt;CreateTodoResult&gt;&gt; HandleInternal(
 ///         CreateTodoCommand request, CancellationToken cancellationToken)
 ///     {
-///         var todo = new Todo { Id = Guid.NewGuid(), Title = request.Title };
-///         await _repository.AddAsync(todo, cancellationToken);
-///         return CommandResult&lt;CreateTodoResult&gt;.Succeeded(new CreateTodoResult(todo.Id));
+///         var entity = new Entity { Id = Guid.NewGuid(), Title = request.Title };
+///         await _repository.AddAsync(entity, cancellationToken);
+///         return CommandResult&lt;CreateTodoResult&gt;.Succeeded(new CreateTodoResult(entity.Id));
 ///     }
 /// }
 /// </code>

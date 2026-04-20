@@ -1,4 +1,4 @@
-// Integration tests for URL binding feature
+﻿// Integration tests for URL binding feature
 // These tests verify end-to-end behavior: client → server → handler round-trip
 
 using System;
@@ -23,7 +23,7 @@ public class UrlBindingIntegrationTests : IClassFixture<TestWebApplicationFactor
     {
         _factory = factory;
         _client = _factory.CreateClient();
-        
+
         // Configure JSON options with BluQube converters
         _jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
         _jsonOptions.Converters.Add(new CommandResultConverter());
@@ -133,11 +133,12 @@ public class UrlBindingIntegrationTests : IClassFixture<TestWebApplicationFactor
     public async Task CaseInsensitiveRouteParameterMatching_ClientToServer_Works()
     {
         // Arrange - DeleteItemCommand uses {id} in path (lowercase), Id property (uppercase)
+        // This test verifies case-insensitive matching works correctly with different casing
         var testId = Guid.NewGuid();
         var command = new DeleteItemCommand(testId);
 
-        // Act
-        var response = await _client.PostAsJsonAsync($"test/item/{testId}", command);
+        // Act - Use uppercase "ITEM" to test case-insensitive route matching
+        var response = await _client.PostAsJsonAsync($"test/ITEM/{testId}", command);
 
         // Assert
         response.EnsureSuccessStatusCode();

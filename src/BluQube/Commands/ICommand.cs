@@ -17,11 +17,11 @@ namespace BluQube.Commands;
 /// </remarks>
 /// <example>
 /// <code>
-/// [BluQubeCommand(Path = "commands/create-todo")]
+/// [BluQubeCommand(Path = "commands/create-item")]
 /// public record CreateTodoCommand(string Title, string Description) : ICommand;
-/// 
+///
 /// // With authorization:
-/// [BluQubeCommand(Path = "commands/delete-todo")]
+/// [BluQubeCommand(Path = "commands/delete-item")]
 /// public record DeleteTodoCommand(Guid Id) : ICommand
 /// {
 ///     public string PolicyName => "AdminOnly";

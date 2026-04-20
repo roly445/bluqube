@@ -12,12 +12,12 @@ public static class BluQubeErrorCodes
     /// <summary>
     /// Error code indicating the operation was rejected due to authorization failure.
     /// </summary>
-    /// <value>"NotAuthorized"</value>
+    /// <value>"NotAuthorized".</value>
     public const string NotAuthorized = "NotAuthorized";
 
     /// <summary>
     /// Error code indicating a communication failure between client and server (HTTP error, network issue, or JSON deserialization failure).
     /// </summary>
-    /// <value>"CommunicationError"</value>
+    /// <value>"CommunicationError".</value>
     public const string CommunicationError = "CommunicationError";
 }

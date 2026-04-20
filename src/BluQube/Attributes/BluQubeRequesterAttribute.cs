@@ -13,7 +13,7 @@
 /// // In your Blazor WASM project:
 /// [BluQubeRequester]
 /// public partial class ClientConfiguration { }
-/// 
+///
 /// // Then in Program.cs:
 /// builder.Services.AddBluQubeRequesters();
 /// </code>

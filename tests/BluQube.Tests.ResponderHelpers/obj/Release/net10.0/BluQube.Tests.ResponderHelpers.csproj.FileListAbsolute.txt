@@ -18,3 +18,4 @@ C:\Code\bluqube\tests\BluQube.Tests.ResponderHelpers\obj\Release\net10.0\BluQube
 C:\Code\bluqube\tests\BluQube.Tests.ResponderHelpers\obj\Release\net10.0\refint\BluQube.Tests.ResponderHelpers.dll
 C:\Code\bluqube\tests\BluQube.Tests.ResponderHelpers\obj\Release\net10.0\BluQube.Tests.ResponderHelpers.pdb
 C:\Code\bluqube\tests\BluQube.Tests.ResponderHelpers\obj\Release\net10.0\ref\BluQube.Tests.ResponderHelpers.dll
+C:\Code\bluqube\tests\BluQube.Tests.ResponderHelpers\bin\Release\net10.0\BluQube.xml

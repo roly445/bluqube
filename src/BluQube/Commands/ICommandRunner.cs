@@ -12,15 +12,15 @@
 /// </remarks>
 /// <example>
 /// <code>
-/// public class TodoService
+/// public class ItemService
 /// {
 ///     private readonly ICommandRunner _commandRunner;
-///     
+///
 ///     public TodoService(ICommandRunner commandRunner)
 ///     {
 ///         _commandRunner = commandRunner;
 ///     }
-///     
+///
 ///     public async Task&lt;CommandResult&gt; CreateTodoAsync(string title, CancellationToken ct)
 ///     {
 ///         var command = new CreateTodoCommand(title);
