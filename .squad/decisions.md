@@ -459,6 +459,89 @@ TDD Gate ceremony already present in `ceremonies.md` (line 45–62). Team charte
 
 ---
 
+### Decision 8: Documentation Strategy for BluQube (INARA-2026-001)
+
+**Decision ID:** INARA-2026-001  
+**Date:** 2026-04-21  
+**Author:** Inara (Docs/DevRel)  
+**Status:** APPROVED AND IMPLEMENTED
+
+#### Verdict
+
+**APPROVED** — Implement hybrid documentation strategy: Enhanced README + focused `/docs/` markdown guides. This balances discoverability, currency, and maintenance burden for a lean .NET framework library.
+
+#### The Problem
+
+BluQube is a published NuGet package (.NET 8/9/10, Blazor Server/WASM), but documentation is incomplete:
+- README exists (155 lines) but lacks advanced patterns
+- No `/docs/` folder with deep-dive guides
+- No Getting Started guide (setup takes >1 hour)
+- Authorization/validation patterns undocumented
+- Troubleshooting guide missing (source generation failures cryptic)
+- No WASM deployment guide
+- Sample app production-quality but undiscovered
+
+#### Approved Approach
+
+**README.md** → front door (quick start, links to guides)  
+**docs/*.md** → deep dives (150–500 lines each, indexed by topic)  
+**XML comments** → IDE IntelliSense (auto-generated from code)  
+**Sample app** → canonical reference (linked from relevant guides)
+
+#### Why NOT a Full Documentation Site?
+
+| Option | Verdict | Rationale |
+|--------|---------|-----------|
+| **DocFX / VitePress site** | ❌ Overkill | BluQube is single library (~2000 LOC). Adds deployment, tooling, and drift. |
+| **GitHub Pages static site** | ❌ Overkill | Same as above; markdown in repo is simpler. |
+| **Minimal README only** | ❌ Incomplete | Leaves users blocked on setup, authorization, validation. |
+| **This hybrid (README + /docs)** | ✅ Optimal | Discoverable, maintainable, expert-friendly, searchable. |
+
+**Key insight:** Target audience is **expert .NET developers** who prefer markdown with runnable examples, indexed by problem, and local (in repo).
+
+#### Approved Folder Structure
+
+```
+C:\Code\bluqube/
+├── README.md (updated: add /docs links, sample app section)
+├── CONTRIBUTING.md (new)
+├── docs/
+│   ├── GETTING_STARTED.md
+│   ├── AUTHORIZATION_GUIDE.md
+│   ├── TROUBLESHOOTING.md
+│   ├── VALIDATION_GUIDE.md (Phase 2)
+│   ├── URL_BINDING_GUIDE.md (Phase 2)
+│   ├── SOURCE_GENERATION_INTERNALS.md (Phase 2)
+│   ├── WASM_DEPLOYMENT.md (Phase 2)
+│   └── API_REFERENCE.md (Phase 4)
+└── (source files with XML doc comments)
+```
+
+#### Implementation Status
+
+**Phase 1 (COMPLETE):**
+- ✅ `docs/GETTING_STARTED.md` (11 KB, 350+ lines) — zero-to-working-app guide, <30 min target
+- ✅ `docs/AUTHORIZATION_GUIDE.md` (9.4 KB, 235 lines) — MediatR.Behaviors.Authorization integration
+- ✅ `docs/TROUBLESHOOTING.md` (16.1 KB, 22 indexed entries) — symptom-indexed troubleshooting
+
+All deliverables verified against source code and sample application. See orchestration log (2026-04-20T14-30-inara.md) for details.
+
+#### Success Metrics (Phase 1)
+
+✅ New developers get running in <30 minutes  
+✅ Authorization + validation pain eliminated  
+✅ 80% of common problems indexed  
+✅ Source generation demystified
+
+#### Binding Decisions
+
+1. **Markdown format, not wiki or external tool** — stays in repo, versioned with code
+2. **Phase 1 before Phase 2** — sequential delivery ensures quality
+3. **No docs site infrastructure** — if future growth demands VitePress, that's a separate decision
+4. **Sample app as single source of truth** — docs link to it; don't copy/paste (examples drift)
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
