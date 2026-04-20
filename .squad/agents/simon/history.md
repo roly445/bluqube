@@ -27,6 +27,26 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-04-20 — URL Binding Test Scaffolding Created (pre-Kaylee)
+
+- **Test scaffolding written ahead of implementation** — Created comprehensive test scaffolding for Kaylee's URL binding feature before her implementation begins. Tests are marked with `[Fact(Skip = "...")]` and ready to be enabled once the feature lands.
+- **PathTemplateParser already exists** — The `PathTemplateParser.ExtractRouteParameters()` utility is already implemented in `src\BluQube.SourceGeneration\Utilities\PathTemplateParser.cs` as an internal class. It uses regex `\{(\w+)\}` to extract route parameters. Direct unit testing would require `InternalsVisibleTo` or reflection, so instead created generator snapshot tests that verify correct parameter extraction through generated code output.
+- **GeneratedSourceResult is a struct** — The Roslyn `GeneratedSourceResult` type returned by `FirstOrDefault()` is a struct, not a class. Cannot use `Assert.NotNull()` (xUnit warning xUnit2002) or null-checking patterns. Initial attempt to use `.HasValue` and `.Value` failed because that's for `Nullable<T>` wrapper, not the struct itself. Simplified tests to check generation occurred without verifying content until implementation is ready.
+- **Three categories of test scaffolding created:**
+  1. **Generator snapshot tests** (7 tests in `UrlBindingGeneratorTests.cs`) — verify generated code for commands/queries with/without path params, GET vs POST, client vs server side
+  2. **Integration tests** (8 tests in `UrlBindingIntegrationTests.cs`) — end-to-end round-trip scenarios with TODO patterns for implementation
+  3. **PathTemplateParser tests** (placeholder in `PathTemplateParserTests.cs`) — documented that parser testing happens through generator tests
+- **All 15 tests compile and skip successfully** — Build produces 0 errors, `dotnet test --filter UrlBinding` shows all 15 tests skipped as expected. Tests are ready to be enabled when Kaylee completes URL binding implementation.
+- **Test gap: URL escaping edge cases** — Integration tests include special character handling, but missing unit-level tests for `Uri.EscapeDataString` usage in generated `BuildPath()` methods. Should verify characters like `/`, `?`, `&`, `%`, spaces, Unicode are properly escaped.
+- **Test gap: Generator error handling** — No tests for malformed path templates (unclosed braces, nested braces, invalid parameter names). Generator may silently fail or produce invalid code. Should add tests once generator error handling strategy is defined.
+
+**Files created:**
+- `tests\BluQube.Tests\Utilities\PathTemplateParserTests.cs` — placeholder with documentation
+- `tests\BluQube.Tests\SourceGeneration\UrlBindingGeneratorTests.cs` — 7 skipped generator snapshot tests
+- `tests\BluQube.Tests\Integration\UrlBindingIntegrationTests.cs` — 8 skipped integration test stubs
+
+**Orchestration:** Scribe logged orchestration entry `20260420T112126-simon-url-binding-tests.md`. Session log written to `.squad/log/20260420T112126-url-binding-implementation.md`. Test scaffolding complete and ready to be enabled once Kaylee's implementation lands.
+
 ### 2026-04-10 — QueryResult<T> Empty() + five boolean property tests written (pre-Kaylee)
 
 - **Tests written ahead of implementation** — Kaylee is implementing `Empty()`, `QueryResultStatus.Empty = 5`, and the five boolean properties (`IsSucceeded`, `IsFailed`, `IsUnauthorized`, `IsNotFound`, `IsEmpty`) in parallel. Tests were written against the approved spec (MAL-2026-004) and snapshot files pre-created so everything is ready to compile and pass when her branch lands.

@@ -24,7 +24,7 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
         if (this.HttpMethod.Equals("POST", System.StringComparison.OrdinalIgnoreCase))
         {
             response = await client.PostAsJsonAsync(
-                $"{this.Path}",
+                this.BuildPath(request),
                 request,
                 cancellationToken: cancellationToken);
         }
@@ -44,7 +44,7 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
 
             var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : string.Empty;
             response = await client.GetAsync(
-                $"{this.Path}{queryString}",
+                $"{this.BuildPath(request)}{queryString}",
                 cancellationToken: cancellationToken);
         }
 
@@ -83,4 +83,6 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
             return QueryResult<TResult>.Failed();
         }
     }
+
+    protected virtual string BuildPath(TQuery request) => this.Path;
 }

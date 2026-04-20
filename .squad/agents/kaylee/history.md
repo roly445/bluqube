@@ -78,3 +78,54 @@ Mal's binding condition was "all five or nothing" — do not ship a partial set 
 **Recommended approach:** Inference-based (detect route params from path template) + optional explicit attributes (`[FromRoute]`, `[FromQuery]`, `[FromBody]`) + native ASP.NET binding on server + source-generated `BuildPath` on client. Avoids reflection, keeps client types clean, leverages ASP.NET's robust binding infrastructure.
 
 Wrote detailed analysis to `.squad/decisions/inbox/kaylee-url-binding-feasibility.md` with code examples, file change matrix, and open questions for team decision.
+
+### 2026-04-20 — URL Binding Implementation Complete
+
+**Full URL parameter binding implemented across all framework layers:**
+
+1. **Client-side (WASM-safe):**
+   - Added `protected virtual string BuildPath(TRequest request)` to `GenericCommandHandler<T>`, `GenericCommandHandler<T,TResult>`, and `GenericQueryProcessor<T,TResult>`
+   - Generators emit `BuildPath` override when route params detected in path template
+   - Uses string interpolation + `Uri.EscapeDataString()` for zero-reflection URL construction
+   - For GET queries with non-route params: generated code adds querystring parameters
+
+2. **Server-side (native ASP.NET binding):**
+   - Generator emits binding shims for commands/queries with route parameters
+   - Shim pattern: separate route params (`[FromRoute]`) from body/querystring params
+   - Commands: route params → route, remainder → body shim record
+   - Queries GET: route params → route, remainder → querystring shim record with `[FromQuery]`
+   - Queries POST: route params → route, remainder → body
+   - No changes to user-written record types — clean separation
+
+3. **Attribute changes:**
+   - Added `Method` property to `BluQubeQueryAttribute` (default `"POST"`)
+   - Commands always POST (no Method property needed)
+
+4. **Generator architecture:**
+   - New utilities: `PathTemplateParser` (regex `{param}` extraction), `RecordParameterInfo` (name+type data class)
+   - Extended all three input processors (`CommandInputDefinitionProcessor`, `QueryInputDefinitionProcessor`, `CommandWithResultInputDefinitionProcessor`) to read `ParameterList` from `RecordDeclarationSyntax`
+   - Extended all three client-side output processors to generate `BuildPath` overrides when route params present
+   - `EndpointRouteBuilderExtensionsOutputDefinitionProcessor` now emits shim records + `MapGet`/`MapPost` with explicit binding
+   - `Requesting.cs` and `Responding.cs` updated to pass `RecordParameters` and `Method` through pipeline
+
+5. **Key technical decisions:**
+   - **Case-insensitive matching:** `{todoId}` in path matches `TodoId` property
+   - **Implicit vs explicit:** No `[FromRoute]` attributes on record types — generator detects from path template
+   - **Querystring handling:** GET queries use reflection fallback in base class, but generated code overrides with static implementation
+   - **Member order:** `BuildPath` placed after `Handle` method to comply with SA1202 (public before protected)
+
+**Build: 0 errors, 0 warnings** across all targets (.NET 8, 9, 10). Existing tests pass (URL binding tests are scaffold-only, currently skipped).
+
+**Files changed:**
+- Runtime (3): `GenericCommandHandler`1.cs`, `GenericCommandHandler`2.cs`, `GenericQueryProcessor`2.cs`
+- Attributes (1): `BluQubeQueryAttribute.cs`
+- Utilities (2 new): `PathTemplateParser.cs`, `RecordParameterInfo.cs`
+- Extensions (1): `AttributeSyntaxExtensions.cs`
+- Input processors (3): `CommandInputDefinitionProcessor.cs`, `QueryInputDefinitionProcessor.cs`, `CommandWithResultInputDefinitionProcessor.cs`
+- Output processors (4): `GenericCommandHandlerOutputDefinitionProcessor.cs`, `GenericCommandOfTHandlerOutputDefinitionProcessor.cs`, `GenericQueryProcessorOutputDefinitionProcessor.cs`, `EndpointRouteBuilderExtensionsOutputDefinitionProcessor.cs`
+- Generators (2): `Requesting.cs`, `Responding.cs`
+
+**Total: 16 files modified, 2 new files, ~500 lines added.**
+
+**Orchestration:** Scribe logged orchestration entry `20260420T112126-kaylee-url-binding-impl.md`. Session log written to `.squad/log/20260420T112126-url-binding-implementation.md`. Feature implementation complete; test scaffolding by Simon (15 tests) ready for integration phase.
+

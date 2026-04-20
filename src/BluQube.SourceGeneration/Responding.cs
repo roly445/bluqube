@@ -5,6 +5,7 @@ using System.Text;
 using BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors;
 using BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors.Responding;
 using BluQube.SourceGeneration.Extensions;
+using BluQube.SourceGeneration.Utilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using CommandHandlerInputDefinition = BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors.CommandHandlerInputDefinitionProcess.InputDefinition;
@@ -91,12 +92,27 @@ namespace BluQube.SourceGeneration
                             continue;
                         }
 
+                        var methodValue = bluQubeQueryAttributeSymbol.NamedArguments
+                            .SingleOrDefault(y => y.Key == "Method").Value.Value?.ToString() ?? "POST";
+
+                        var recordParams = new List<RecordParameterInfo>();
+                        var queryTypeDecl = container.SemanticModel.Compilation.GetTypeByMetadataName($"{typeSymbol.ContainingNamespace.ToDisplayString()}.{typeSymbol.Name}");
+                        if (queryTypeDecl != null)
+                        {
+                            foreach (var member in queryTypeDecl.GetMembers().OfType<IPropertySymbol>())
+                            {
+                                recordParams.Add(new RecordParameterInfo(member.Name, member.Type.ToDisplayString()));
+                            }
+                        }
+
                         queriesToProcess.Add(
                             new EndpointRouteBuilderExtensionsOutputDefinitionProcessor.OutputDefinition.
                                 QueryToProcess(
                                     typeSymbol.Name,
                                     typeSymbol.ContainingNamespace.ToDisplayString(),
-                                    pathValue));
+                                    pathValue,
+                                    methodValue,
+                                    recordParams));
 
                         var queryResultTypeName = container.QueryProcessor.QueryResultDeclaration.ToString();
                         var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{queryResultTypeName}Converter"));
@@ -131,12 +147,23 @@ namespace BluQube.SourceGeneration
                             continue;
                         }
 
+                        var recordParams = new List<RecordParameterInfo>();
+                        var commandTypeDecl = assemblySymbol.GetTypeByMetadataName($"{typeSymbol.ContainingNamespace.ToDisplayString()}.{typeSymbol.Name}");
+                        if (commandTypeDecl != null)
+                        {
+                            foreach (var member in commandTypeDecl.GetMembers().OfType<IPropertySymbol>())
+                            {
+                                recordParams.Add(new RecordParameterInfo(member.Name, member.Type.ToDisplayString()));
+                            }
+                        }
+
                         commandsToProcess.Add(
                                 new EndpointRouteBuilderExtensionsOutputDefinitionProcessor.OutputDefinition.
                                     CommandToProcess(
                                         typeSymbol.Name,
                                         typeSymbol.ContainingNamespace.ToDisplayString(),
-                                        bluQubeQueryAttributeSyntax));
+                                        bluQubeQueryAttributeSyntax,
+                                        recordParams));
 
                         // Only look for converters if the command handler has a result type (CommandHandler<T, TResult>)
                         if (container.CommandHandler.CommandResultDeclaration != null)

@@ -18,7 +18,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
         var client = httpClientFactory.CreateClient("bluqube");
 
         var response = await client.PostAsJsonAsync(
-            $"{this.Path}",
+            this.BuildPath(request),
             request,
             cancellationToken: cancellationToken);
 
@@ -57,4 +57,6 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
             return CommandResult<TResult>.Failed(new BluQubeErrorData(BluQubeErrorCodes.CommunicationError, "Invalid JSON response"));
         }
     }
+
+    protected virtual string BuildPath(TCommand request) => this.Path;
 }

@@ -4,6 +4,7 @@ using BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors;
 using BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors;
 using BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors.Requesting;
 using BluQube.SourceGeneration.Extensions;
+using BluQube.SourceGeneration.Utilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using CommandInputDefinition = BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors.CommandInputDefinitionProcessor.InputDefinition;
@@ -72,13 +73,19 @@ namespace BluQube.SourceGeneration
                         var queryNamespace = x.QueryProcessor.QueryDeclaration.GetNamespace();
                         var queryResultNamespace = x.QueryProcessor.QueryResultDeclaration.GetNamespace(x.SemanticModel);
                         var queryResult = x.QueryProcessor.QueryResultDeclaration.ToString();
+                        var path = x.QueryProcessor.BluQubeQueryAttributeSyntax.GetPath() ?? string.Empty;
+                        var method = x.QueryProcessor.BluQubeQueryAttributeSyntax.GetMethod();
+                        var routeParameters = PathTemplateParser.ExtractRouteParameters(path.Trim('"'));
 
                         return new QueryProcessorOutputDefinition(
                             queryNamespace,
                             queryResultNamespace,
                             queryName,
                             queryResult,
-                            x.QueryProcessor.BluQubeQueryAttributeSyntax.GetPath() ?? string.Empty);
+                            path,
+                            method,
+                            routeParameters,
+                            x.QueryProcessor.RecordParameters);
                     }).ToList();
 
                 var genericCommandHandlerOutputDefinitions = source.Where(x => x.InputType == InputType.Command)
@@ -86,10 +93,14 @@ namespace BluQube.SourceGeneration
                     {
                         var commandName = x.Command.CommandDeclaration.Identifier.Text;
                         var commandNamespace = x.Command.CommandDeclaration.GetNamespace();
+                        var path = x.Command.BluQubeCommandAttributeSyntax.GetPath() ?? string.Empty;
+                        var routeParameters = PathTemplateParser.ExtractRouteParameters(path.Trim('"'));
                         return new GenericCommandHandlerOutputDefinition(
                             commandNamespace,
                             commandName,
-                            x.Command.BluQubeCommandAttributeSyntax.GetPath() ?? string.Empty);
+                            path,
+                            routeParameters,
+                            x.Command.RecordParameters);
                     }).ToList();
 
                 var genericCommandOfTHandlerOutputDefinitions = source.Where(x => x.InputType == InputType.CommandHandlerWithResult)
@@ -99,12 +110,16 @@ namespace BluQube.SourceGeneration
                         var commandNamespace = x.CommandWithResultHandler.CommandDeclaration.GetNamespace();
                         var commandResultNamespace = x.CommandWithResultHandler.CommandResultDeclaration.GetNamespace(x.SemanticModel);
                         var commandResult = x.CommandWithResultHandler.CommandResultDeclaration.ToString();
+                        var path = x.CommandWithResultHandler.BluQubeCommandAttributeSyntax.GetPath() ?? string.Empty;
+                        var routeParameters = PathTemplateParser.ExtractRouteParameters(path.Trim('"'));
                         return new GenericCommandOfTHandlerOutputDefinition(
                             commandNamespace,
                             commandResultNamespace,
                             commandName,
                             commandResult,
-                            x.CommandWithResultHandler.BluQubeCommandAttributeSyntax.GetPath() ?? string.Empty);
+                            path,
+                            routeParameters,
+                            x.CommandWithResultHandler.RecordParameters);
                     }).ToList();
 
                 var jsonConverterOutputDefinitions = source.Where(x => x.InputType == InputType.Query)
