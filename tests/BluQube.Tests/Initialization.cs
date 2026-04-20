@@ -16,5 +16,8 @@ public static class Initialization
         VerifierSettings.AddExtraSettings(s => s.Converters.Add(new CommandResultOfTConverter<StubWithResultCommandResult>()));
         VerifierSettings.AddExtraSettings(s => s.Converters.Add(new CommandResultConverter()));
         VerifierSettings.AddExtraSettings(s => s.Converters.Add(new QueryResultOfTConverter<StubQueryResult>()));
+
+        // DebuggerStepThroughAttribute appears on Linux/.NET but not Windows — scrub for cross-platform consistency
+        VerifierSettings.ScrubLinesContaining("DebuggerStepThroughAttribute");
     }
 }
