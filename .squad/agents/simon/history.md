@@ -120,3 +120,13 @@
 
 **Orchestration:** Implemented WebApplicationFactory infrastructure as requested by Andrew. 5/8 integration tests now pass, verifying command-based URL binding. Remaining 3 query-based tests require JSON deserialization fixes.
 
+### 2026-04-20 — URL Binding Integration Tests Fully Green (Post-Kaylee)
+
+- **All 8 integration tests passing** — Kaylee fixed two critical generator bugs in Responding.cs. QueryResult<T> JSON converters now correctly registered in same-assembly scenarios (test assemblies). C# record synthesized properties filtered from generated code. Total: 137 passed, 0 failed, 2 skipped.
+- **Root cause 1 (fixed by Kaylee):** Responding generator only scanned referenced assemblies, missing converters in current compilation. Test infrastructure defines queries, processors, AND converters in BluQube.Tests assembly — all in same compilation.
+- **Root cause 2 (fixed by Kaylee):** C# records synthesize EqualityContract property that appeared in GetMembers() and was extracted as invalid record parameter. Added IsImplicitlyDeclared filter.
+- **Framework stability:** All URL binding integration tests now confirm end-to-end HTTP round-trip correctness: route parameter transmission, body+route splitting, case-insensitive matching, URL escaping, multiple parameter ordering, null query parameter handling, and POST method usage for queries all verified.
+- **No regression:** All 129 previously passing tests still pass. URL binding feature now complete and production-ready.
+
+**Orchestration:** Kaylee's fixes verified by comprehensive integration test suite. WebApplicationFactory infrastructure Simon built is now fully operational with green results. Feature ready for release.
+

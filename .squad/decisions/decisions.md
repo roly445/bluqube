@@ -41,35 +41,60 @@
 
 ---
 
-## Generator Bug Fixes — Critical Invalid C# Code Issues (KAYLEE-2026-002)
+## JSON Converter Registration & EqualityContract Filter Fixed (KAYLEE-2026-002-REVISED)
 
 **Date:** 2026-04-21  
 **Author:** Kaylee (Framework Dev)  
 **Status:** IMPLEMENTED
 
-**Summary:** Fixed two critical bugs in URL binding source generators that emitted syntactically invalid C# code, preventing compilation of any project using path parameter binding.
+**Summary:** Fixed two critical bugs in the `Responding.cs` source generator preventing integration tests from passing. QueryResult<T> converters were not being registered in same-assembly scenarios (tests, simple apps), and synthesized C# record properties were corrupting generated code.
 
-### Bug 1: Server-Side Shim Records Emitted Inside Method Body
+### Bug 1: Assembly Scanning Gap
 
-**Root cause:** Shim record declarations were emitted at the same indentation as endpoint registrations, placing type declarations inside the `AddBluQubeApi()` method body.
+**Root cause:** `Responding.cs` generator only scanned `source.Right.References` (external assemblies), missing converters defined in the current compilation. Integration tests define queries, processors, AND converters in the same assembly (`BluQube.Tests`).
 
-**Fix:** Restructured code generation to collect shim records separately, emit them at class level AFTER the method closes, with HashSet deduplication.
+**Fix:** Modified lines 66-79 to create `assembliesToCheck` list including both current assembly (`source.Right.Assembly`) and all references:
 
-**File:** `EndpointRouteBuilderExtensionsOutputDefinitionProcessor.cs`
+```csharp
+var assembliesToCheck = new List<IAssemblySymbol>();
+var currentAssemblyName = source.Right.Assembly.Name;
+assembliesToCheck.Add(source.Right.Assembly);  // <-- Add current compilation
+foreach (var reference in source.Right.References)
+{
+    if (source.Right.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol refAssembly)
+    {
+        if (refAssembly.Name == currentAssemblyName) continue;
+        assembliesToCheck.Add(refAssembly);
+    }
+}
+```
 
-### Bug 2: Client-Side Invalid Array Initializer
+### Bug 2: EqualityContract Synthesis
 
-**Root cause:** Querystring expressions wrapped with `{...}` braces, then joined with ` + "&" + `, produced `new[] { {expr} + ... }` which is invalid syntax.
+**Root cause:** C# records automatically synthesize `EqualityContract` property (`System.Type`) for runtime type discrimination. This property appeared in `GetMembers()` and was extracted as a positional record parameter, causing invalid generated code.
 
-**Fix:** Removed wrapping braces, joined with `, ` for comma-separated array elements.
+**Fix:** Added filtering to parameter extraction (lines 114-121, 171-178):
 
-**File:** `GenericQueryProcessorOutputDefinitionProcessor.cs`
+```csharp
+foreach (var member in queryTypeDecl.GetMembers().OfType<IPropertySymbol>())
+{
+    if (member.IsImplicitlyDeclared || member.Name == "EqualityContract")
+        continue;
+    recordParams.Add(new RecordParameterInfo(member.Name, member.Type.ToDisplayString()));
+}
+```
 
-### Verification
+### Test Impact
 
-- Build: 0 errors, 93 warnings (pre-existing)
-- Tests: 134 passed (exceeds required 129)
-- Sample app: Builds successfully
+**Before:** 134 passed, 3 failed (GetQueryWithPathAndQuerystring, NullableQuerystringParameter, PostQueryWithRouteParameter)  
+**After:** 137 passed, 0 failed  
+**All 8 URL binding integration tests now passing**
+
+**File Modified:** `src/BluQube.SourceGeneration/Responding.cs` (~15 lines added)
+
+### Key Learning
+
+Roslyn generators must handle same-assembly scenarios. Integration tests, single-project apps, and other real-world use cases define everything in one compilation unit. Generator must scan `source.Right.Assembly` in addition to `References`.
 
 ---
 
