@@ -14,7 +14,17 @@ public class Existence
 
         // Act
         var exists = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(a => a.GetTypes())
+            .SelectMany(a =>
+            {
+                try
+                {
+                    return a.GetTypes();
+                }
+                catch (System.Reflection.ReflectionTypeLoadException e)
+                {
+                    return e.Types.Where(t => t != null)!;
+                }
+            })
             .Any(t => t == concreteType);
 
         // Assert
