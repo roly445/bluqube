@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Title>BluQube</Title>
         <Deterministic>true</Deterministic>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
