@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Diagnostics;
+using System.Reflection;
 using BluQube.Commands;
 using BluQube.Queries;
 using BluQube.Tests.ResponderHelpers;
@@ -37,17 +37,9 @@ public class AddBluQubeApi
             return;
         }
 
-        // DebuggerStepThroughAttribute is emitted on Linux/.NET but not Windows — scrub for cross-platform consistency
+        // DebuggerStepThroughAttribute is emitted on Linux/.NET but not Windows — ignore for cross-platform consistency
         var settings = new VerifySettings();
-        settings.AddScrubber(sb =>
-        {
-            var result = Regex.Replace(
-                sb.ToString(),
-                @",?\s*\{\s*\n\s*TypeId: DebuggerStepThroughAttribute\s*\n\s*\}",
-                string.Empty);
-            sb.Clear();
-            sb.Append(result);
-        });
+        settings.IgnoreInstance<DebuggerStepThroughAttribute>(_ => true);
 
         await Verify(endpointDataSource.First().Endpoints, settings);
     }
