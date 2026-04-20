@@ -144,3 +144,47 @@
 
 **Orchestration:** Kaylee's fixes verified by comprehensive integration test suite. WebApplicationFactory infrastructure Simon built is now fully operational with green results. Feature ready for release.
 
+
+## Learnings
+
+### StyleCop and Sonar Analyzer Rules for BluQube Test Code
+
+- **SA1402 (File may only contain a single type)** — Test helper files often group multiple related types (commands, queries, handlers) in a single file for readability. Added global suppression to BluQube.Shared/GlobalSuppressions.cs since test organization benefits from co-locating related test types.
+
+- **SA1649 (File name should match first type)** — Companion to SA1402. When multiple types exist in one file by design, the filename can't match all of them. Suppressed globally.
+
+- **SA1101 (Prefix local calls with this.)** — Conflicts with SA1309 suppression for underscore-prefixed fields. BluQube uses _fieldName convention without 	his. prefix. Added suppression to maintain consistency.
+
+- **SA1636 (File header copyright text must match)** — Fires when files have non-copyright comment headers. Since SA1633 (file headers required) is already suppressed, SA1636 is redundant. Suppressed globally.
+
+- **SA1122 (Use string.Empty instead of empty string literal)** — StyleCop enforces string.Empty over "" for consistency and clarity. Changed in PathTemplateParserTests.cs.
+
+- **SA1313 (Parameter names should begin with lower case letter)** — C# convention requires camelCase parameter names. Fixed in TestWebApplicationFactory.cs where ASP.NET Core route/query parameters had PascalCase names (Filter → ilter, Status → status).
+
+- **SA1515 (Single-line comment should be preceded by blank line)** — Improves readability by visually separating comment blocks from code. Added blank line before comment in UrlBindingGeneratorTests.cs.
+
+- **SA1518 (File should end with a single newline)** — Prevents trailing blank lines at end of files. Used PowerShell to strip trailing CR/LF from 8 test files.
+
+- **SA1028 (Code should not contain trailing whitespace)** — Enforces clean formatting. Used PowerShell regex to strip trailing spaces/tabs from all .cs files in tests/BluQube.Tests.
+
+- **S1481 (Remove unused local variable)** — Sonar flags variables that are assigned but never read. Removed two ndpointRoutingCode declarations in UrlBindingGeneratorTests.cs where the variable was assigned via LINQ but never used.
+
+- **S4144 (Methods should not have identical implementations)** — Sonar detects code duplication. The CaseInsensitiveRouteParameterMatching_ClientToServer_Works test was identical to an earlier test. Made it distinct by changing the URL to use uppercase "test/ITEM/{testId}" instead of "test/item/{testId}" to actually verify case-insensitive routing behavior.
+
+- **S6966 (Use RunAsync instead of Run)** — Modern async best practice. Changed pp.Run() to wait app.RunAsync() in Program.cs.
+
+- **S1118 (Utility classes should not have public constructors)** — Classes with only static members should have protected constructors or be static. Added protected constructor to Program class to satisfy analyzer.
+
+- **CS8669 (Nullable annotation requires #nullable context)** — Generated code that uses string? or other nullable annotations must have #nullable enable directive. Added to both GenericQueryProcessorOutputDefinitionProcessor.cs and EndpointRouteBuilderExtensionsOutputDefinitionProcessor.cs templates to ensure generated files have nullable context enabled at top of file.
+
+- **CS7022 (Entry point conflict with auto-generated code)** — Test projects using Microsoft.NET.Test.Sdk auto-generate an entry point. When test project also has Program.cs with top-level statements (for WebApplicationFactory), there's a conflict. Resolved by adding <GenerateProgramFile>false</GenerateProgramFile> to test project properties, which disables the auto-generated entry point and uses the explicit Program.cs.
+
+**Key patterns for BluQube test code:**
+
+1. **Global suppressions are appropriate** for stylistic rules that conflict with test code organization patterns (multiple types per file, no 	his. prefix).
+2. **PowerShell automation** is effective for bulk whitespace/formatting fixes across many files (trailing newlines, trailing whitespace).
+3. **Source generator nullable context** must be explicitly enabled in templates via #nullable enable directive when generated code uses nullable types.
+4. **Test project entry points** require special configuration when using both WebApplicationFactory (requires Program class) and test SDK (auto-generates entry point).
+5. **Test distinctiveness matters** — duplicate tests should either be made meaningfully different or consolidated/removed to satisfy S4144.
+
+**Build verification:** Final build with -p:ContinuousIntegrationBuild=true -p:TreatWarningsAsErrors=true produced 0 errors, 0 warnings. All StyleCop and Sonar violations in test project resolved.
