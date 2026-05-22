@@ -27,7 +27,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
                 case SimpleBaseTypeSyntax simpleBase:
                     if (simpleBase.Type is GenericNameSyntax genericName)
                     {
-                        return genericName.TypeArgumentList.Arguments.Count is 1 or 2;
+                        return genericName.TypeArgumentList.Arguments.Count is 1 or 2 or 3;
                     }
 
                     break;
@@ -35,7 +35,7 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessor
                 case PrimaryConstructorBaseTypeSyntax primaryBase:
                     if (primaryBase.Type is GenericNameSyntax genericName2)
                     {
-                        return genericName2.TypeArgumentList.Arguments.Count is 1 or 2;
+                        return genericName2.TypeArgumentList.Arguments.Count is 1 or 2 or 3;
                     }
 
                     break;

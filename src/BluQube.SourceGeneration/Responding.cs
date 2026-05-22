@@ -190,13 +190,17 @@ namespace BluQube.SourceGeneration
                                         bluQubeQueryAttributeSyntax,
                                         recordParams));
 
-                        // Register CommandResultConverter<TResult> directly — the named {TResult}Converter class
-                        // is only generated in the client project by Requesting.cs and is not reliably
-                        // available in server-only module projects that don't reference the WASM client assembly.
-                        if (container.CommandHandler.CommandResultDeclaration != null)
+                        // Determine result type from the command's ICommand<TResult> interface
+                        // implementation — reliable regardless of the handler's generic arity.
+                        // Using the handler's generic args (as tried in earlier versions) fails for
+                        // 2-arg void handlers like AuditableCommandHandler<TCommand, TAggregateRoot>
+                        // where arg[1] is the aggregate, not a result type.
+                        var iCommandWithResult = typeSymbol.AllInterfaces
+                            .FirstOrDefault(i => i.Name == "ICommand" && i.TypeArguments.Length == 1);
+                        if (iCommandWithResult != null && iCommandWithResult.TypeArguments[0] is INamedTypeSymbol resultTypeSymbol)
                         {
-                            var commandResultTypeName = container.CommandHandler.CommandResultDeclaration.ToString();
-                            var commandResultNamespace = container.CommandHandler.CommandResultDeclaration.GetNamespace(container.SemanticModel);
+                            var commandResultNamespace = resultTypeSymbol.ContainingNamespace.ToDisplayString();
+                            var commandResultTypeName = resultTypeSymbol.Name;
                             if (!string.IsNullOrWhiteSpace(commandResultNamespace))
                             {
                                 jsonConvertersToProcess.Add(

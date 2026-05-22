@@ -170,6 +170,91 @@ namespace TestApp.Equipment.Commands
             Assert.Contains("CreateEquipmentResult", jsonSource);
         }
 
+        [Fact]
+        public void GeneratesEndpointForThreeArgHandlerWithResult()
+        {
+            var code = BuildResponderCode(@"
+namespace TestApp.Equipment.Commands
+{
+    [BluQubeCommand(Path = ""commands/equipment/register"")]
+    public record RegisterEquipmentCommand(string Name) : ICommand<RegisterEquipmentResult>;
+
+    public record RegisterEquipmentResult(System.Guid EquipmentId) : ICommandResult;
+
+    public class EquipmentAggregate { }
+
+    public class RegisterEquipmentCommandHandler : CommandHandler<RegisterEquipmentCommand, RegisterEquipmentResult, EquipmentAggregate>
+    {
+        protected override System.Threading.Tasks.Task<CommandResult<RegisterEquipmentResult>> HandleInternal(RegisterEquipmentCommand request, System.Threading.CancellationToken ct)
+            => System.Threading.Tasks.Task.FromResult(CommandResult<RegisterEquipmentResult>.Succeeded(new RegisterEquipmentResult(System.Guid.NewGuid())));
+    }
+}
+");
+
+            var result = RunGenerator(code).GetRunResult();
+            var endpointSource = GetGeneratedSource(result, "EndpointRouteBuilderExtensions.g.cs");
+
+            Assert.NotNull(endpointSource);
+            Assert.Contains("MapPost(\"commands/equipment/register\"", endpointSource);
+        }
+
+        [Fact]
+        public void RegistersCommandResultConverterForThreeArgHandlerWithResult()
+        {
+            var code = BuildResponderCode(@"
+namespace TestApp.Equipment.Commands
+{
+    [BluQubeCommand(Path = ""commands/equipment/register"")]
+    public record RegisterEquipmentCommand(string Name) : ICommand<RegisterEquipmentResult>;
+
+    public record RegisterEquipmentResult(System.Guid EquipmentId) : ICommandResult;
+
+    public class EquipmentAggregate { }
+
+    public class RegisterEquipmentCommandHandler : CommandHandler<RegisterEquipmentCommand, RegisterEquipmentResult, EquipmentAggregate>
+    {
+        protected override System.Threading.Tasks.Task<CommandResult<RegisterEquipmentResult>> HandleInternal(RegisterEquipmentCommand request, System.Threading.CancellationToken ct)
+            => System.Threading.Tasks.Task.FromResult(CommandResult<RegisterEquipmentResult>.Succeeded(new RegisterEquipmentResult(System.Guid.NewGuid())));
+    }
+}
+");
+
+            var result = RunGenerator(code).GetRunResult();
+            var jsonSource = GetGeneratedSource(result, "JsonOptionsExtensions.g.cs");
+
+            Assert.NotNull(jsonSource);
+            Assert.Contains("CommandResultConverter<", jsonSource);
+            Assert.Contains("RegisterEquipmentResult", jsonSource);
+        }
+
+        [Fact]
+        public void DoesNotRegisterConverterForThreeArgHandlerWithoutResult()
+        {
+            // AuditableCommandHandler<TCommand, TAggregateRoot> pattern (void command, 2-arg handler).
+            // arg[1] is the aggregate, not a result type — no converter should be registered.
+            var code = BuildResponderCode(@"
+namespace TestApp.Equipment.Commands
+{
+    [BluQubeCommand(Path = ""commands/equipment/create"")]
+    public record CreateEquipmentCommand(string Name) : ICommand;
+
+    public class EquipmentAggregate { }
+
+    public class CreateEquipmentCommandHandler : CommandHandler<CreateEquipmentCommand, EquipmentAggregate>
+    {
+        protected override System.Threading.Tasks.Task<CommandResult> HandleInternal(CreateEquipmentCommand request, System.Threading.CancellationToken ct)
+            => System.Threading.Tasks.Task.FromResult(CommandResult.Succeeded());
+    }
+}
+");
+
+            var result = RunGenerator(code).GetRunResult();
+            var jsonSource = GetGeneratedSource(result, "JsonOptionsExtensions.g.cs");
+
+            Assert.NotNull(jsonSource);
+            Assert.DoesNotContain("CommandResultConverter<", jsonSource);
+        }
+
         private static string BuildResponderCode(string body) => $@"
 using BluQube.Attributes;
 using BluQube.Commands;
