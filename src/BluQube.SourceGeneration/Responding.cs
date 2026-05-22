@@ -190,23 +190,19 @@ namespace BluQube.SourceGeneration
                                         bluQubeQueryAttributeSyntax,
                                         recordParams));
 
-                        // Only look for converters if the command handler has a result type (CommandHandler<T, TResult>)
+                        // Register CommandResultConverter<TResult> directly — the named {TResult}Converter class
+                        // is only generated in the client project by Requesting.cs and is not reliably
+                        // available in server-only module projects that don't reference the WASM client assembly.
                         if (container.CommandHandler.CommandResultDeclaration != null)
                         {
                             var commandResultTypeName = container.CommandHandler.CommandResultDeclaration.ToString();
-                            var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{commandResultTypeName}Converter"));
-                            if (string.IsNullOrWhiteSpace(converterName))
+                            var commandResultNamespace = container.CommandHandler.CommandResultDeclaration.GetNamespace(container.SemanticModel);
+                            if (!string.IsNullOrWhiteSpace(commandResultNamespace))
                             {
-                                continue;
+                                jsonConvertersToProcess.Add(
+                                    JsonOptionsExtensionsOutputDefinitionProcessor.OutputDefinition.JsonConverterToProcess
+                                        .ForCommandResult(commandResultNamespace, commandResultTypeName));
                             }
-
-                            var converterType = FindTypeByName(assemblySymbol, converterName);
-                            if (converterType == null)
-                            {
-                                continue;
-                            }
-
-                            jsonConvertersToProcess.Add(new JsonOptionsExtensionsOutputDefinitionProcessor.OutputDefinition.JsonConverterToProcess(converterType.ContainingNamespace.ToDisplayString(), converterName));
                         }
                     }
                 }

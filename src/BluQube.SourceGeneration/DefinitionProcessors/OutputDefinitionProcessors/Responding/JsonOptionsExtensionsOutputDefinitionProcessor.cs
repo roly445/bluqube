@@ -21,7 +21,7 @@ internal static class JsonOptionsExtensions
      {{");
             foreach (var jsonConverterToProcess in data.JsonConvertersToProcess.Distinct())
             {
-                sb.AppendLine($"            jsonOptions.SerializerOptions.Converters.Add(new {jsonConverterToProcess.ConverterNamespace}.{jsonConverterToProcess.ConverterName}());");
+                sb.AppendLine($"            jsonOptions.SerializerOptions.Converters.Add({jsonConverterToProcess.ToRegistrationExpression()});");
             }
 
             sb.AppendLine(@"            return jsonOptions;
@@ -45,26 +45,82 @@ internal static class JsonOptionsExtensions
 
             internal class JsonConverterToProcess
             {
+                private readonly ConverterKind _kind;
+
                 public JsonConverterToProcess(string converterNamespace, string converterName)
                 {
+                    this._kind = ConverterKind.Named;
                     this.ConverterNamespace = converterNamespace;
                     this.ConverterName = converterName;
+                    this.ResultNamespace = string.Empty;
+                    this.ResultTypeName = string.Empty;
+                }
+
+                private JsonConverterToProcess(ConverterKind kind, string resultNamespace, string resultTypeName)
+                {
+                    this._kind = kind;
+                    this.ConverterNamespace = string.Empty;
+                    this.ConverterName = string.Empty;
+                    this.ResultNamespace = resultNamespace;
+                    this.ResultTypeName = resultTypeName;
+                }
+
+                private enum ConverterKind
+                {
+                    Named,
+                    GenericCommandResult,
                 }
 
                 internal string ConverterNamespace { get; }
 
                 internal string ConverterName { get; }
 
+                internal string ResultNamespace { get; }
+
+                internal string ResultTypeName { get; }
+
                 public override bool Equals(object obj)
                 {
-                    return obj is JsonConverterToProcess other &&
-                           this.ConverterNamespace == other.ConverterNamespace &&
-                           this.ConverterName == other.ConverterName;
+                    if (obj is not JsonConverterToProcess other || this._kind != other._kind)
+                    {
+                        return false;
+                    }
+
+                    return this._kind switch
+                    {
+                        ConverterKind.Named =>
+                            this.ConverterNamespace == other.ConverterNamespace &&
+                            this.ConverterName == other.ConverterName,
+                        ConverterKind.GenericCommandResult =>
+                            this.ResultNamespace == other.ResultNamespace &&
+                            this.ResultTypeName == other.ResultTypeName,
+                        _ => false,
+                    };
                 }
 
                 public override int GetHashCode()
                 {
-                    return (this.ConverterNamespace, this.ConverterName).GetHashCode();
+                    return this._kind switch
+                    {
+                        ConverterKind.Named => (this.ConverterNamespace, this.ConverterName).GetHashCode(),
+                        ConverterKind.GenericCommandResult => (this._kind, this.ResultNamespace, this.ResultTypeName).GetHashCode(),
+                        _ => 0,
+                    };
+                }
+
+                internal static JsonConverterToProcess ForCommandResult(string resultNamespace, string resultTypeName)
+                    => new JsonConverterToProcess(ConverterKind.GenericCommandResult, resultNamespace, resultTypeName);
+
+                internal string ToRegistrationExpression()
+                {
+                    return this._kind switch
+                    {
+                        ConverterKind.Named =>
+                            $"new {this.ConverterNamespace}.{this.ConverterName}()",
+                        ConverterKind.GenericCommandResult =>
+                            $"new BluQube.Commands.CommandResultConverter<{this.ResultNamespace}.{this.ResultTypeName}>()",
+                        _ => throw new System.InvalidOperationException($"Unknown converter kind: {this._kind}"),
+                    };
                 }
             }
         }
