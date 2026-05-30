@@ -47,7 +47,7 @@ public abstract class GenericCommandHandler<TCommand, TResult>(
     /// This method creates an HTTP client named "bluqube" via <c>IHttpClientFactory</c>, sends a POST request with the command as JSON body,
     /// and deserializes the response. Non-success HTTP status codes and JSON deserialization errors are converted to failed results.
     /// </remarks>
-    public async Task<CommandResult<TResult>> Handle(TCommand request, CancellationToken cancellationToken)
+    public async ValueTask<CommandResult<TResult>> Handle(TCommand request, CancellationToken cancellationToken)
     {
         var client = httpClientFactory.CreateClient("bluqube");
 

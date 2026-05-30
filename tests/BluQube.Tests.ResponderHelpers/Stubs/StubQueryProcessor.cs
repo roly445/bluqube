@@ -5,8 +5,8 @@ namespace BluQube.Tests.ResponderHelpers.Stubs;
 
 public class StubQueryProcessor : IQueryProcessor<StubQuery, StubQueryResult>
 {
-    public Task<QueryResult<StubQueryResult>> Handle(StubQuery request, CancellationToken cancellationToken)
+    public ValueTask<QueryResult<StubQueryResult>> Handle(StubQuery request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(QueryResult<StubQueryResult>.Succeeded(new StubQueryResult("stub result")));
+        return ValueTask.FromResult(QueryResult<StubQueryResult>.Succeeded(new StubQueryResult("stub result")));
     }
 }

@@ -12,9 +12,6 @@ public static class Program
     {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-        builder.Services.AddMediatR(
-            configuration => configuration.RegisterServicesFromAssemblies(
-                typeof(Program).Assembly));
         builder.Services.AddScoped<ICommandRunner, CommandRunner>();
         builder.Services.AddScoped<IQueryRunner, QueryRunner>();
 

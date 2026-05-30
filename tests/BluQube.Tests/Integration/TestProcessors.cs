@@ -4,22 +4,22 @@ namespace BluQube.Tests.Integration;
 
 public class GetItemQueryProcessor : IQueryProcessor<GetItemQuery, ItemResult>
 {
-    public Task<QueryResult<ItemResult>> Handle(GetItemQuery request, CancellationToken cancellationToken)
+    public ValueTask<QueryResult<ItemResult>> Handle(GetItemQuery request, CancellationToken cancellationToken)
     {
         // Verify we received both path param (Id) and querystring param (Filter)
         if (request.Id == Guid.Empty)
         {
-            return Task.FromResult(QueryResult<ItemResult>.Failed());
+            return ValueTask.FromResult(QueryResult<ItemResult>.Failed());
         }
 
         var result = new ItemResult(request.Id, request.Filter ?? "no-filter");
-        return Task.FromResult(QueryResult<ItemResult>.Succeeded(result));
+        return ValueTask.FromResult(QueryResult<ItemResult>.Succeeded(result));
     }
 }
 
 public class ListTodosQueryProcessor : IQueryProcessor<ListTodosQuery, TodoListResult>
 {
-    public Task<QueryResult<TodoListResult>> Handle(ListTodosQuery request, CancellationToken cancellationToken)
+    public ValueTask<QueryResult<TodoListResult>> Handle(ListTodosQuery request, CancellationToken cancellationToken)
     {
         // Verify nullable querystring parameter handling
         var items = new List<string>();
@@ -33,18 +33,18 @@ public class ListTodosQueryProcessor : IQueryProcessor<ListTodosQuery, TodoListR
         }
 
         var result = new TodoListResult(items);
-        return Task.FromResult(QueryResult<TodoListResult>.Succeeded(result));
+        return ValueTask.FromResult(QueryResult<TodoListResult>.Succeeded(result));
     }
 }
 
 public class SearchQueryProcessor : IQueryProcessor<SearchQuery, SearchResult>
 {
-    public Task<QueryResult<SearchResult>> Handle(SearchQuery request, CancellationToken cancellationToken)
+    public ValueTask<QueryResult<SearchResult>> Handle(SearchQuery request, CancellationToken cancellationToken)
     {
         // Verify path param (Category) and body param (ComplexFilter) both present
         if (string.IsNullOrEmpty(request.Category))
         {
-            return Task.FromResult(QueryResult<SearchResult>.Failed());
+            return ValueTask.FromResult(QueryResult<SearchResult>.Failed());
         }
 
         var results = new List<string>
@@ -55,6 +55,6 @@ public class SearchQueryProcessor : IQueryProcessor<SearchQuery, SearchResult>
         };
 
         var result = new SearchResult(results);
-        return Task.FromResult(QueryResult<SearchResult>.Succeeded(result));
+        return ValueTask.FromResult(QueryResult<SearchResult>.Succeeded(result));
     }
 }

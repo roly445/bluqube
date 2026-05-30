@@ -1,6 +1,6 @@
 # Authorization Guide
 
-BluQube uses the **MediatR.Behaviors.Authorization** package to enforce authorization policies at the handler level. When a command or query handler is decorated with an `[Authorize]` attribute or requires a specific policy, the authorization behavior runs before your handler executes. If authorization fails, a `CommandResult.Unauthorized()` or `QueryResult<T>.Unauthorized()` is returned automatically—your handler never runs.
+BluQube provides a built-in authorization pipeline that enforces access control at the handler level. When a command or query handler is decorated with an `[Authorize]` attribute, the authorization behavior runs before your handler executes. If authorization fails, a `CommandResult.Unauthorized()` or `QueryResult<T>.Unauthorized()` is returned automatically—your handler never runs.
 
 ## Setup
 
@@ -8,22 +8,20 @@ Authorization requires two steps in your application's DI configuration:
 
 ### 1. Enable the Authorization Behavior
 
-In `Program.cs`, after adding MediatR, call `AddMediatorAuthorization()`:
+In `Program.cs`, after adding Mediator, call `AddBluQubeAuthorization()`:
 
 ```csharp
-using MediatR.Behaviors.Authorization.Extensions.DependencyInjection;
+using BluQube.Authorization;
 
 // ... other service registrations ...
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<App>());
-builder.Services.AddMediatorAuthorization(typeof(App).Assembly);  // Enable authorization behavior
-builder.Services.AddAuthorizersFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddMediator();
+builder.Services.AddBluQubeAuthorization(typeof(App).Assembly);
 ```
 
-The `AddMediatorAuthorization()` call:
-- Registers the MediatR authorization behavior into the pipeline
-- Scans the specified assembly for handlers with `[Authorize]` attributes
-- Wires up authorization checks before handler execution
+The `AddBluQubeAuthorization()` call:
+- Scans the specified assembly for `IBluQubeAuthorizer<T>` implementations and registers them
+- Adds the `BluQubeAuthorizationBehavior` to the Mediator pipeline
 
 ### 2. Define Authorization Policies (Optional)
 
@@ -44,7 +42,7 @@ builder.Services.AddAuthorization(options =>
 To require authentication for a command, decorate the handler with `[Authorize]`:
 
 ```csharp
-using MediatR.Behaviors.Authorization;
+using BluQube.Authorization;
 
 [Authorize]  // Any authenticated user can execute
 public class AddTodoCommandHandler(
@@ -79,7 +77,7 @@ if (result.Status == CommandResultStatus.Succeeded)
 }
 ```
 
-The `CommandRunner.Send()` method automatically catches `UnauthorizedException` from the MediatR pipeline and converts it to `CommandResult.Unauthorized()`.
+The `CommandRunner.Send()` method automatically catches `UnauthorizedException` from the pipeline and converts it to `CommandResult.Unauthorized()`.
 
 ## Policy-Based Authorization
 
@@ -104,56 +102,52 @@ public class DeleteTodoCommandHandler(
 }
 ```
 
-## Dynamic Policy Requirements with Authorizers
+## Dynamic Authorization Logic with Authorizers
 
-For complex authorization logic that depends on request data, implement an `AbstractRequestAuthorizer<TRequest>`:
+For complex authorization that depends on request data or user context, implement `IBluQubeAuthorizer<TRequest>`:
 
 ```csharp
-using MediatR.Behaviors.Authorization;
-using MediatR.Behaviors.Authorization.Requirements;
+using BluQube.Authorization;
 
-public class AddTodoCommandAuthorizer : AbstractRequestAuthorizer<AddTodoCommand>
+public class AddTodoCommandAuthorizer(IHttpContextAccessor httpContextAccessor)
+    : IBluQubeAuthorizer<AddTodoCommand>
 {
-    public override void BuildPolicy(AddTodoCommand request)
+    public Task<AuthorizationResult> Authorize(
+        AddTodoCommand request, CancellationToken cancellationToken)
     {
-        this.UseRequirement(new MustBeAuthenticatedRequirement());
+        var user = httpContextAccessor.HttpContext?.User;
+        return Task.FromResult(
+            user?.Identity?.IsAuthenticated == true
+                ? AuthorizationResult.Succeed()
+                : AuthorizationResult.Fail("User must be authenticated."));
     }
 }
 ```
 
-Register the authorizer in `Program.cs`:
+The authorizer is discovered and registered automatically by `AddBluQubeAuthorization()`. It runs before the handler whenever a command of that type is sent, allowing you to inspect request data and user context together:
 
 ```csharp
-builder.Services.AddAuthorizersFromAssembly(Assembly.GetExecutingAssembly());
-```
-
-The `BuildPolicy()` method is called with the incoming request, allowing you to define authorization requirements dynamically:
-
-```csharp
-public class UpdateTodoCommandAuthorizer : AbstractRequestAuthorizer<UpdateTodoCommand>
+public class UpdateTodoCommandAuthorizer(
+    IHttpContextAccessor httpContextAccessor,
+    ITodoService todoService)
+    : IBluQubeAuthorizer<UpdateTodoCommand>
 {
-    private readonly ITodoService _todoService;
-
-    public UpdateTodoCommandAuthorizer(ITodoService todoService)
+    public async Task<AuthorizationResult> Authorize(
+        UpdateTodoCommand request, CancellationToken cancellationToken)
     {
-        _todoService = todoService;
-    }
+        var userId = httpContextAccessor.HttpContext?.User.FindFirst("sub")?.Value;
+        var todo = await todoService.GetTodoAsync(request.TodoId, cancellationToken);
 
-    public override void BuildPolicy(UpdateTodoCommand request)
-    {
-        // Fetch the todo to check ownership
-        var todo = _todoService.GetTodo(request.TodoId);
-        if (todo?.OwnerId == this.GetUserId())
+        if (todo?.OwnerId == userId)
         {
-            // User owns the todo; authorization succeeds
-            return;
+            return AuthorizationResult.Succeed();
         }
 
-        // Only admins can update others' todos
-        this.UseRequirement(new RoleRequirement("Admin"));
+        var isAdmin = httpContextAccessor.HttpContext?.User.IsInRole("Admin") == true;
+        return isAdmin
+            ? AuthorizationResult.Succeed()
+            : AuthorizationResult.Fail("Only the owner or an admin can update this todo.");
     }
-
-    private Guid GetUserId() => /* extract from HttpContext */;
 }
 ```
 
@@ -166,9 +160,7 @@ Queries support authorization the same way as commands. Decorate query handlers 
 public class GetUserTodosQueryProcessor(ITodoService todoService)
     : GenericQueryProcessor<GetUserTodosQuery, GetUserTodosResult>
 {
-    protected override string Path => "queries/user-todos";
-
-    public async Task<QueryResult<GetUserTodosResult>> Handle(
+    public async ValueTask<QueryResult<GetUserTodosResult>> Handle(
         GetUserTodosQuery request, CancellationToken cancellationToken)
     {
         var todos = await todoService.GetUserTodosAsync(cancellationToken);
@@ -262,11 +254,11 @@ The authorization behavior runs against the handler, not the command.
 
 ### 2. **Forgetting to Register the Authorization Behavior**
 
-If you forget `AddMediatorAuthorization()` in `Program.cs`, handlers with `[Authorize]` attributes will be ignored—no authorization will run, and all requests will succeed.
+If you forget `AddBluQubeAuthorization()` in `Program.cs`, handlers with `[Authorize]` attributes will be ignored—no authorization will run, and all requests will succeed.
 
 ```csharp
 // ❌ Missing this line
-builder.Services.AddMediatorAuthorization(typeof(App).Assembly);
+builder.Services.AddBluQubeAuthorization(typeof(App).Assembly);
 ```
 
 ### 3. **Using a Policy That Isn't Defined**
@@ -302,6 +294,6 @@ if (result.Status == CommandResultStatus.Failed)
 
 ## See Also
 
-- [MediatR.Behaviors.Authorization](https://github.com/AustinDavies/MediatR.Behaviors.Authorization) — authorization behavior documentation
+- [MIGRATION-MEDIATR-TO-MEDIATOR.md](MIGRATION-MEDIATR-TO-MEDIATOR.md) — migration guide from MediatR
 - [VALIDATION_GUIDE.md](VALIDATION_GUIDE.md) — validation pipeline and error handling
 - [README.md](../README.md#authorization) — high-level overview

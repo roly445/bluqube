@@ -1,26 +1,25 @@
 ﻿using BluQube.Commands;
-using MediatR;
-using MediatR.Behaviors.Authorization.Exceptions;
+using BluQube.Authorization;
 using Moq;
 
 namespace BluQube.Tests.Commands.CommandRunnerTests;
 
 public class Send
 {
-    private readonly Mock<ISender> _senderMock;
+    private readonly Mock<Mediator.IMediator> _mediatorMock;
     private readonly CommandRunner _commandRunner;
 
     public Send()
     {
-        this._senderMock = new Mock<ISender>();
-        this._commandRunner = new CommandRunner(this._senderMock.Object);
+        this._mediatorMock = new Mock<Mediator.IMediator>();
+        this._commandRunner = new CommandRunner(this._mediatorMock.Object);
     }
 
     [Fact]
     public async Task ReturnUnauthorizedWhenSenderThrowsUnauthorizedException()
     {
         var command = new Mock<ICommand>().Object;
-        this._senderMock.Setup(s => s.Send(command, It.IsAny<CancellationToken>()))
+        this._mediatorMock.Setup(s => s.Send(command, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new UnauthorizedException("Some Message"));
 
         // Act
@@ -36,7 +35,7 @@ public class Send
         // Arrange
         var command = new Mock<ICommand>().Object;
         var expectedResult = CommandResult.Succeeded();
-        this._senderMock.Setup(s => s.Send(command, It.IsAny<CancellationToken>()))
+        this._mediatorMock.Setup(s => s.Send(command, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
         // Act

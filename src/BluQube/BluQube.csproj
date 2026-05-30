@@ -15,7 +15,7 @@
         <PackageProjectUrl>https://github.com/roly445/bluqube</PackageProjectUrl>
         <RepositoryUrl>https://github.com/roly445/bluqube</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>Blazor;Mediatr;Request;Response;Api;</PackageTags>
+        <PackageTags>Blazor;Mediator;CQRS;Request;Response;Api;</PackageTags>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -27,10 +27,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <FrameworkReference Include="Microsoft.AspNetCore.App">
+        <PrivateAssets>all</PrivateAssets>
+      </FrameworkReference>
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="FluentValidation" Version="12.1.0" />
       <PackageReference Include="MaybeMonad" Version="1.0.1.1" />
-      <PackageReference Include="MediatR" Version="12.5.0" />
-      <PackageReference Include="MediatR.Behaviors.Authorization" Version="12.5.0" />
+      <PackageReference Include="Mediator.Abstractions" Version="3.0.2" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
       <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
         <PrivateAssets>all</PrivateAssets>

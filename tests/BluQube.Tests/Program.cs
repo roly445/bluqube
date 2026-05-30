@@ -1,16 +1,20 @@
-﻿using BluQube.Commands;
+﻿using BluQube.Authorization;
+using BluQube.Commands;
 using BluQube.Queries;
 using BluQube.Tests.Integration;
-using MediatR.Behaviors.Authorization.Extensions.DependencyInjection;
+using BluQube.Tests.RequesterHelpers;
 using Microsoft.AspNetCore.Http.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure minimal services for BluQube
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<EntryPoint>());
-builder.Services.AddMediatorAuthorization(typeof(EntryPoint).Assembly);
+builder.Services.AddHttpClient();
+builder.Services.AddMediator();
+builder.Services.AddBluQubeRequesters();
+builder.Services.AddBluQubeAuthorization(typeof(Program).Assembly);
 builder.Services.AddScoped<ICommandRunner, CommandRunner>();
 builder.Services.AddScoped<IQueryRunner, QueryRunner>();
+builder.Services.AddTransient<CommandResultConverter>();
 
 // Configure JSON converters
 builder.Services.Configure<JsonOptions>(options =>

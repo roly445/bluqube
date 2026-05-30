@@ -1,19 +1,4 @@
-﻿using JetBrains.Annotations;
-using MediatR.Behaviors.Authorization;
-
-namespace BluQube.Samples.Blazor.Infrastructure.AuthorizationRequirements;
-
-public class MustBeAuthenticatedRequirement : IAuthorizationRequirement
-{
-    [UsedImplicitly]
-    private sealed class MustBeAuthenticatedRequirementHandler(IHttpContextAccessor httpContextAccessor)
-        : IAuthorizationHandler<MustBeAuthenticatedRequirement>
-    {
-        public Task<AuthorizationResult> Handle(MustBeAuthenticatedRequirement request, CancellationToken cancellationToken = default)
-        {
-            var context = httpContextAccessor.HttpContext;
-            return Task.FromResult(
-                context!.User.Identity!.IsAuthenticated ? AuthorizationResult.Succeed() : AuthorizationResult.Fail());
-        }
-    }
-}
+﻿// This file is intentionally left empty.
+// The MustBeAuthenticatedRequirement has been removed as part of the migration from
+// MediatR.Behaviors.Authorization to BluQube's first-party authorization pipeline.
+// Authentication checks are now handled directly in AddTodoCommandAuthorizer via IBluQubeAuthorizer<T>.

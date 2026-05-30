@@ -54,7 +54,7 @@ public abstract class GenericQueryProcessor<TQuery, TResult>(
     /// and deserializes the response. For GET requests, uses reflection to serialize query properties as querystring parameters.
     /// Non-success HTTP status codes and JSON deserialization errors are converted to failed results.
     /// </remarks>
-    public async Task<QueryResult<TResult>> Handle(TQuery request, CancellationToken cancellationToken)
+    public async ValueTask<QueryResult<TResult>> Handle(TQuery request, CancellationToken cancellationToken)
     {
         var client = httpClientFactory.CreateClient("bluqube");
 

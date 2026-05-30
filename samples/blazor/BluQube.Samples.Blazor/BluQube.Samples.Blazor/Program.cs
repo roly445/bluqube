@@ -1,12 +1,12 @@
 using System.Reflection;
 using BluQube.Attributes;
+using BluQube.Authorization;
 using BluQube.Commands;
 using BluQube.Queries;
 using BluQube.Samples.Blazor.Components;
 using BluQube.Samples.Blazor.Infrastructure.CommandValidators;
 using BluQube.Samples.Blazor.Infrastructure.Data;
 using FluentValidation;
-using MediatR.Behaviors.Authorization.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Identity;
@@ -40,9 +40,8 @@ public static class Program
 
         builder.Services.AddValidatorsFromAssemblyContaining<AddTodoCommandValidator>();
 
-        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<App>());
-        builder.Services.AddMediatorAuthorization(typeof(App).Assembly);
-        builder.Services.AddAuthorizersFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Services.AddMediator();
+        builder.Services.AddBluQubeAuthorization(Assembly.GetExecutingAssembly());
         builder.Services.AddScoped<ICommandRunner, CommandRunner>();
         builder.Services.AddScoped<IQueryRunner, QueryRunner>();
         builder.Services.AddSingleton<ITodoService, TodoService>();

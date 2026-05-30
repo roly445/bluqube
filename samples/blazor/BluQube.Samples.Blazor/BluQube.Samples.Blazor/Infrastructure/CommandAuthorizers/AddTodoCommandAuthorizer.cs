@@ -1,13 +1,16 @@
-﻿using BluQube.Samples.Blazor.Client.Infrastructure.Commands;
-using BluQube.Samples.Blazor.Infrastructure.AuthorizationRequirements;
-using MediatR.Behaviors.Authorization;
+﻿using BluQube.Authorization;
+using BluQube.Samples.Blazor.Client.Infrastructure.Commands;
 
 namespace BluQube.Samples.Blazor.Infrastructure.CommandAuthorizers;
 
-public class AddTodoCommandAuthorizer : AbstractRequestAuthorizer<AddTodoCommand>
+public class AddTodoCommandAuthorizer(IHttpContextAccessor httpContextAccessor) : IBluQubeAuthorizer<AddTodoCommand>
 {
-    public override void BuildPolicy(AddTodoCommand request)
+    public Task<AuthorizationResult> Authorize(AddTodoCommand request, CancellationToken cancellationToken)
     {
-        this.UseRequirement(new MustBeAuthenticatedRequirement());
+        var context = httpContextAccessor.HttpContext;
+        return Task.FromResult(
+            context?.User.Identity?.IsAuthenticated == true
+                ? AuthorizationResult.Succeed()
+                : AuthorizationResult.Fail("User must be authenticated to add a todo."));
     }
 }

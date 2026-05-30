@@ -72,11 +72,11 @@ public abstract class CommandHandler<TCommand>(IEnumerable<IValidator<TCommand>>
     /// otherwise returns the result from <see cref="HandleInternal"/>.
     /// </returns>
     /// <remarks>
-    /// This method is called by MediatR. It runs all registered validators in parallel, aggregates failures,
+    /// This method is called by Mediator. It runs all registered validators in parallel, aggregates failures,
     /// and short-circuits if any validation rules are violated. After handler execution (or validation failure),
     /// it invokes <see cref="PostHandle"/> for side effects.
     /// </remarks>
-    public async Task<CommandResult> Handle(TCommand request, CancellationToken cancellationToken)
+    public async ValueTask<CommandResult> Handle(TCommand request, CancellationToken cancellationToken)
     {
         var validationTasks = validators
             .Select(v => v.ValidateAsync(request, cancellationToken));

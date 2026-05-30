@@ -55,7 +55,7 @@ public abstract class CommandHandler<TCommand, TResult>(IEnumerable<IValidator<T
     where TResult : ICommandResult
 {
     /// <inheritdoc cref="CommandHandler{TCommand}.Handle"/>
-    public async Task<CommandResult<TResult>> Handle(TCommand request, CancellationToken cancellationToken)
+    public async ValueTask<CommandResult<TResult>> Handle(TCommand request, CancellationToken cancellationToken)
     {
         var validationTasks = validators
             .Select(v => v.ValidateAsync(request, cancellationToken));

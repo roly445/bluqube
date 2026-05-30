@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Mediator;
 
 namespace BluQube.Commands;
 
@@ -8,7 +8,7 @@ namespace BluQube.Commands;
 /// <typeparam name="TCommand">The type of command this handler processes. Must implement <see cref="ICommand{TResult}"/>.</typeparam>
 /// <typeparam name="TResult">The type of data returned by this handler. Must implement <see cref="ICommandResult"/>.</typeparam>
 /// <remarks>
-/// This interface extends MediatR's <c>IRequestHandler</c> and defines the contract for command handlers in the BluQube framework.
+/// This interface extends Mediator's <c>IRequestHandler</c> and defines the contract for command handlers in the BluQube framework.
 /// Implementations should inherit from <see cref="CommandHandler{TCommand, TResult}"/> which provides validation pipeline support.
 /// </remarks>
 public interface ICommandHandler<in TCommand, TResult>
