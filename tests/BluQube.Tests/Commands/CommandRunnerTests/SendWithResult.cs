@@ -1,5 +1,5 @@
-﻿using BluQube.Commands;
 using BluQube.Authorization;
+using BluQube.Commands;
 using BluQube.Tests.RequesterHelpers.Stubs;
 using Moq;
 

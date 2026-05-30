@@ -22,7 +22,7 @@ namespace BluQube.Authorization;
 /// </code>
 /// </remarks>
 public sealed class BluQubeAuthorizationBehavior<TMessage, TResponse>(
-IServiceProvider rootServiceProvider,
+    IServiceProvider rootServiceProvider,
     IHttpContextAccessor? httpContextAccessor = null)
     : IPipelineBehavior<TMessage, TResponse>
     where TMessage : IMessage
@@ -33,13 +33,13 @@ IServiceProvider rootServiceProvider,
         MessageHandlerDelegate<TMessage, TResponse> next,
         CancellationToken cancellationToken)
     {
-    // Prefer request-scoped services when available (HTTP request context)
-    var sp = httpContextAccessor?.HttpContext?.RequestServices ?? rootServiceProvider;
+        // Prefer request-scoped services when available (HTTP request context)
+        var sp = httpContextAccessor?.HttpContext?.RequestServices ?? rootServiceProvider;
 
-    // Resolve the concrete handler to check for [Authorize] attribute.
-    // Use runtime type to bypass the IRequest<TResponse> constraint on IRequestHandler<,>.
-    var handlerServiceType = typeof(IRequestHandler<,>).MakeGenericType(typeof(TMessage), typeof(TResponse));
-    var handlerType = sp.GetService(handlerServiceType)?.GetType();
+        // Resolve the concrete handler to check for [Authorize] attribute.
+        // Use runtime type to bypass the IRequest<TResponse> constraint on IRequestHandler<,>.
+        var handlerServiceType = typeof(IRequestHandler<,>).MakeGenericType(typeof(TMessage), typeof(TResponse));
+        var handlerType = sp.GetService(handlerServiceType)?.GetType();
 
         if (handlerType == null)
         {

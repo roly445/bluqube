@@ -10,6 +10,8 @@
         <LangVersion>latest</LangVersion>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <GenerateProgramFile>false</GenerateProgramFile>
+        <!-- MSG0001/MSG0005 are expected: test project references both client requester stubs and server handler stubs -->
+        <WarningsNotAsErrors>MSG0001;MSG0005</WarningsNotAsErrors>
     </PropertyGroup>
 
     <ItemGroup>

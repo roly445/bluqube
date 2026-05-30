@@ -27,12 +27,16 @@ namespace BluQube.Authorization;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 public sealed class AuthorizeAttribute : Attribute
 {
-    /// <summary>Initializes a new <see cref="AuthorizeAttribute"/> that requires any authenticated user.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthorizeAttribute"/> class that requires any authenticated user.
+    /// </summary>
     public AuthorizeAttribute()
     {
     }
 
-    /// <summary>Initializes a new <see cref="AuthorizeAttribute"/> that requires the specified ASP.NET Core policy.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthorizeAttribute"/> class that requires the specified ASP.NET Core policy.
+    /// </summary>
     /// <param name="policyName">The name of the ASP.NET Core authorization policy to evaluate.</param>
     public AuthorizeAttribute(string policyName)
     {

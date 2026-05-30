@@ -18,8 +18,11 @@ public sealed class AuthorizationResult
     public string? FailureMessage { get; }
 
     /// <summary>Returns a successful authorization result.</summary>
+    /// <returns>An <see cref="AuthorizationResult"/> indicating success.</returns>
     public static AuthorizationResult Succeed() => new(true, null);
 
     /// <summary>Returns a failed authorization result with an optional message.</summary>
+    /// <param name="message">An optional human-readable failure reason.</param>
+    /// <returns>An <see cref="AuthorizationResult"/> indicating failure.</returns>
     public static AuthorizationResult Fail(string? message = null) => new(false, message);
 }

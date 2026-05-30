@@ -8,19 +8,28 @@ namespace BluQube.Authorization;
 /// </summary>
 public sealed class UnauthorizedException : Exception
 {
-    /// <summary>Initializes a new instance of <see cref="UnauthorizedException"/>.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnauthorizedException"/> class.
+    /// </summary>
     public UnauthorizedException()
         : base("The request was not authorized.")
     {
     }
 
-    /// <summary>Initializes a new instance of <see cref="UnauthorizedException"/> with a message.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnauthorizedException"/> class with a message.
+    /// </summary>
+    /// <param name="message">The exception message.</param>
     public UnauthorizedException(string message)
         : base(message)
     {
     }
 
-    /// <summary>Initializes a new instance of <see cref="UnauthorizedException"/> with a message and inner exception.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnauthorizedException"/> class with a message and inner exception.
+    /// </summary>
+    /// <param name="message">The exception message.</param>
+    /// <param name="innerException">The inner exception that caused this exception.</param>
     public UnauthorizedException(string message, Exception innerException)
         : base(message, innerException)
     {
