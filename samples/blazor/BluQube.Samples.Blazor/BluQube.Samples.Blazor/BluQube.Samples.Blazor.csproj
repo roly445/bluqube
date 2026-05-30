@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>default</LangVersion>
+    <!-- MSG0001/MSG0005 expected: server project references client requester stubs, causing duplicate handler warnings -->
+    <WarningsNotAsErrors>MSG0001;MSG0005</WarningsNotAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
