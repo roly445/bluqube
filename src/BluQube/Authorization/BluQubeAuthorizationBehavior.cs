@@ -1,5 +1,4 @@
 using Mediator;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,7 +6,7 @@ namespace BluQube.Authorization;
 
 /// <summary>
 /// Mediator pipeline behavior that enforces BluQube authorization before handler execution.
-/// Runs when the resolved handler type is decorated with <see cref="AuthorizeAttribute"/>.
+/// Runs when an <see cref="IBluQubeAuthorizer{TRequest}"/> is registered for the message.
 /// </summary>
 /// <typeparam name="TMessage">The request (command or query) type.</typeparam>
 /// <typeparam name="TResponse">The response type.</typeparam>
@@ -36,61 +35,17 @@ public sealed class BluQubeAuthorizationBehavior<TMessage, TResponse>(
         // Prefer request-scoped services when available (HTTP request context)
         var sp = httpContextAccessor?.HttpContext?.RequestServices ?? rootServiceProvider;
 
-        // Resolve the concrete handler to check for [Authorize] attribute.
-        // Use runtime type to bypass the IRequest<TResponse> constraint on IRequestHandler<,>.
-        var handlerServiceType = typeof(IRequestHandler<,>).MakeGenericType(typeof(TMessage), typeof(TResponse));
-        var handlerType = sp.GetService(handlerServiceType)?.GetType();
-
-        if (handlerType == null)
-        {
-            return await next(message, cancellationToken);
-        }
-
-        var authorizeAttr = (AuthorizeAttribute?)Attribute.GetCustomAttribute(
-            handlerType, typeof(AuthorizeAttribute), inherit: true);
-
-        if (authorizeAttr == null)
-        {
-            return await next(message, cancellationToken);
-        }
-
-        // Try custom authorizer first
+        // A registered authorizer is an explicit opt-in to request authorization.
         var authorizer = sp.GetService<IBluQubeAuthorizer<TMessage>>();
-        if (authorizer != null)
+        if (authorizer == null)
         {
-            var result = await authorizer.Authorize(message, cancellationToken);
-            if (!result.IsAuthorized)
-            {
-                throw new UnauthorizedException(result.FailureMessage ?? "Authorization failed.");
-            }
-
             return await next(message, cancellationToken);
         }
 
-        // Fall back to ASP.NET Core policy / IsAuthenticated
-        if (!string.IsNullOrEmpty(authorizeAttr.PolicyName))
+        var result = await authorizer.Authorize(message, cancellationToken);
+        if (!result.IsAuthorized)
         {
-            var authorizationService = sp.GetService<IAuthorizationService>();
-            var httpContext = httpContextAccessor?.HttpContext;
-            if (authorizationService != null && httpContext != null)
-            {
-                var policyResult = await authorizationService.AuthorizeAsync(
-                    httpContext.User, resource: null, authorizeAttr.PolicyName);
-
-                if (!policyResult.Succeeded)
-                {
-                    throw new UnauthorizedException($"Policy '{authorizeAttr.PolicyName}' was not satisfied.");
-                }
-
-                return await next(message, cancellationToken);
-            }
-        }
-
-        // Plain [Authorize] with no policy and no custom authorizer — check IsAuthenticated
-        var user = httpContextAccessor?.HttpContext?.User;
-        if (user?.Identity?.IsAuthenticated != true)
-        {
-            throw new UnauthorizedException("User is not authenticated.");
+            throw new UnauthorizedException(result.FailureMessage ?? "Authorization failed.");
         }
 
         return await next(message, cancellationToken);

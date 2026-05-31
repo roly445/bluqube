@@ -9,7 +9,7 @@ namespace BluQube.Authorization;
 /// Register implementations in DI using <c>AddBluQubeAuthorization(Assembly)</c> or manually with
 /// <c>builder.Services.AddScoped&lt;IBluQubeAuthorizer&lt;TRequest&gt;, TAuthorizer&gt;()</c>.
 /// The <see cref="BluQubeAuthorizationBehavior{TMessage,TResponse}"/> resolves and invokes this
-/// authorizer when the handler is decorated with <see cref="AuthorizeAttribute"/>.
+/// authorizer whenever one is registered for the request type.
 /// </remarks>
 /// <example>
 /// <code>

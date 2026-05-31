@@ -31,10 +31,10 @@ Open `Program.cs` and add BluQube services to the dependency injection container
 
 ```csharp
 using BluQube.Attributes;
+using BluQube.Authorization;
 using BluQube.Commands;
 using BluQube.Queries;
 using FluentValidation;
-using MediatR.Behaviors.Authorization.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,9 +46,9 @@ builder.Services.AddRazorComponents()
 // Register validators
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
 
-// Register MediatR and handlers
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(Program)));
-builder.Services.AddMediatorAuthorization(typeof(Program).Assembly);
+// Register Mediator, handlers, and BluQube authorizers
+builder.Services.AddMediator();
+builder.Services.AddBluQubeAuthorization(typeof(Program).Assembly);
 
 // Register BluQube runners
 builder.Services.AddScoped<ICommandRunner, CommandRunner>();
@@ -388,16 +388,24 @@ public record GetTodoQuery(Guid Id, string? Filter = null) : IQuery<TodoDetailRe
 // {id} comes from the route; Filter comes from the query string
 ```
 
-### Unauthorized Handler
+### Unauthorized Command
 
-Use `[Authorize]` attribute to require authentication:
+Use `IBluQubeAuthorizer<T>` to require authentication:
 
 ```csharp
-[Authorize]
-public class AdminOnlyCommandHandler : CommandHandler<AdminCommand>
+public class AdminCommandAuthorizer(IHttpContextAccessor httpContextAccessor)
+    : IBluQubeAuthorizer<AdminCommand>
 {
-    // This handler requires the user to be authenticated
-    // ...
+    public Task<AuthorizationResult> Authorize(
+        AdminCommand request,
+        CancellationToken cancellationToken)
+    {
+        var user = httpContextAccessor.HttpContext?.User;
+        return Task.FromResult(
+            user?.Identity?.IsAuthenticated == true
+                ? AuthorizationResult.Succeed()
+                : AuthorizationResult.Fail("User must be authenticated."));
+    }
 }
 ```
 

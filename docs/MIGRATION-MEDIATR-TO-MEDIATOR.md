@@ -16,7 +16,6 @@ MediatR's commercial licensing terms changed. The replacement — `martinothamar
 |------|--------|-------|
 | NuGet packages | `MediatR` + `MediatR.Behaviors.Authorization` | `Mediator.Abstractions` + `Mediator.SourceGenerator` |
 | DI setup | `AddMediatR(...)` + `AddMediatorAuthorization(...)` + `AddAuthorizersFromAssembly(...)` | `AddMediator()` + `AddBluQubeAuthorization(assembly)` |
-| `[Authorize]` namespace | `MediatR.Behaviors.Authorization` | `BluQube.Authorization` |
 | Authorizer base class | `AbstractRequestAuthorizer<T>` | `IBluQubeAuthorizer<T>` |
 | `UnauthorizedException` namespace | `MediatR.Behaviors.Authorization.Exceptions` | `BluQube.Authorization` |
 
@@ -82,27 +81,7 @@ builder.Services.AddBluQubeAuthorization(typeof(App).Assembly);
 
 > `AddBluQubeAuthorization` scans the provided assembly for `IBluQubeAuthorizer<T>` implementations and registers the authorization pipeline behavior automatically.
 
-### 3. Update `[Authorize]` Usings
-
-**Before:**
-```csharp
-using MediatR.Behaviors.Authorization;
-
-[Authorize]
-public class MyHandler : CommandHandler<MyCommand> { ... }
-```
-
-**After:**
-```csharp
-using BluQube.Authorization;
-
-[Authorize]
-public class MyHandler : CommandHandler<MyCommand> { ... }
-```
-
-The attribute name and its `PolicyName` property are identical — only the namespace changes.
-
-### 4. Replace `AbstractRequestAuthorizer<T>` with `IBluQubeAuthorizer<T>`
+### 3. Replace `AbstractRequestAuthorizer<T>` with `IBluQubeAuthorizer<T>`
 
 This is the most code-impactful change. The old system used a requirement-based builder pattern; the new system uses a direct `Task<AuthorizationResult>` return.
 
@@ -191,9 +170,9 @@ public class EditTodoCommandAuthorizer(
 }
 ```
 
-> Authorizers are registered automatically by `AddBluQubeAuthorization(assembly)` — you no longer need a separate `AddAuthorizersFromAssembly()` call.
+> Authorizers are registered automatically by `AddBluQubeAuthorization(assembly)` and run whenever one is registered for the request type. You no longer need a separate `AddAuthorizersFromAssembly()` call.
 
-### 5. Remove Custom `UnauthorizedException` Handling (if any)
+### 4. Remove Custom `UnauthorizedException` Handling (if any)
 
 If you were catching `MediatR.Behaviors.Authorization.Exceptions.UnauthorizedException` directly (e.g., in a custom exception filter), update the namespace:
 
@@ -209,7 +188,7 @@ catch (BluQube.Authorization.UnauthorizedException)
 
 Note: `CommandRunner.Send()` and `QueryRunner.Send()` handle this internally — you only need to change this if you have your own try/catch around them.
 
-### 6. Update Test Projects
+### 5. Update Test Projects
 
 If you have test projects that use `AddMediatR` or `ISender`/`IMediator` from MediatR:
 
@@ -242,7 +221,6 @@ Add `Mediator.SourceGenerator` to test projects that host a test server (so Medi
 - [ ] Add `Mediator.Abstractions` and `Mediator.SourceGenerator` to server project(s)
 - [ ] Replace `AddMediatR(...)` with `builder.Services.AddMediator()`
 - [ ] Replace `AddMediatorAuthorization(...)` + `AddAuthorizersFromAssembly(...)` with `AddBluQubeAuthorization(assembly)`
-- [ ] Update `using MediatR.Behaviors.Authorization;` → `using BluQube.Authorization;` on handler files
 - [ ] Rewrite each `AbstractRequestAuthorizer<T>` as `IBluQubeAuthorizer<T>`
 - [ ] Update any direct catches of `UnauthorizedException` namespace
 - [ ] Update test project mocks from `ISender` → `Mediator.IMediator`

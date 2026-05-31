@@ -358,5 +358,5 @@ public record UpdateTodoCommand(Guid UserId, Guid TodoId, string Title) : IComma
 ## See Also
 
 - [README](../README.md#url-binding) — Quick overview of URL binding
-- [AUTHORIZATION_GUIDE.md](./AUTHORIZATION_GUIDE.md) — Protecting endpoints with `[Authorize]`
+- [AUTHORIZATION_GUIDE.md](./AUTHORIZATION_GUIDE.md) — Protecting endpoints with `IBluQubeAuthorizer<T>`
 - [VALIDATION_GUIDE.md](./VALIDATION_GUIDE.md) — Validating commands and queries

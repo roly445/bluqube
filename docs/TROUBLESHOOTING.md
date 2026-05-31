@@ -130,28 +130,33 @@ public class AddTodoCommandValidator : AbstractValidator<AddTodoCommand>
 ### Unauthorized exceptions returning 500
 
 **You see:**
-- `[Authorize]` attribute on handler, but HTTP 500 error instead of 401/403
+- `IBluQubeAuthorizer<T>` returns `AuthorizationResult.Fail(...)`, but HTTP 500 error instead of unauthorized result
 - `UnauthorizedException` in logs
 
 **Cause:**
-`AddMediatorAuthorization()` not called in DI setup, so `[Authorize]` attributes aren't recognized. Exception escapes uncaught.
+`AddBluQubeAuthorization()` or the BluQube runner is not registered, so authorization exceptions are not converted to `CommandResult.Unauthorized()` or `QueryResult<T>.Unauthorized()`.
 
 **Fix:**
-Add to `Program.cs` before `AddMediatR()`:
+Add to `Program.cs` after `AddMediator()`:
 ```csharp
-builder.Services.AddMediatorAuthorization(typeof(Program).Assembly);
-builder.Services.AddAuthorizersFromAssembly(typeof(Program).Assembly);  // Also needed for custom authorizers
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<App>());
+builder.Services.AddMediator();
+builder.Services.AddBluQubeAuthorization(typeof(Program).Assembly);
+builder.Services.AddScoped<ICommandRunner, CommandRunner>();
+builder.Services.AddScoped<IQueryRunner, QueryRunner>();
 ```
 
-`CommandRunner.cs` catches `UnauthorizedException` and converts to `CommandResult.Unauthorized()`. If exception escapes, the middleware above didn't run.
+`CommandRunner.cs` and `QueryRunner.cs` catch `UnauthorizedException` and convert it to unauthorized results. If the exception escapes, the request is bypassing those runners.
 
-Verify your handler has the attribute:
+Verify an authorizer exists for the request:
 ```csharp
-[Authorize]  // or [Authorize("PolicyName")]
-public class DeleteTodoCommandHandler : CommandHandler<DeleteTodoCommand>
+public class DeleteTodoCommandAuthorizer : IBluQubeAuthorizer<DeleteTodoCommand>
 {
-    // ...
+    public Task<AuthorizationResult> Authorize(
+        DeleteTodoCommand request,
+        CancellationToken cancellationToken)
+    {
+        // ...
+    }
 }
 ```
 
@@ -160,31 +165,30 @@ public class DeleteTodoCommandHandler : CommandHandler<DeleteTodoCommand>
 ### All authorization checks fail (even valid users)
 
 **You see:**
-- Every `[Authorize]` handler returns `CommandResult.Unauthorized()`
+- Every authorizer returns `CommandResult.Unauthorized()`
 - Valid authenticated users blocked
 
 **Cause:**
-Authorization policy doesn't exist or hasn't been configured.
+The authorizer is checking for a claim, role, tenant, or identity value that is not present in the current user context.
 
 **Fix:**
-1. Define the policy in `Program.cs`:
+Inspect the user inside the authorizer and make the requirement explicit:
    ```csharp
-   builder.Services.AddAuthorization(options =>
+   public class DeleteTodoCommandAuthorizer(IHttpContextAccessor httpContextAccessor)
+       : IBluQubeAuthorizer<DeleteTodoCommand>
    {
-       options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-   });
-   ```
-
-2. Use policy name in handler:
-   ```csharp
-   [Authorize("AdminOnly")]
-   public class DeleteTodoCommandHandler : CommandHandler<DeleteTodoCommand>
-   {
-       // ...
+       public Task<AuthorizationResult> Authorize(
+           DeleteTodoCommand request,
+           CancellationToken cancellationToken)
+       {
+           var isAdmin = httpContextAccessor.HttpContext?.User.IsInRole("Admin") == true;
+           return Task.FromResult(
+               isAdmin
+                   ? AuthorizationResult.Succeed()
+                   : AuthorizationResult.Fail("Admin role is required."));
+       }
    }
    ```
-
-Or just use `[Authorize]` with no policy name — it checks if user is authenticated (any user with identity).
 
 ---
 
@@ -262,9 +266,9 @@ This must be in the server (`Program.cs`), not the client. Converters handle pol
 Verify the service registration chain in Program.cs:
 ```csharp
 builder.Services.AddValidatorsFromAssemblyContaining<MyValidator>();
-builder.Services.AddMediatR(...);
-builder.Services.AddMediatorAuthorization(...);
-builder.Services.Configure<JsonOptions>(options => options.AddBluQubeJsonConverters());  // After MediatR setup
+builder.Services.AddMediator();
+builder.Services.AddBluQubeAuthorization(...);
+builder.Services.Configure<JsonOptions>(options => options.AddBluQubeJsonConverters());  // After Mediator setup
 ```
 
 ---
@@ -309,26 +313,34 @@ builder.Services.Configure<JsonOptions>(options =>
 
 ## Authorization & Authentication
 
-### Policy-based authorization not working
+### Authorizer-based authorization not working
 
 **You see:**
-- Handler with `[Authorize("MyPolicy")]` always returns unauthorized
+- Request with `IBluQubeAuthorizer<T>` always returns unauthorized
 - User is authenticated but handler still rejects
 
 **Cause:**
-Policy undefined or user doesn't meet policy requirements.
+The authorizer requirement does not match the current user's claims, roles, or request data.
 
 **Fix:**
-1. Define policy in `Program.cs`:
+1. Put the requirement directly in the authorizer:
    ```csharp
-   builder.Services.AddAuthorization(options =>
+   public class WriteTodoCommandAuthorizer(IHttpContextAccessor httpContextAccessor)
+       : IBluQubeAuthorizer<WriteTodoCommand>
    {
-       options.AddPolicy("MyPolicy", policy =>
-           policy.RequireAssertion(context =>
-               context.User.HasClaim("permission", "write:todos")
-           )
-       );
-   });
+       public Task<AuthorizationResult> Authorize(
+           WriteTodoCommand request,
+           CancellationToken cancellationToken)
+       {
+           var canWrite = httpContextAccessor.HttpContext?.User
+               .HasClaim("permission", "write:todos") == true;
+
+           return Task.FromResult(
+               canWrite
+                   ? AuthorizationResult.Succeed()
+                   : AuthorizationResult.Fail("write:todos permission is required."));
+       }
+   }
    ```
 
 2. Verify user has required claim/role:
@@ -341,9 +353,9 @@ Policy undefined or user doesn't meet policy requirements.
    };
    ```
 
-3. Ensure `AddMediatorAuthorization()` is called:
+3. Ensure `AddBluQubeAuthorization()` is called:
    ```csharp
-   builder.Services.AddMediatorAuthorization(typeof(Program).Assembly);
+   builder.Services.AddBluQubeAuthorization(typeof(Program).Assembly);
    ```
 
 ---
@@ -533,9 +545,8 @@ Path parameters are always in the URL; remaining properties depend on method:
 4. **Verify DI setup:**
    Look at `samples/blazor/BluQube.Samples.Blazor/BluQube.Samples.Blazor/Program.cs` for the complete checklist:
    - `AddValidatorsFromAssemblyContaining<T>()`
-   - `AddMediatR(...)`
-   - `AddMediatorAuthorization(...)`
-   - `AddAuthorizersFromAssembly(...)`
+   - `AddMediator()`
+   - `AddBluQubeAuthorization(...)`
    - `AddScoped<ICommandRunner, CommandRunner>()`
    - `AddScoped<IQueryRunner, QueryRunner>()`
    - `Configure<JsonOptions>(options => options.AddBluQubeJsonConverters())`
