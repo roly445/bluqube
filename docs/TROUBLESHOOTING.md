@@ -358,6 +358,23 @@ The authorizer requirement does not match the current user's claims, roles, or r
    builder.Services.AddBluQubeAuthorization(typeof(Program).Assembly);
    ```
 
+### Public request rejected when authorization is required by default
+
+**You see:**
+- `CommandResult.Unauthorized()` or `QueryResult<T>.Unauthorized()` for a public request
+- Error message says no authorizer is registered for the request type
+
+**Cause:**
+`RequireAuthorizationByDefault` is enabled and the request has neither an authorizer nor the anonymous marker.
+
+**Fix:**
+Add an authorizer, or mark intentionally public requests with `IAllowAnonymousBluQubeRequest`:
+
+```csharp
+public record LoginCommand(string Email, string Password)
+    : ICommand<LoginResult>, IAllowAnonymousBluQubeRequest;
+```
+
 ---
 
 ## Testing

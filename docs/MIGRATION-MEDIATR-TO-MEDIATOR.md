@@ -80,6 +80,7 @@ builder.Services.AddBluQubeAuthorization(typeof(App).Assembly);
 ```
 
 > `AddBluQubeAuthorization` scans the provided assembly for `IBluQubeAuthorizer<T>` implementations and registers the authorization pipeline behavior automatically.
+> To reject commands and queries that do not have an authorizer, pass options and set `RequireAuthorizationByDefault = true`.
 
 ### 3. Replace `AbstractRequestAuthorizer<T>` with `IBluQubeAuthorizer<T>`
 

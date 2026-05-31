@@ -1,6 +1,7 @@
 using Mediator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace BluQube.Authorization;
 
@@ -12,8 +13,8 @@ namespace BluQube.Authorization;
 /// <typeparam name="TResponse">The response type.</typeparam>
 /// <remarks>
 /// Registration order matters. This behavior must be registered before the handler in the pipeline.
-/// Use <see cref="ServiceCollectionExtensions.AddBluQubeAuthorization"/> to register authorizers and
-/// then add this behavior to the Mediator pipeline:
+/// Use the BluQube authorization service collection extensions to register authorizers and add this behavior
+/// to the Mediator pipeline:
 /// <code>
 /// builder.Services.AddMediator();
 /// builder.Services.AddBluQubeAuthorization(typeof(App).Assembly);
@@ -22,7 +23,8 @@ namespace BluQube.Authorization;
 /// </remarks>
 public sealed class BluQubeAuthorizationBehavior<TMessage, TResponse>(
     IServiceProvider rootServiceProvider,
-    IHttpContextAccessor? httpContextAccessor = null)
+    IHttpContextAccessor? httpContextAccessor = null,
+    IOptions<BluQubeAuthorizationOptions>? options = null)
     : IPipelineBehavior<TMessage, TResponse>
     where TMessage : IMessage
 {
@@ -39,6 +41,17 @@ public sealed class BluQubeAuthorizationBehavior<TMessage, TResponse>(
         var authorizer = sp.GetService<IBluQubeAuthorizer<TMessage>>();
         if (authorizer == null)
         {
+            if (message is IAllowAnonymousBluQubeRequest)
+            {
+                return await next(message, cancellationToken);
+            }
+
+            if (options?.Value.RequireAuthorizationByDefault == true)
+            {
+                throw new UnauthorizedException(
+                    $"No authorizer is registered for request type '{typeof(TMessage).Name}'.");
+            }
+
             return await next(message, cancellationToken);
         }
 

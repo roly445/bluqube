@@ -25,7 +25,7 @@ Comprehensive guides for getting started, advanced patterns, and troubleshooting
 | [Getting Started](docs/GETTING_STARTED.md) | Zero to working app—setup, DI configuration, and your first command |
 | [URL Binding](docs/URL_BINDING_GUIDE.md) | Automatic extraction of path parameters, query strings, and request bodies |
 | [Validation](docs/VALIDATION_GUIDE.md) | FluentValidation integration with before-handler pipeline |
-| [Authorization](docs/AUTHORIZATION_GUIDE.md) | MediatR authorization behaviors with role and dynamic policy support |
+| [Authorization](docs/AUTHORIZATION_GUIDE.md) | Request authorizers, unauthorized results, and authorize-by-default mode |
 | [WASM Deployment](docs/WASM_DEPLOYMENT.md) | Server and WebAssembly deployment patterns and configuration |
 | [Source Generation Internals](docs/SOURCE_GENERATION_INTERNALS.md) | How generators work, inspecting output, and troubleshooting |
 | [Troubleshooting](docs/TROUBLESHOOTING.md) | Symptom-indexed resolution guide for common issues |
@@ -84,7 +84,7 @@ BluQube provides structured error handling with `BluQubeErrorData` containing er
 ### Validation
 BluQube integrates validation using [FluentValidation](https://github.com/FluentValidation/FluentValidation), allowing you to define validation rules for commands and queries.
 ### Authorization
-BluQube supports authorization checks for commands, ensuring that only authorized users can perform certain actions.  This is performed using the Mediatr behavior [MediatR.Behaviors.Authorization](https://github.com/AustinDavies/MediatR.Behaviors.Authorization/tree/master).
+BluQube supports authorization checks for commands and queries through `IBluQubeAuthorizer<TRequest>`. You can also enable authorize-by-default mode so requests without an authorizer are rejected unless they explicitly implement `IAllowAnonymousBluQubeRequest`.
 
 ## URL Binding
 

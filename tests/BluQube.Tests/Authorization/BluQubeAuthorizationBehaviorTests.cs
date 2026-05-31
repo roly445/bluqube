@@ -3,6 +3,7 @@ using BluQube.Commands;
 using BluQube.Constants;
 using BluQube.Tests.RequesterHelpers.Stubs;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace BluQube.Tests.Authorization;
 
@@ -81,6 +82,63 @@ public class BluQubeAuthorizationBehaviorTests
         Assert.True(nextWasCalled);
     }
 
+    [Fact]
+    public async Task ThrowsWhenNoAuthorizerIsRegisteredAndAuthorizationIsRequiredByDefault()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        var behavior = new BluQubeAuthorizationBehavior<StubNoAttrCommand, CommandResult>(
+            services.BuildServiceProvider(),
+            options: Options.Create(new BluQubeAuthorizationOptions
+            {
+                RequireAuthorizationByDefault = true,
+            }));
+        var nextWasCalled = false;
+
+        // Act
+        var exception = await Assert.ThrowsAsync<UnauthorizedException>(async () =>
+            await behavior.Handle(
+                new StubNoAttrCommand("data"),
+                (_, _) =>
+                {
+                    nextWasCalled = true;
+                    return ValueTask.FromResult(CommandResult.Succeeded());
+                },
+                CancellationToken.None));
+
+        // Assert
+        Assert.Equal("No authorizer is registered for request type 'StubNoAttrCommand'.", exception.Message);
+        Assert.False(nextWasCalled);
+    }
+
+    [Fact]
+    public async Task ContinuesForAnonymousRequestWhenAuthorizationIsRequiredByDefault()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        var behavior = new BluQubeAuthorizationBehavior<AnonymousCommand, CommandResult>(
+            services.BuildServiceProvider(),
+            options: Options.Create(new BluQubeAuthorizationOptions
+            {
+                RequireAuthorizationByDefault = true,
+            }));
+        var nextWasCalled = false;
+
+        // Act
+        var result = await behavior.Handle(
+            new AnonymousCommand("data"),
+            (_, _) =>
+            {
+                nextWasCalled = true;
+                return ValueTask.FromResult(CommandResult.Succeeded());
+            },
+            CancellationToken.None);
+
+        // Assert
+        Assert.Equal(CommandResultStatus.Succeeded, result.Status);
+        Assert.True(nextWasCalled);
+    }
+
     private static BluQubeAuthorizationBehavior<StubNoAttrCommand, CommandResult> CreateBehavior(
         RecordingAuthorizer authorizer)
     {
@@ -113,6 +171,16 @@ public class BluQubeAuthorizationBehaviorTests
         {
             this.Calls++;
             return Task.FromResult(this.result);
+        }
+    }
+
+    public sealed record AnonymousCommand(string Data) : ICommand, IAllowAnonymousBluQubeRequest;
+
+    public sealed class AnonymousCommandHandler : Mediator.IRequestHandler<AnonymousCommand, CommandResult>
+    {
+        public ValueTask<CommandResult> Handle(AnonymousCommand request, CancellationToken cancellationToken)
+        {
+            return ValueTask.FromResult(CommandResult.Succeeded());
         }
     }
 }

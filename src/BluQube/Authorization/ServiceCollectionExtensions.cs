@@ -24,6 +24,31 @@ public static class ServiceCollectionExtensions
     /// </example>
     public static IServiceCollection AddBluQubeAuthorization(this IServiceCollection services, Assembly assembly)
     {
+        return services.AddBluQubeAuthorization(assembly, _ => { });
+    }
+
+    /// <summary>
+    /// Scans the provided assembly for <see cref="IBluQubeAuthorizer{TRequest}"/> implementations and registers them,
+    /// then adds the <see cref="BluQubeAuthorizationBehavior{TMessage,TResponse}"/> to the Mediator pipeline.
+    /// </summary>
+    /// <param name="services">The service collection to register into.</param>
+    /// <param name="assembly">The assembly to scan for <see cref="IBluQubeAuthorizer{TRequest}"/> implementations.</param>
+    /// <param name="configureOptions">Configures BluQube authorization behavior.</param>
+    /// <returns>The same <see cref="IServiceCollection"/> for chaining.</returns>
+    /// <example>
+    /// <code>
+    /// builder.Services.AddMediator();
+    /// builder.Services.AddBluQubeAuthorization(typeof(App).Assembly, options =>
+    /// {
+    ///     options.RequireAuthorizationByDefault = true;
+    /// });
+    /// </code>
+    /// </example>
+    public static IServiceCollection AddBluQubeAuthorization(
+        this IServiceCollection services,
+        Assembly assembly,
+        Action<BluQubeAuthorizationOptions> configureOptions)
+    {
         // Register all IBluQubeAuthorizer<T> implementations from the assembly
         var authorizerInterfaceType = typeof(IBluQubeAuthorizer<>);
 
@@ -44,6 +69,8 @@ public static class ServiceCollectionExtensions
                 services.AddTransient(iface, type);
             }
         }
+
+        services.Configure(configureOptions);
 
         // Register the authorization pipeline behavior (open-generic, singleton to match Mediator's pipeline caching)
         services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(BluQubeAuthorizationBehavior<,>));

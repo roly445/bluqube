@@ -2,6 +2,8 @@
 
 BluQube provides a built-in authorization pipeline that enforces access control before handlers run. Authorization is opt-in by registering an `IBluQubeAuthorizer<TRequest>` for a command or query type. If authorization fails, a `CommandResult.Unauthorized()` or `QueryResult<T>.Unauthorized()` is returned automatically and your handler never runs.
 
+You can also enable authorize-by-default mode. In that mode, every command or query must either have an `IBluQubeAuthorizer<TRequest>` or explicitly implement `IAllowAnonymousBluQubeRequest`.
+
 ## Setup
 
 In `Program.cs`, after adding Mediator, call `AddBluQubeAuthorization()`:
@@ -17,6 +19,32 @@ The `AddBluQubeAuthorization()` call:
 
 - Scans the specified assembly for `IBluQubeAuthorizer<T>` implementations and registers them
 - Adds the `BluQubeAuthorizationBehavior` to the Mediator pipeline
+
+## Authorize by Default
+
+By default, requests without an authorizer are allowed. To make BluQube fail closed, enable `RequireAuthorizationByDefault`:
+
+```csharp
+builder.Services.AddBluQubeAuthorization(typeof(App).Assembly, options =>
+{
+    options.RequireAuthorizationByDefault = true;
+});
+```
+
+With this option enabled:
+
+- If an `IBluQubeAuthorizer<TRequest>` is registered, it runs.
+- If no authorizer is registered, the request is rejected.
+- If the request implements `IAllowAnonymousBluQubeRequest`, it is allowed without an authorizer.
+
+Use `IAllowAnonymousBluQubeRequest` for intentionally public commands or queries:
+
+```csharp
+public record LoginCommand(string Email, string Password)
+    : ICommand<LoginResult>, IAllowAnonymousBluQubeRequest;
+```
+
+The anonymous marker only bypasses the missing-authorizer rejection. If an authorizer is registered for the request type, the authorizer still runs.
 
 ## Protecting a Command
 
@@ -135,11 +163,18 @@ When the query is sent through `QueryRunner.Send()`, unauthorized access returns
 
 ### 1. Forgetting the Authorizer
 
-If no `IBluQubeAuthorizer<TRequest>` is registered for a command or query, the authorization pipeline does not authorize that request.
+If `RequireAuthorizationByDefault` is `false`, a command or query without an `IBluQubeAuthorizer<TRequest>` is allowed.
 
 ```csharp
-// No authorizer exists for AddTodoCommand, so no authorization runs.
+// No authorizer exists for AddTodoCommand, so no authorization runs unless
+// RequireAuthorizationByDefault is enabled.
 public record AddTodoCommand(string Title) : ICommand;
+```
+
+If `RequireAuthorizationByDefault` is `true`, either add an authorizer or mark the request as intentionally public:
+
+```csharp
+public record PublicTodosQuery : IQuery<TodoListResult>, IAllowAnonymousBluQubeRequest;
 ```
 
 ### 2. Forgetting to Register Authorization

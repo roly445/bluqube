@@ -41,7 +41,10 @@ public static class Program
         builder.Services.AddValidatorsFromAssemblyContaining<AddTodoCommandValidator>();
 
         builder.Services.AddMediator();
-        builder.Services.AddBluQubeAuthorization(Assembly.GetExecutingAssembly());
+        builder.Services.AddBluQubeAuthorization(Assembly.GetExecutingAssembly(), options =>
+        {
+            options.RequireAuthorizationByDefault = true;
+        });
         builder.Services.AddScoped<ICommandRunner, CommandRunner>();
         builder.Services.AddScoped<IQueryRunner, QueryRunner>();
         builder.Services.AddSingleton<ITodoService, TodoService>();
