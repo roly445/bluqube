@@ -40,7 +40,7 @@ public static class Program
 
         builder.Services.AddValidatorsFromAssemblyContaining<AddTodoCommandValidator>();
 
-        builder.Services.AddMediator();
+        builder.Services.AddBluQube(Assembly.GetExecutingAssembly());
         builder.Services.AddBluQubeAuthorization(Assembly.GetExecutingAssembly(), options =>
         {
             options.RequireAuthorizationByDefault = true;

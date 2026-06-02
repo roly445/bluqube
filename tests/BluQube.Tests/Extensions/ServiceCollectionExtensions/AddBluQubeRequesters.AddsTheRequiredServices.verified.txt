@@ -1,4 +1,34 @@
-﻿[
+[
+  {
+    ServiceType: IBluQubeMediator,
+    Lifetime: Scoped,
+    ImplementationType: BluQubeMediator
+  },
+  {
+    ServiceType: IQueryProcessor<StubQuery, StubQueryResult>,
+    Lifetime: Transient,
+    ImplementationType: GenericStubQueryProcessor
+  },
+  {
+    ServiceType: IQueryProcessor<StubQueryGet, StubGetQueryResult>,
+    Lifetime: Transient,
+    ImplementationType: GenericStubQueryGetProcessor
+  },
+  {
+    ServiceType: IQueryProcessor<StubQueryPost, StubPostQueryResult>,
+    Lifetime: Transient,
+    ImplementationType: GenericStubQueryPostProcessor
+  },
+  {
+    ServiceType: ICommandHandler<StubCommand>,
+    Lifetime: Transient,
+    ImplementationType: StubCommandGenericHandler
+  },
+  {
+    ServiceType: ICommandHandler<StubWithResultCommand, StubWithResultCommandResult>,
+    Lifetime: Transient,
+    ImplementationType: StubWithResultCommandGenericHandler
+  },
   {
     ServiceType: QueryResultConverter<StubQueryResult>,
     Lifetime: Transient,

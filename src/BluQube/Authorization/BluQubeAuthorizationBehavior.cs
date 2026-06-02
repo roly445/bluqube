@@ -1,4 +1,4 @@
-using Mediator;
+using BluQube.Mediation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 namespace BluQube.Authorization;
 
 /// <summary>
-/// Mediator pipeline behavior that enforces BluQube authorization before handler execution.
+/// BluQube pipeline behavior that enforces authorization before handler execution.
 /// Runs when an <see cref="IBluQubeAuthorizer{TRequest}"/> is registered for the message.
 /// </summary>
 /// <typeparam name="TMessage">The request (command or query) type.</typeparam>
@@ -14,24 +14,23 @@ namespace BluQube.Authorization;
 /// <remarks>
 /// Registration order matters. This behavior must be registered before the handler in the pipeline.
 /// Use the BluQube authorization service collection extensions to register authorizers and add this behavior
-/// to the Mediator pipeline:
+/// to the BluQube pipeline:
 /// <code>
-/// builder.Services.AddMediator();
+/// builder.Services.AddBluQube(typeof(App).Assembly);
 /// builder.Services.AddBluQubeAuthorization(typeof(App).Assembly);
-/// builder.Services.AddSingleton(typeof(IPipelineBehavior&lt;,&gt;), typeof(BluQubeAuthorizationBehavior&lt;,&gt;));
+/// builder.Services.AddSingleton(typeof(IBluQubePipelineBehavior&lt;,&gt;), typeof(BluQubeAuthorizationBehavior&lt;,&gt;));
 /// </code>
 /// </remarks>
 public sealed class BluQubeAuthorizationBehavior<TMessage, TResponse>(
     IServiceProvider rootServiceProvider,
     IHttpContextAccessor? httpContextAccessor = null,
     IOptions<BluQubeAuthorizationOptions>? options = null)
-    : IPipelineBehavior<TMessage, TResponse>
-    where TMessage : IMessage
+    : IBluQubePipelineBehavior<TMessage, TResponse>
 {
     /// <inheritdoc/>
     public async ValueTask<TResponse> Handle(
         TMessage message,
-        MessageHandlerDelegate<TMessage, TResponse> next,
+        BluQubeRequestHandlerDelegate<TMessage, TResponse> next,
         CancellationToken cancellationToken)
     {
         // Prefer request-scoped services when available (HTTP request context)

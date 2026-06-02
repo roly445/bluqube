@@ -175,7 +175,12 @@ namespace BluQube.SourceGeneration
                 }
 
                 var src = requesterHelperOutputDefinitionProcessor.Process(
-                    new ServiceCollectionExtensionsOutputDefinitionProcessor.OutputDefinition(requesterDefinition.Requester.TypeWithAttribute.GetNamespace(), jsonConverterOutputDefinitions.AsReadOnly()));
+                    new ServiceCollectionExtensionsOutputDefinitionProcessor.OutputDefinition(
+                        requesterDefinition.Requester.TypeWithAttribute.GetNamespace(),
+                        jsonConverterOutputDefinitions.AsReadOnly(),
+                        queryProcessorOutputDefinitions.AsReadOnly(),
+                        genericCommandHandlerOutputDefinitions.AsReadOnly(),
+                        genericCommandOfTHandlerOutputDefinitions.AsReadOnly()));
                 spc.AddSource(
                     $"ServiceCollectionExtensions.g.cs",
                     SourceText.From(src, Encoding.UTF8));

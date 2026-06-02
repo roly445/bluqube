@@ -1,4 +1,5 @@
 using BluQube.Authorization;
+using BluQube.Mediation;
 using BluQube.Queries;
 using BluQube.Tests.RequesterHelpers.Stubs;
 using Moq;
@@ -7,12 +8,12 @@ namespace BluQube.Tests.Queries.QueryRunnerTests;
 
 public class Send
 {
-    private readonly Mock<Mediator.IMediator> _mediatorMock;
+    private readonly Mock<IBluQubeMediator> _mediatorMock;
     private readonly QueryRunner _queryRunner;
 
     public Send()
     {
-        this._mediatorMock = new Mock<Mediator.IMediator>();
+        this._mediatorMock = new Mock<IBluQubeMediator>();
         this._queryRunner = new QueryRunner(this._mediatorMock.Object);
     }
 
@@ -21,7 +22,7 @@ public class Send
     {
         var query = new Mock<IQuery<StubQueryResult>>().Object;
         this._mediatorMock.Setup(s => s.Send(query, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new UnauthorizedException("Some Message"));
+            .Returns(ValueTask.FromException<QueryResult<StubQueryResult>>(new UnauthorizedException("Some Message")));
 
         // Act
         var result = await this._queryRunner.Send(query);
@@ -38,7 +39,7 @@ public class Send
         var expectedResult = QueryResult<StubQueryResult>
             .Succeeded(new StubQueryResult("test-data"));
         this._mediatorMock.Setup(s => s.Send(query, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expectedResult);
+            .Returns(ValueTask.FromResult(expectedResult));
 
         // Act
         var result = await this._queryRunner.Send(query);

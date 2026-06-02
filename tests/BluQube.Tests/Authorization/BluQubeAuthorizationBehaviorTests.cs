@@ -176,7 +176,7 @@ public class BluQubeAuthorizationBehaviorTests
 
     public sealed record AnonymousCommand(string Data) : ICommand, IAllowAnonymousBluQubeRequest;
 
-    public sealed class AnonymousCommandHandler : Mediator.IRequestHandler<AnonymousCommand, CommandResult>
+    public sealed class AnonymousCommandHandler : ICommandHandler<AnonymousCommand>
     {
         public ValueTask<CommandResult> Handle(AnonymousCommand request, CancellationToken cancellationToken)
         {

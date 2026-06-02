@@ -1,13 +1,13 @@
 ﻿namespace BluQube.Commands;
 
 /// <summary>
-/// Dispatches commands for execution via the MediatR pipeline.
+/// Dispatches commands for execution via the BluQube mediator pipeline.
 /// </summary>
 /// <remarks>
-/// This is the primary interface for sending commands to handlers. It wraps MediatR's <c>ISender</c> and adds automatic handling of authorization exceptions.
+/// This is the primary interface for sending commands to handlers. It wraps BluQube mediation and adds automatic handling of authorization exceptions.
 /// Inject <see cref="ICommandRunner"/> into your services or Blazor components to send commands.
 /// <para>
-/// The runner catches <c>UnauthorizedException</c> from the MediatR authorization behavior and converts it to <see cref="CommandResult.Unauthorized()"/>.
+/// The runner catches <c>UnauthorizedException</c> from the BluQube authorization behavior and converts it to <see cref="CommandResult.Unauthorized()"/>.
 /// </para>
 /// </remarks>
 /// <example>

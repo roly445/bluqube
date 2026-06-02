@@ -1,5 +1,5 @@
 using System.Reflection;
-using Mediator;
+using BluQube.Mediation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BluQube.Authorization;
@@ -11,14 +11,14 @@ public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Scans the provided assembly for <see cref="IBluQubeAuthorizer{TRequest}"/> implementations and registers them,
-    /// then adds the <see cref="BluQubeAuthorizationBehavior{TMessage,TResponse}"/> to the Mediator pipeline.
+    /// then adds the <see cref="BluQubeAuthorizationBehavior{TMessage,TResponse}"/> to the BluQube mediator pipeline.
     /// </summary>
     /// <param name="services">The service collection to register into.</param>
     /// <param name="assembly">The assembly to scan for <see cref="IBluQubeAuthorizer{TRequest}"/> implementations.</param>
     /// <returns>The same <see cref="IServiceCollection"/> for chaining.</returns>
     /// <example>
     /// <code>
-    /// builder.Services.AddMediator();
+    /// builder.Services.AddBluQube(typeof(App).Assembly);
     /// builder.Services.AddBluQubeAuthorization(typeof(App).Assembly);
     /// </code>
     /// </example>
@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Scans the provided assembly for <see cref="IBluQubeAuthorizer{TRequest}"/> implementations and registers them,
-    /// then adds the <see cref="BluQubeAuthorizationBehavior{TMessage,TResponse}"/> to the Mediator pipeline.
+    /// then adds the <see cref="BluQubeAuthorizationBehavior{TMessage,TResponse}"/> to the BluQube mediator pipeline.
     /// </summary>
     /// <param name="services">The service collection to register into.</param>
     /// <param name="assembly">The assembly to scan for <see cref="IBluQubeAuthorizer{TRequest}"/> implementations.</param>
@@ -37,7 +37,7 @@ public static class ServiceCollectionExtensions
     /// <returns>The same <see cref="IServiceCollection"/> for chaining.</returns>
     /// <example>
     /// <code>
-    /// builder.Services.AddMediator();
+    /// builder.Services.AddBluQube(typeof(App).Assembly);
     /// builder.Services.AddBluQubeAuthorization(typeof(App).Assembly, options =>
     /// {
     ///     options.RequireAuthorizationByDefault = true;
@@ -72,8 +72,8 @@ public static class ServiceCollectionExtensions
 
         services.Configure(configureOptions);
 
-        // Register the authorization pipeline behavior (open-generic, singleton to match Mediator's pipeline caching)
-        services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(BluQubeAuthorizationBehavior<,>));
+        // Register the authorization pipeline behavior.
+        services.AddSingleton(typeof(IBluQubePipelineBehavior<,>), typeof(BluQubeAuthorizationBehavior<,>));
 
         return services;
     }

@@ -72,7 +72,7 @@ public abstract class CommandHandler<TCommand>(IEnumerable<IValidator<TCommand>>
     /// otherwise returns the result from <see cref="HandleInternal"/>.
     /// </returns>
     /// <remarks>
-    /// This method is called by Mediator. It runs all registered validators in parallel, aggregates failures,
+    /// This method is called by the BluQube mediator. It runs all registered validators in parallel, aggregates failures,
     /// and short-circuits if any validation rules are violated. After handler execution (or validation failure),
     /// it invokes <see cref="PostHandle"/> for side effects.
     /// </remarks>

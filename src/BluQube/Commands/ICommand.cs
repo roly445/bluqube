@@ -1,5 +1,3 @@
-using Mediator;
-
 namespace BluQube.Commands;
 
 /// <summary>
@@ -18,4 +16,4 @@ namespace BluQube.Commands;
 /// public record CreateTodoCommand(string Title, string Description) : ICommand;
 /// </code>
 /// </example>
-public interface ICommand : IRequest<CommandResult>;
+public interface ICommand;

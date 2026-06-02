@@ -1,13 +1,13 @@
 ﻿namespace BluQube.Queries;
 
 /// <summary>
-/// Dispatches queries for execution via the MediatR pipeline.
+/// Dispatches queries for execution via the BluQube mediator pipeline.
 /// </summary>
 /// <remarks>
-/// This is the primary interface for sending queries to processors. It wraps MediatR's <c>ISender</c> and adds automatic handling of authorization exceptions.
+/// This is the primary interface for sending queries to processors. It wraps BluQube mediation and adds automatic handling of authorization exceptions.
 /// Inject <see cref="IQueryRunner"/> into your services or Blazor components to send queries.
 /// <para>
-/// The runner catches <c>UnauthorizedException</c> from the MediatR authorization behavior and converts it to <see cref="QueryResult{TQueryResult}.Unauthorized()"/>.
+/// The runner catches <c>UnauthorizedException</c> from the BluQube authorization behavior and converts it to <see cref="QueryResult{TQueryResult}.Unauthorized()"/>.
 /// </para>
 /// </remarks>
 /// <example>

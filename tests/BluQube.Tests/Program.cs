@@ -4,12 +4,13 @@ using BluQube.Queries;
 using BluQube.Tests.Integration;
 using BluQube.Tests.RequesterHelpers;
 using Microsoft.AspNetCore.Http.Json;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure minimal services for BluQube
 builder.Services.AddHttpClient();
-builder.Services.AddMediator();
+builder.Services.AddBluQube(Assembly.GetExecutingAssembly());
 builder.Services.AddBluQubeRequesters();
 builder.Services.AddBluQubeAuthorization(typeof(Program).Assembly);
 builder.Services.AddScoped<ICommandRunner, CommandRunner>();

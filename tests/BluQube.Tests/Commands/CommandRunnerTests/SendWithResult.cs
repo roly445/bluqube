@@ -1,5 +1,6 @@
 using BluQube.Authorization;
 using BluQube.Commands;
+using BluQube.Mediation;
 using BluQube.Tests.RequesterHelpers.Stubs;
 using Moq;
 
@@ -7,12 +8,12 @@ namespace BluQube.Tests.Commands.CommandRunnerTests;
 
 public class SendWithResult
 {
-    private readonly Mock<Mediator.IMediator> _mediatorMock;
+    private readonly Mock<IBluQubeMediator> _mediatorMock;
     private readonly CommandRunner _commandRunner;
 
     public SendWithResult()
     {
-        this._mediatorMock = new Mock<Mediator.IMediator>();
+        this._mediatorMock = new Mock<IBluQubeMediator>();
         this._commandRunner = new CommandRunner(this._mediatorMock.Object);
     }
 
@@ -22,7 +23,7 @@ public class SendWithResult
         // Arrange
         var command = new Mock<ICommand<ICommandResult>>().Object;
         this._mediatorMock.Setup(s => s.Send(command, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new UnauthorizedException("Some Message"));
+            .Returns(ValueTask.FromException<CommandResult<ICommandResult>>(new UnauthorizedException("Some Message")));
 
         // Act
         var result = await this._commandRunner.Send(command);
@@ -39,7 +40,7 @@ public class SendWithResult
         var expectedResult = CommandResult<StubWithResultCommandResult>
             .Succeeded(new StubWithResultCommandResult("test-data"));
         this._mediatorMock.Setup(s => s.Send(command, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expectedResult);
+            .Returns(ValueTask.FromResult(expectedResult));
 
         // Act
         var result = await this._commandRunner.Send(command);

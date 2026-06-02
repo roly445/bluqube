@@ -1,5 +1,3 @@
-﻿using Mediator;
-
 namespace BluQube.Queries;
 
 /// <summary>
@@ -26,5 +24,5 @@ namespace BluQube.Queries;
 /// public record GetTodoByIdQuery(Guid Id) : IQuery&lt;GetTodoResult&gt;;
 /// </code>
 /// </example>
-public interface IQuery<T> : IRequest<QueryResult<T>>
-where T : IQueryResult;
+public interface IQuery<T>
+    where T : IQueryResult;

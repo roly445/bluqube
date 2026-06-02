@@ -1,0 +1,4 @@
+interface:
+  display_name: "BluQube"
+  short_description: "Use BluQube in Blazor apps"
+  default_prompt: "Use $bluqube to add or debug a BluQube command/query workflow in this Blazor project."

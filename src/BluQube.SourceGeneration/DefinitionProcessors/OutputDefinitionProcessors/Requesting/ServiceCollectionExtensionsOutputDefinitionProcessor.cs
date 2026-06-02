@@ -18,6 +18,14 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
                 sb.AppendLine($"using {dataJsonConverterOutputDefinition};");
             }
 
+            foreach (var ns in data.QueryProcessorOutputDefinitions.Select(x => x.QueryNamespace)
+                         .Concat(data.GenericCommandHandlerOutputDefinitions.Select(x => x.CommandNamespace))
+                         .Concat(data.GenericCommandOfTHandlerOutputDefinitions.Select(x => x.CommandNamespace))
+                         .Distinct())
+            {
+                sb.AppendLine($"using {ns};");
+            }
+
             sb.AppendLine($@"
 namespace {data.Namespace};
 
@@ -25,6 +33,26 @@ internal static class ServiceCollectionExtensions
 {{
      internal static IServiceCollection AddBluQubeRequesters(this IServiceCollection services)
      {{");
+            sb.AppendLine("           services.AddBluQubeMediator();");
+
+            foreach (var queryProcessorOutputDefinition in data.QueryProcessorOutputDefinitions)
+            {
+                sb.AppendLine($@"           services
+                     .AddTransient<IQueryProcessor<{queryProcessorOutputDefinition.QueryName}, {queryProcessorOutputDefinition.QueryResult}>, Generic{queryProcessorOutputDefinition.QueryName}Processor>();");
+            }
+
+            foreach (var genericCommandHandlerOutputDefinition in data.GenericCommandHandlerOutputDefinitions)
+            {
+                sb.AppendLine($@"           services
+                     .AddTransient<ICommandHandler<{genericCommandHandlerOutputDefinition.CommandName}>, {genericCommandHandlerOutputDefinition.CommandName}GenericHandler>();");
+            }
+
+            foreach (var genericCommandOfTHandlerOutputDefinition in data.GenericCommandOfTHandlerOutputDefinitions)
+            {
+                sb.AppendLine($@"           services
+                     .AddTransient<ICommandHandler<{genericCommandOfTHandlerOutputDefinition.CommandName}, {genericCommandOfTHandlerOutputDefinition.CommandResultName}>, {genericCommandOfTHandlerOutputDefinition.CommandName}GenericHandler>();");
+            }
+
             foreach (var dataJsonConverterOutputDefinition in data.JsonConverterOutputDefinitions)
             {
                 if (dataJsonConverterOutputDefinition.OutputType == JsonConverterOutputDefinitionProcessor.OutputDefinition.Type.QueryResult)
@@ -48,15 +76,29 @@ internal static class ServiceCollectionExtensions
 
         internal class OutputDefinition : IOutputDefinition
         {
-            public OutputDefinition(string ns, IReadOnlyList<JsonConverterOutputDefinitionProcessor.OutputDefinition> jsonConverterOutputDefinitions)
+            public OutputDefinition(
+                string ns,
+                IReadOnlyList<JsonConverterOutputDefinitionProcessor.OutputDefinition> jsonConverterOutputDefinitions,
+                IReadOnlyList<GenericQueryProcessorOutputDefinitionProcessor.OutputDefinition> queryProcessorOutputDefinitions,
+                IReadOnlyList<GenericCommandHandlerOutputDefinitionProcessor.OutputDefinition> genericCommandHandlerOutputDefinitions,
+                IReadOnlyList<GenericCommandOfTHandlerOutputDefinitionProcessor.OutputDefinition> genericCommandOfTHandlerOutputDefinitions)
             {
                 this.Namespace = ns;
                 this.JsonConverterOutputDefinitions = jsonConverterOutputDefinitions;
+                this.QueryProcessorOutputDefinitions = queryProcessorOutputDefinitions;
+                this.GenericCommandHandlerOutputDefinitions = genericCommandHandlerOutputDefinitions;
+                this.GenericCommandOfTHandlerOutputDefinitions = genericCommandOfTHandlerOutputDefinitions;
             }
 
             public string Namespace { get; }
 
             public IReadOnlyList<JsonConverterOutputDefinitionProcessor.OutputDefinition> JsonConverterOutputDefinitions { get; }
+
+            public IReadOnlyList<GenericQueryProcessorOutputDefinitionProcessor.OutputDefinition> QueryProcessorOutputDefinitions { get; }
+
+            public IReadOnlyList<GenericCommandHandlerOutputDefinitionProcessor.OutputDefinition> GenericCommandHandlerOutputDefinitions { get; }
+
+            public IReadOnlyList<GenericCommandOfTHandlerOutputDefinitionProcessor.OutputDefinition> GenericCommandOfTHandlerOutputDefinitions { get; }
         }
     }
 }
