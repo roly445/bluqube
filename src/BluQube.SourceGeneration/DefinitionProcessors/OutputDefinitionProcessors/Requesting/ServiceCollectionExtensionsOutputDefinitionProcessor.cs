@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BluQube.CodeGenerators.Contracts;
@@ -13,12 +13,8 @@ namespace BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcesso
             sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
             sb.AppendLine("using BluQube.Queries;");
             sb.AppendLine("using BluQube.Commands;");
-            foreach (var dataJsonConverterOutputDefinition in data.JsonConverterOutputDefinitions.Select(x => x.QueryResultNamespace).Distinct())
-            {
-                sb.AppendLine($"using {dataJsonConverterOutputDefinition};");
-            }
-
-            foreach (var ns in data.QueryProcessorOutputDefinitions.Select(x => x.QueryNamespace)
+            foreach (var ns in data.JsonConverterOutputDefinitions.Select(x => x.QueryResultNamespace)
+                         .Concat(data.QueryProcessorOutputDefinitions.Select(x => x.QueryNamespace))
                          .Concat(data.GenericCommandHandlerOutputDefinitions.Select(x => x.CommandNamespace))
                          .Concat(data.GenericCommandOfTHandlerOutputDefinitions.Select(x => x.CommandNamespace))
                          .Distinct())
@@ -41,10 +37,12 @@ internal static class ServiceCollectionExtensions
                      .AddTransient<IQueryProcessor<{queryProcessorOutputDefinition.QueryName}, {queryProcessorOutputDefinition.QueryResult}>, Generic{queryProcessorOutputDefinition.QueryName}Processor>();");
             }
 
-            foreach (var genericCommandHandlerOutputDefinition in data.GenericCommandHandlerOutputDefinitions)
+            foreach (var registration in data.GenericCommandHandlerOutputDefinitions.Select(
+                         genericCommandHandlerOutputDefinition =>
+                             $@"           services
+                     .AddTransient<ICommandHandler<{genericCommandHandlerOutputDefinition.CommandName}>, {genericCommandHandlerOutputDefinition.CommandName}GenericHandler>();"))
             {
-                sb.AppendLine($@"           services
-                     .AddTransient<ICommandHandler<{genericCommandHandlerOutputDefinition.CommandName}>, {genericCommandHandlerOutputDefinition.CommandName}GenericHandler>();");
+                sb.AppendLine(registration);
             }
 
             foreach (var genericCommandOfTHandlerOutputDefinition in data.GenericCommandOfTHandlerOutputDefinitions)

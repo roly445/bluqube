@@ -1,4 +1,4 @@
-﻿namespace BluQube.Commands;
+namespace BluQube.Commands;
 
 /// <summary>
 /// Dispatches commands for execution via the BluQube mediator pipeline.

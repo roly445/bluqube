@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace BluQube.Commands;
 
 /// <summary>
@@ -19,5 +21,9 @@ namespace BluQube.Commands;
 /// public record CreateTodoResult(Guid Id) : ICommandResult;
 /// </code>
 /// </example>
+[SuppressMessage(
+    "Major Code Smell",
+    "S2326:Unused type parameters should be removed",
+    Justification = "The generic argument binds commands to their result type for mediator dispatch and handler registration.")]
 public interface ICommand<TResult>
     where TResult : ICommandResult;

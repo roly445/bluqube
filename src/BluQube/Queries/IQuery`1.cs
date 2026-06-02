@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace BluQube.Queries;
 
 /// <summary>
@@ -24,5 +26,9 @@ namespace BluQube.Queries;
 /// public record GetTodoByIdQuery(Guid Id) : IQuery&lt;GetTodoResult&gt;;
 /// </code>
 /// </example>
+[SuppressMessage(
+    "Major Code Smell",
+    "S2326:Unused type parameters should be removed",
+    Justification = "The generic argument binds queries to their result type for mediator dispatch and processor registration.")]
 public interface IQuery<T>
     where T : IQueryResult;

@@ -1,10 +1,10 @@
-﻿using BluQube.Authorization;
+using System.Reflection;
+using BluQube.Authorization;
 using BluQube.Commands;
 using BluQube.Queries;
 using BluQube.Tests.Integration;
 using BluQube.Tests.RequesterHelpers;
 using Microsoft.AspNetCore.Http.Json;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 

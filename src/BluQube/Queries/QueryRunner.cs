@@ -1,4 +1,4 @@
-﻿using BluQube.Authorization;
+using BluQube.Authorization;
 using BluQube.Commands;
 using BluQube.Mediation;
 

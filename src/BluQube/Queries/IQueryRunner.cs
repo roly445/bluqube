@@ -1,4 +1,4 @@
-﻿namespace BluQube.Queries;
+namespace BluQube.Queries;
 
 /// <summary>
 /// Dispatches queries for execution via the BluQube mediator pipeline.

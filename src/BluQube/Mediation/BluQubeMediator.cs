@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using BluQube.Commands;
 using BluQube.Queries;
@@ -38,6 +39,10 @@ public sealed class BluQubeMediator(IServiceProvider serviceProvider) : IBluQube
         return this.SendRuntimeQuery<TResult>(request, cancellationToken);
     }
 
+    [SuppressMessage(
+        "Major Code Smell",
+        "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields",
+        Justification = "The mediator intentionally dispatches runtime request types to private generic methods without exposing those methods as public API.")]
     private ValueTask<CommandResult<TResult>> SendRuntimeCommand<TResult>(
         ICommand<TResult> request,
         CancellationToken cancellationToken)
@@ -50,6 +55,10 @@ public sealed class BluQubeMediator(IServiceProvider serviceProvider) : IBluQube
         return (ValueTask<CommandResult<TResult>>)method.Invoke(this, [request, cancellationToken])!;
     }
 
+    [SuppressMessage(
+        "Major Code Smell",
+        "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields",
+        Justification = "The mediator intentionally dispatches runtime request types to private generic methods without exposing those methods as public API.")]
     private ValueTask<QueryResult<TResult>> SendRuntimeQuery<TResult>(
         IQuery<TResult> request,
         CancellationToken cancellationToken)

@@ -29,7 +29,7 @@ public sealed class BluQubeAuthorizationBehavior<TMessage, TResponse>(
 {
     /// <inheritdoc/>
     public async ValueTask<TResponse> Handle(
-        TMessage message,
+        TMessage request,
         BluQubeRequestHandlerDelegate<TMessage, TResponse> next,
         CancellationToken cancellationToken)
     {
@@ -40,9 +40,9 @@ public sealed class BluQubeAuthorizationBehavior<TMessage, TResponse>(
         var authorizer = sp.GetService<IBluQubeAuthorizer<TMessage>>();
         if (authorizer == null)
         {
-            if (message is IAllowAnonymousBluQubeRequest)
+            if (request is IAllowAnonymousBluQubeRequest)
             {
-                return await next(message, cancellationToken);
+                return await next(request, cancellationToken);
             }
 
             if (options?.Value.RequireAuthorizationByDefault == true)
@@ -51,15 +51,15 @@ public sealed class BluQubeAuthorizationBehavior<TMessage, TResponse>(
                     $"No authorizer is registered for request type '{typeof(TMessage).Name}'.");
             }
 
-            return await next(message, cancellationToken);
+            return await next(request, cancellationToken);
         }
 
-        var result = await authorizer.Authorize(message, cancellationToken);
+        var result = await authorizer.Authorize(request, cancellationToken);
         if (!result.IsAuthorized)
         {
             throw new UnauthorizedException(result.FailureMessage ?? "Authorization failed.");
         }
 
-        return await next(message, cancellationToken);
+        return await next(request, cancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Text;
 using BluQube.SourceGeneration.DefinitionProcessors.InputDefinitionProcessors;
 using BluQube.SourceGeneration.DefinitionProcessors.OutputDefinitionProcessors;
