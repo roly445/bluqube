@@ -263,34 +263,34 @@ using BluQube.Queries;
 
 namespace TestApp.Queries
 {
-    [BluQubeQuery(Path = ""queries/horses"")]
-    public record GetHorsesQuery : IQuery<HorsesResult>;
+    [BluQubeQuery(Path = ""queries/items"")]
+    public record GetItemsQuery : IQuery<ItemResult>;
 
-    public record HorsesResult(string Name) : IQueryResult;
+    public record ItemResult(string Name) : IQueryResult;
 
-    public class GetHorsesQueryProcessor : IQueryProcessor<GetHorsesQuery, HorsesResult>
+    public class GetItemsQueryProcessor : IQueryProcessor<GetItemsQuery, ItemResult>
     {
-        public System.Threading.Tasks.Task<QueryResult<HorsesResult>> Handle(GetHorsesQuery query, System.Threading.CancellationToken cancellationToken)
-            => System.Threading.Tasks.Task.FromResult(QueryResult<HorsesResult>.Succeeded(new HorsesResult(""Blue"")));
+        public System.Threading.Tasks.Task<QueryResult<ItemResult>> Handle(GetItemsQuery query, System.Threading.CancellationToken cancellationToken)
+            => System.Threading.Tasks.Task.FromResult(QueryResult<ItemResult>.Succeeded(new ItemResult(""Item"")));
     }
 
-    public class HorsesResultConverter : QueryResultConverter<HorsesResult> { }
+    public class ItemResultConverter : QueryResultConverter<ItemResult> { }
 }
 
-namespace TestApp.Pedigree
+namespace TestApp.Details
 {
-    [BluQubeQuery(Path = ""queries/pedigree-horses"")]
-    public record SearchPedigreeHorsesQuery : IQuery<PedigreeHorsesResult>;
+    [BluQubeQuery(Path = ""queries/detailed-items"")]
+    public record SearchDetailedItemsQuery : IQuery<DetailedItemResult>;
 
-    public record PedigreeHorsesResult(string Name) : IQueryResult;
+    public record DetailedItemResult(string Name) : IQueryResult;
 
-    public class SearchPedigreeHorsesQueryProcessor : IQueryProcessor<SearchPedigreeHorsesQuery, PedigreeHorsesResult>
+    public class SearchDetailedItemsQueryProcessor : IQueryProcessor<SearchDetailedItemsQuery, DetailedItemResult>
     {
-        public System.Threading.Tasks.Task<QueryResult<PedigreeHorsesResult>> Handle(SearchPedigreeHorsesQuery query, System.Threading.CancellationToken cancellationToken)
-            => System.Threading.Tasks.Task.FromResult(QueryResult<PedigreeHorsesResult>.Succeeded(new PedigreeHorsesResult(""Blue"")));
+        public System.Threading.Tasks.Task<QueryResult<DetailedItemResult>> Handle(SearchDetailedItemsQuery query, System.Threading.CancellationToken cancellationToken)
+            => System.Threading.Tasks.Task.FromResult(QueryResult<DetailedItemResult>.Succeeded(new DetailedItemResult(""Item"")));
     }
 
-    public class PedigreeHorsesResultConverter : QueryResultConverter<PedigreeHorsesResult> { }
+    public class DetailedItemResultConverter : QueryResultConverter<DetailedItemResult> { }
 }
 ");
 
@@ -299,8 +299,8 @@ namespace TestApp.Pedigree
 
             Assert.Empty(result.Diagnostics);
             Assert.NotNull(jsonSource);
-            Assert.Contains("new TestApp.Queries.HorsesResultConverter()", jsonSource);
-            Assert.Contains("new TestApp.Pedigree.PedigreeHorsesResultConverter()", jsonSource);
+            Assert.Contains("new TestApp.Queries.ItemResultConverter()", jsonSource);
+            Assert.Contains("new TestApp.Details.DetailedItemResultConverter()", jsonSource);
         }
 
         private static string BuildResponderCode(string body) => $@"
