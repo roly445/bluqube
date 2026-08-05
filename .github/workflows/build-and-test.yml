@@ -16,6 +16,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout code
@@ -55,10 +58,17 @@ jobs:
           dotnet nuget push ./artifacts/*.nupkg \
             --source https://www.myget.org/F/bluqube/api/v3/index.json \
             --api-key ${{ secrets.MYGET_API_KEY }}
-          
+
+      - name: NuGet login
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: roly445
+
       - name: Push to NuGet.org
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           dotnet nuget push ./artifacts/*.nupkg \
             --source https://api.nuget.org/v3/index.json \
-            --api-key ${{ secrets.NUGET_API_KEY }}
+            --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
