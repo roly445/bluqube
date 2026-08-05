@@ -32,6 +32,9 @@ jobs:
         with:
           dotnet-version: '10.x'
 
+      - name: Restore .NET tools
+        run: dotnet tool restore
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -52,6 +55,15 @@ jobs:
 
       - name: Pack
         run: dotnet pack --configuration Release -p:ContinuousIntegrationBuild=true -p:SymbolPackageFormat=snupkg --output ./artifacts
+
+      - name: Generate SBOM
+        run: dotnet CycloneDX src/BluQube/BluQube.csproj --configuration Release --disable-package-restore --output ./artifacts/sbom --output-format Json --exclude-dev --set-name BluQube --set-type Library
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: ./artifacts/sbom/*
         
       - name: Push to MyGet
         run: |
