@@ -133,14 +133,11 @@ namespace BluQube.SourceGeneration
                                     methodValue,
                                     recordParams));
 
-                        var queryResultTypeName = container.QueryProcessor.QueryResultDeclaration.ToString();
-                        var converterName = assemblySymbol.TypeNames.SingleOrDefault(x => x.Contains($"{queryResultTypeName}Converter"));
-                        if (string.IsNullOrWhiteSpace(converterName))
-                        {
-                            continue;
-                        }
-
-                        var converterType = FindTypeByName(assemblySymbol, converterName);
+                        var queryResultTypeSymbol = container.SemanticModel.GetTypeInfo(container.QueryProcessor.QueryResultDeclaration).Type as INamedTypeSymbol;
+                        var queryResultTypeName = queryResultTypeSymbol?.Name ?? GetUnqualifiedTypeName(container.QueryProcessor.QueryResultDeclaration.ToString());
+                        var converterName = $"{queryResultTypeName}Converter";
+                        var converterType = FindTypeByMetadataName(assemblySymbol, queryResultTypeSymbol, converterName) ??
+                                            FindTypeByName(assemblySymbol, converterName);
                         if (converterType == null)
                         {
                             continue;
@@ -244,6 +241,17 @@ namespace BluQube.SourceGeneration
             return null;
         }
 
+        private static INamedTypeSymbol? FindTypeByMetadataName(IAssemblySymbol assemblySymbol, INamedTypeSymbol? resultTypeSymbol, string converterName)
+        {
+            var resultNamespace = resultTypeSymbol?.ContainingNamespace.ToDisplayString();
+            if (string.IsNullOrWhiteSpace(resultNamespace))
+            {
+                return null;
+            }
+
+            return assemblySymbol.GetTypeByMetadataName($"{resultNamespace}.{converterName}");
+        }
+
         private static INamedTypeSymbol? FindTypeInNamespace(INamespaceSymbol namespaceSymbol, string typeName)
         {
             foreach (var typeSymbol in namespaceSymbol.GetTypeMembers())
@@ -264,6 +272,12 @@ namespace BluQube.SourceGeneration
             }
 
             return null;
+        }
+
+        private static string GetUnqualifiedTypeName(string typeName)
+        {
+            var dotIndex = typeName.LastIndexOf('.');
+            return dotIndex >= 0 ? typeName.Substring(dotIndex + 1) : typeName;
         }
 
         private sealed class Container

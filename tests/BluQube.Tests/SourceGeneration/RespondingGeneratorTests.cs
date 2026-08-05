@@ -255,6 +255,54 @@ namespace TestApp.Equipment.Commands
             Assert.DoesNotContain("CommandResultConverter<", jsonSource);
         }
 
+        [Fact]
+        public void RegistersQueryResultConvertersWhenResultNameIsSuffixOfAnotherResultName()
+        {
+            var code = BuildResponderCode(@"
+using BluQube.Queries;
+
+namespace TestApp.Queries
+{
+    [BluQubeQuery(Path = ""queries/horses"")]
+    public record GetHorsesQuery : IQuery<HorsesResult>;
+
+    public record HorsesResult(string Name) : IQueryResult;
+
+    public class GetHorsesQueryProcessor : IQueryProcessor<GetHorsesQuery, HorsesResult>
+    {
+        public System.Threading.Tasks.Task<QueryResult<HorsesResult>> Handle(GetHorsesQuery query, System.Threading.CancellationToken cancellationToken)
+            => System.Threading.Tasks.Task.FromResult(QueryResult<HorsesResult>.Succeeded(new HorsesResult(""Blue"")));
+    }
+
+    public class HorsesResultConverter : QueryResultConverter<HorsesResult> { }
+}
+
+namespace TestApp.Pedigree
+{
+    [BluQubeQuery(Path = ""queries/pedigree-horses"")]
+    public record SearchPedigreeHorsesQuery : IQuery<PedigreeHorsesResult>;
+
+    public record PedigreeHorsesResult(string Name) : IQueryResult;
+
+    public class SearchPedigreeHorsesQueryProcessor : IQueryProcessor<SearchPedigreeHorsesQuery, PedigreeHorsesResult>
+    {
+        public System.Threading.Tasks.Task<QueryResult<PedigreeHorsesResult>> Handle(SearchPedigreeHorsesQuery query, System.Threading.CancellationToken cancellationToken)
+            => System.Threading.Tasks.Task.FromResult(QueryResult<PedigreeHorsesResult>.Succeeded(new PedigreeHorsesResult(""Blue"")));
+    }
+
+    public class PedigreeHorsesResultConverter : QueryResultConverter<PedigreeHorsesResult> { }
+}
+");
+
+            var result = RunGenerator(code).GetRunResult();
+            var jsonSource = GetGeneratedSource(result, "JsonOptionsExtensions.g.cs");
+
+            Assert.Empty(result.Diagnostics);
+            Assert.NotNull(jsonSource);
+            Assert.Contains("new TestApp.Queries.HorsesResultConverter()", jsonSource);
+            Assert.Contains("new TestApp.Pedigree.PedigreeHorsesResultConverter()", jsonSource);
+        }
+
         private static string BuildResponderCode(string body) => $@"
 using BluQube.Attributes;
 using BluQube.Commands;
