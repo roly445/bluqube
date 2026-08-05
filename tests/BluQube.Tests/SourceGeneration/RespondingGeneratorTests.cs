@@ -255,6 +255,54 @@ namespace TestApp.Equipment.Commands
             Assert.DoesNotContain("CommandResultConverter<", jsonSource);
         }
 
+        [Fact]
+        public void RegistersQueryResultConvertersWhenResultNameIsSuffixOfAnotherResultName()
+        {
+            var code = BuildResponderCode(@"
+using BluQube.Queries;
+
+namespace TestApp.Queries
+{
+    [BluQubeQuery(Path = ""queries/items"")]
+    public record GetItemsQuery : IQuery<ItemResult>;
+
+    public record ItemResult(string Name) : IQueryResult;
+
+    public class GetItemsQueryProcessor : IQueryProcessor<GetItemsQuery, ItemResult>
+    {
+        public System.Threading.Tasks.Task<QueryResult<ItemResult>> Handle(GetItemsQuery query, System.Threading.CancellationToken cancellationToken)
+            => System.Threading.Tasks.Task.FromResult(QueryResult<ItemResult>.Succeeded(new ItemResult(""Item"")));
+    }
+
+    public class ItemResultConverter : QueryResultConverter<ItemResult> { }
+}
+
+namespace TestApp.Details
+{
+    [BluQubeQuery(Path = ""queries/detailed-items"")]
+    public record SearchDetailedItemsQuery : IQuery<DetailedItemResult>;
+
+    public record DetailedItemResult(string Name) : IQueryResult;
+
+    public class SearchDetailedItemsQueryProcessor : IQueryProcessor<SearchDetailedItemsQuery, DetailedItemResult>
+    {
+        public System.Threading.Tasks.Task<QueryResult<DetailedItemResult>> Handle(SearchDetailedItemsQuery query, System.Threading.CancellationToken cancellationToken)
+            => System.Threading.Tasks.Task.FromResult(QueryResult<DetailedItemResult>.Succeeded(new DetailedItemResult(""Item"")));
+    }
+
+    public class DetailedItemResultConverter : QueryResultConverter<DetailedItemResult> { }
+}
+");
+
+            var result = RunGenerator(code).GetRunResult();
+            var jsonSource = GetGeneratedSource(result, "JsonOptionsExtensions.g.cs");
+
+            Assert.Empty(result.Diagnostics);
+            Assert.NotNull(jsonSource);
+            Assert.Contains("new TestApp.Queries.ItemResultConverter()", jsonSource);
+            Assert.Contains("new TestApp.Details.DetailedItemResultConverter()", jsonSource);
+        }
+
         private static string BuildResponderCode(string body) => $@"
 using BluQube.Attributes;
 using BluQube.Commands;
